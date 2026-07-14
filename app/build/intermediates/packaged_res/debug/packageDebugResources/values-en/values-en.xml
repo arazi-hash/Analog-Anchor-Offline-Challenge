@@ -15,6 +15,7 @@
     <string name="notification_title">Offline Challenge</string>
     <string name="request_step">Emergency code %d of 3</string>
     <string name="select_duration">Select challenge duration</string>
+    <string name="setup_subtitle">This challenge helps you disconnect and focus. Select your complete blackout duration.</string>
     <string name="shield_activate">Activate Shield</string>
     <string name="shield_body">This app uses a local privacy layer to enforce your challenge commitment. Your data never leaves your device. Please approve the next system prompt to activate your shield.</string>
     <string name="shield_title">Setting up your Offline Shield…</string>

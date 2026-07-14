@@ -19,8 +19,9 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun OfflineChallengeTheme(content: @Composable () -> Unit) {
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+fun OfflineChallengeTheme(language: String = "ar", content: @Composable () -> Unit) {
+    val layoutDirection = if (language == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
+    CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
         MaterialTheme(
             colorScheme = DarkColorScheme,
             typography = Typography,

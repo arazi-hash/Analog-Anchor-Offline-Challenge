@@ -22,6 +22,8 @@ import com.analoganchor.offlinechallenge.util.PinVault
 import com.analoganchor.offlinechallenge.util.TokenDecoder
 import kotlinx.coroutines.delay
 
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+
 @Composable
 fun ChallengeScreen(
     challengePrefs: ChallengePreferences,
@@ -29,6 +31,7 @@ fun ChallengeScreen(
     onChallengeComplete: () -> Unit
 ) {
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     var progress by remember { mutableFloatStateOf(challengePrefs.getProgress()) }
     var remainingText by remember { mutableStateOf("") }
     var tokenInput by remember { mutableStateOf("") }
@@ -145,6 +148,7 @@ fun ChallengeScreen(
 
                 Button(
                     onClick = {
+                        keyboardController?.hide()
                         val decoded = TokenDecoder.decode(tokenInput.trim())
                         if (decoded == null) {
                             tokenResult = context.getString(R.string.token_rejected)

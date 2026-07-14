@@ -20,6 +20,7 @@ string notification_channel_name
 string notification_title
 string request_step
 string select_duration
+string setup_subtitle
 string shield_activate
 string shield_body
 string shield_title

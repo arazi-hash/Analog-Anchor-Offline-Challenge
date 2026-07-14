@@ -22,6 +22,7 @@
     <string name="duration_36h">36 hours</string>
     <string name="duration_test">2 minutes (test)</string>
     <string name="select_duration">Select challenge duration</string>
+    <string name="setup_subtitle">This challenge helps you disconnect and focus. Select your complete blackout duration.</string>
     <string name="verify_token">Verify Token</string>
     <string name="no_challenge_active">No active challenge</string>
     <string name="challenge_active">Challenge active</string>

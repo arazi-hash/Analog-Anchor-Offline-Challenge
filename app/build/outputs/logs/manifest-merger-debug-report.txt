@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-41:12
-INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-41:12
-INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-41:12
-INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-41:12
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-43:12
+INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-43:12
+INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-43:12
+INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:1:1-43:12
 MERGED from [androidx.navigation:navigation-common:2.7.7] C:\Users\DELL\.gradle\caches\9.4.1\transforms\eba84c8d9df868c8c3b735a6f50bfa88\transformed\navigation-common-2.7.7\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-runtime:2.7.7] C:\Users\DELL\.gradle\caches\9.4.1\transforms\a9f3451b21d0931cc34281847d9eae77\transformed\navigation-runtime-2.7.7\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.7.7] C:\Users\DELL\.gradle\caches\9.4.1\transforms\333886391c1a5031e13a6253fac34568\transformed\navigation-common-ktx-2.7.7\AndroidManifest.xml:2:1-7:12
@@ -96,8 +96,8 @@ ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:6
 	android:name
 		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:6:22-74
 application
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:8:5-40:19
-INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:8:5-40:19
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:8:5-42:19
+INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:8:5-42:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8a22e78af9a8f613031fbef6c6bbbc3a\transformed\ui-tooling\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8a22e78af9a8f613031fbef6c6bbbc3a\transformed\ui-tooling\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:23:5-33:19
@@ -121,57 +121,61 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\DELL\.gradle\cache
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.18.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9b12fd4a4eb8e7c33cc5ec4527696126\transformed\core-1.18.0\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:11:9-35
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:13:9-35
 	android:label
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:10:9-41
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:12:9-41
+	android:roundIcon
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:11:9-54
+	android:icon
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:10:9-43
 	android:allowBackup
 		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:9:9-36
 	android:theme
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:12:9-54
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:14:9-54
 activity#com.analoganchor.offlinechallenge.MainActivity
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:14:9-21:20
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:16:9-23:20
 	android:exported
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:16:13-36
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:18:13-36
 	android:name
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:15:13-41
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:17:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:17:13-20:29
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:19:13-22:29
 action#android.intent.action.MAIN
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:18:17-69
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:20:17-69
 	android:name
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:18:25-66
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:20:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:19:17-77
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:21:17-77
 	android:name
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:19:27-74
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:21:27-74
 service#com.analoganchor.offlinechallenge.service.MyVpnService
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:23:9-31:19
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:25:9-33:19
 	android:exported
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:25:13-37
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:27:13-37
 	android:permission
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:27:13-69
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:29:13-69
 	android:foregroundServiceType
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:26:13-55
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:28:13-55
 	android:name
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:24:13-49
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:26:13-49
 intent-filter#action:name:android.net.VpnService
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:28:13-30:29
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:30:13-32:29
 action#android.net.VpnService
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:29:17-65
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:31:17-65
 	android:name
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:29:25-62
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:31:25-62
 receiver#com.analoganchor.offlinechallenge.service.BootReceiver
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:33:9-39:20
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:35:9-41:20
 	android:exported
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:35:13-37
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:37:13-37
 	android:name
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:34:13-49
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:36:13-49
 intent-filter#action:name:android.intent.action.BOOT_COMPLETED
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:36:13-38:29
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:38:13-40:29
 action#android.intent.action.BOOT_COMPLETED
-ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:37:17-79
+ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:39:17-79
 	android:name
-		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:37:25-76
+		ADDED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:39:25-76
 uses-sdk
 INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml

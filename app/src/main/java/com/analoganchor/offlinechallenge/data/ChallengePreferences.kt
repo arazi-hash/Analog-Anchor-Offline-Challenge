@@ -11,6 +11,7 @@ class ChallengePreferences(context: Context) {
     companion object {
         private const val PREFS_NAME = "offline_challenge_prefs"
         private const val KEY_ACTIVE = "challenge_active"
+        private const val KEY_LANGUAGE = "app_language"
         private const val KEY_START_TIME = "challenge_start_time"
         private const val KEY_END_TIME = "challenge_end_time"
         private const val KEY_DURATION_MS = "challenge_duration_ms"
@@ -22,6 +23,10 @@ class ChallengePreferences(context: Context) {
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    var language: String
+        get() = prefs.getString(KEY_LANGUAGE, "ar") ?: "ar"
+        set(value) = prefs.edit().putString(KEY_LANGUAGE, value).apply()
 
     var isActive: Boolean
         get() = prefs.getBoolean(KEY_ACTIVE, false)

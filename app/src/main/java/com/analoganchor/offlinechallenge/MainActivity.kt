@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase: android.content.Context) {
-        val locale = java.util.Locale("ar")
+        val prefs = com.analoganchor.offlinechallenge.data.ChallengePreferences(newBase)
+        val locale = java.util.Locale(prefs.language)
         java.util.Locale.setDefault(locale)
         val config = android.content.res.Configuration(newBase.resources.configuration)
         config.setLocale(locale)
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
         challengePrefs = ChallengePreferences(this)
 
         setContent {
-            OfflineChallengeTheme {
+            OfflineChallengeTheme(language = challengePrefs.language) {
                 AppNavHost()
             }
         }

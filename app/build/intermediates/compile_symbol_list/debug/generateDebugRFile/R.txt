@@ -19,6 +19,7 @@ int string notification_channel_name 0x0
 int string notification_title 0x0
 int string request_step 0x0
 int string select_duration 0x0
+int string setup_subtitle 0x0
 int string shield_activate 0x0
 int string shield_body 0x0
 int string shield_title 0x0
