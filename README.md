@@ -4,6 +4,14 @@
 
 ## 🇸🇦 دليل التنزيل والتثبيت باللغة العربية (Arabic Version)
 
+### 🛡️ أمان التطبيق ومصداقيته (كود مفتوح المصدر)
+هذا التطبيق آمن تماماً ومفتوح المصدر بالكامل (Open-Source). يمكنك أنت أو أي مبرمج مراجعة الكود البرمجي هنا للتأكد من خلوه من أي برمجيات ضارة وضمان حماية خصوصيتك وبياناتك 100%. تم تطوير هذا الإصدار خصيصاً لأغراض **تحدي الأوفلاين (Offline Challenge)**.
+
+💡 **هل تريد حلاً تجارياً متكاملاً؟**
+إذا واجهتك مشاكل في الاتصال بالإنترنت وتحتاج إلى حل احترافي ومستمر، يمكنك الانتقال إلى تطبيقنا التجاري الأساسي **Analog Anchor**. يدعم التطبيق التجاري تقنية الاتصال القريب المتقدمة **NFC** لتسهيل العمليات أوفلاين دون إنترنت مع مستويات أمان عالية وموثوقية فائقة.
+
+---
+
 ### 📥 تنزيل التطبيق مباشرة
 اضغط على الزر أدناه لتنزيل ملف الـ APK مباشرة لجهازك الأندرويد:
 
@@ -38,6 +46,14 @@
 ---
 
 ## 🇬🇧 Download & Installation Guide (English Version)
+
+### 🛡️ Security & Transparency (Open-Source Code)
+This project is 100% open-source, allowing you or any developer to inspect the entire codebase to guarantee complete safety, privacy, and zero malware. This specific version is built for the **Offline Challenge** demonstration.
+
+💡 **Looking for a Commercial Offline Solution?**
+If you need reliable, continuous operations during internet outages, check out our flagship commercial application: **Analog Anchor**. It supports advanced **NFC (Near Field Communication)** technology for instant offline connectivity, enterprise security, and dedicated support.
+
+---
 
 ### 📥 Direct APK Download
 Click the banner below to download the APK file directly to your Android device:
