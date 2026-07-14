@@ -8,7 +8,13 @@
 هذا التطبيق آمن تماماً ومفتوح المصدر بالكامل (Open-Source). يمكنك أنت أو أي مبرمج مراجعة الكود البرمجي هنا للتأكد من خلوه من أي برمجيات ضارة وضمان حماية خصوصيتك وبياناتك 100%. تم تطوير هذا الإصدار خصيصاً لأغراض **تحدي الأوفلاين (Offline Challenge)**.
 
 💡 **هل تريد حلاً تجارياً متكاملاً؟**
-إذا واجهتك مشاكل في الاتصال بالإنترنت وتحتاج إلى حل احترافي ومستمر، يمكنك الانتقال إلى تطبيقنا التجاري الأساسي **Analog Anchor**. يدعم التطبيق التجاري تقنية الاتصال القريب المتقدمة **NFC** لتسهيل العمليات أوفلاين دون إنترنت مع مستويات أمان عالية وموثوقية فائقة.
+إذا واجهتك مشاكل في الاتصال بالإنترنت وتحتاج إلى حل احترافي، يمكنك الانتقال إلى تطبيقنا التجاري الأساسي **Analog Anchor** (المعروف بـ **Nightguard**). تم تصميم التطبيق التجاري استناداً إلى فلسفة **التصميم السلوكي المتراكم (Accumulated Behavioral Design)** لمساعدتك على التحكم في سلوكك الرقمي وحمايتك بالكامل. ويشمل ميزات متقدمة مثل:
+* **قفل الفجر (Fajr Lock):** لحمايتك وتنظيم استخدامك خلال فترة الصباح الباكر.
+* **بروتوكول المحو (Eraser Protocol):** لإخفاء وحذف البيانات الحساسة فوراً وبأمان.
+* **توقف التنفس (Breathing Interruption):** آلية ذكية تراقب وتنبهك من خلال مؤقت يظهر بعد 25 ثانية من الاستخدام المتواصل (Overlay timer).
+* **مفهوم محميات الـ GPS (GPS Sanctuary concepts):** لتحديد مناطق جغرافية آمنة يُمنع فيها استخدام التطبيقات المشتتة.
+* **الاحتكاك الخفي (Hidden friction):** إدخال عقبات بسيطة ومدروسة سلوكياً لإبطاء ومنع الاستخدام اللاوعي للهاتف.
+* **فلسفة تهيئة الـ NFC (NFC onboarding philosophy):** إعداد وتفعيل سلس وسريع باستخدام ملصقات وبطاقات NFC المادية لضمان الالتزام الفعلي.
 
 ---
 
@@ -51,7 +57,13 @@
 This project is 100% open-source, allowing you or any developer to inspect the entire codebase to guarantee complete safety, privacy, and zero malware. This specific version is built for the **Offline Challenge** demonstration.
 
 💡 **Looking for a Commercial Offline Solution?**
-If you need reliable, continuous operations during internet outages, check out our flagship commercial application: **Analog Anchor**. It supports advanced **NFC (Near Field Communication)** technology for instant offline connectivity, enterprise security, and dedicated support.
+If you need reliable operations and a comprehensive solution, check out our flagship commercial application: **Analog Anchor** (also known as **Nightguard**). It is built with an extensive suite of **Accumulated Behavioral Design** mechanics to help you regain digital sovereignty. Key features include:
+* **Fajr Lock:** Restricts device usage during critical early morning hours.
+* **Eraser Protocol:** A secure, instant-wipe system for sensitive data.
+* **Breathing Interruption:** Triggered after 25 seconds of continuous focus/usage, bringing up a smart overlay timer to break subconscious scrolling/usage.
+* **GPS Sanctuary Concepts:** Set physical geofenced safe zones where distracting features are locked.
+* **Hidden Friction:** Intentionally designed micro-barriers that break compulsive digital habits.
+* **NFC Onboarding Philosophy:** Seamless hardware-bound setup and validation using physical NFC tags to enforce physical presence and commitment.
 
 ---
 
