@@ -85,7 +85,7 @@ fun ChallengeScreen(
         Spacer(modifier = Modifier.height(16.dp))
         
         Text(
-            text = "الوقت المتبقي: $remainingText",
+            text = "${stringResource(R.string.time_remaining)} $remainingText",
             fontSize = 18.sp,
             color = TextSecondary,
             fontFamily = FontFamily.Monospace
@@ -112,7 +112,7 @@ fun ChallengeScreen(
         ) {
             Column(Modifier.padding(20.dp)) {
                 Text(
-                    text = "فتح طوارئ",
+                    text = stringResource(R.string.emergency_unlock),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = AmberWarning,
@@ -154,7 +154,7 @@ fun ChallengeScreen(
                             tokenResult = context.getString(R.string.token_rejected)
                         } else {
                             if (decoded.requestNumber != challengePrefs.currentRequestStep) {
-                                tokenResult = "الرمز للطلب رقم ${decoded.requestNumber} ولكن المتوقع ${challengePrefs.currentRequestStep}"
+                                tokenResult = String.format(context.getString(R.string.token_rejected))
                             } else if (!PinVault.verify(decoded.decodedPin, decoded.requestNumber)) {
                                 tokenResult = context.getString(R.string.token_rejected)
                             } else {
@@ -171,7 +171,7 @@ fun ChallengeScreen(
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = AmberWarning)
                 ) {
-                    Text("تحقق من الرمز", fontWeight = FontWeight.Bold, color = Obsidian)
+                    Text(stringResource(R.string.verify_token), fontWeight = FontWeight.Bold, color = Obsidian)
                 }
 
                 if (tokenResult.isNotEmpty()) {

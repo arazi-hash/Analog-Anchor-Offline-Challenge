@@ -38,7 +38,7 @@ class ChallengeWidget : GlanceAppWidget() {
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .background(bgDark)
-                    .padding(16.dp)
+                    .padding(4.dp)
                     .clickable(actionStartActivity(Intent(context, MainActivity::class.java))),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -47,52 +47,34 @@ class ChallengeWidget : GlanceAppWidget() {
                     val totalSeconds = remainingMillis / 1000
                     val hours = totalSeconds / 3600
                     val minutes = (totalSeconds % 3600) / 60
-                    val remainingText = "${hours}h ${minutes}m"
+                    val remainingText = if (hours > 0) "${hours}h ${minutes}m" else "${minutes}m"
                     val percent = (progress * 100).toInt()
 
                     Text(
-                        text = "التحدي نشط",
+                        text = "$percent%",
                         style = TextStyle(
                             color = ColorProvider(textAmber),
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
                     
-                    Spacer(modifier = GlanceModifier.height(8.dp))
+                    Spacer(modifier = GlanceModifier.height(4.dp))
                     
                     Text(
                         text = remainingText,
                         style = TextStyle(
                             color = ColorProvider(textCyan),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-
-                    Spacer(modifier = GlanceModifier.height(8.dp))
-
-                    Text(
-                        text = "$percent%",
-                        style = TextStyle(
-                            color = ColorProvider(Color.White),
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
                         )
                     )
                 } else {
                     Text(
-                        text = "لا يوجد تحدي نشط",
-                        style = TextStyle(
-                            color = ColorProvider(Color.Gray),
-                            fontSize = 14.sp
-                        )
-                    )
-                    Spacer(modifier = GlanceModifier.height(8.dp))
-                    Text(
-                        text = "انقر للبدء",
+                        text = "Start",
                         style = TextStyle(
                             color = ColorProvider(textCyan),
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )

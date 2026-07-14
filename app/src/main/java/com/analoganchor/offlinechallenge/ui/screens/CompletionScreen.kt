@@ -7,10 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.analoganchor.offlinechallenge.R
 import com.analoganchor.offlinechallenge.ui.theme.*
 
 @Composable
@@ -24,7 +26,7 @@ fun CompletionScreen(onHome: () -> Unit) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "أحسنت!",
+            text = stringResource(R.string.challenge_complete).split("!").first() + "!",
             fontSize = 48.sp,
             fontWeight = FontWeight.Black,
             color = CyanGlow,
@@ -34,7 +36,7 @@ fun CompletionScreen(onHome: () -> Unit) {
         Spacer(modifier = Modifier.height(24.dp))
         
         Text(
-            text = "لقد أكملت التحدي بنجاح واستعدت السيطرة على وقتك. يمكنك الآن استخدام هاتفك بشكل طبيعي.",
+            text = stringResource(R.string.challenge_complete).split("!").getOrElse(1) { "" }.trim(),
             fontSize = 18.sp,
             color = TextPrimary,
             textAlign = TextAlign.Center,
