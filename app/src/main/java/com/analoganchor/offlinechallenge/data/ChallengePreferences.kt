@@ -64,7 +64,7 @@ class ChallengePreferences(context: Context) {
         prefs.edit().putBoolean(key, true).apply()
     }
 
-    /** Start a new challenge. Resets all request consumption states. */
+    /** Start a new challenge. Does NOT reset emergency request state as it is a global limit. */
     fun startChallenge(durationMs: Long) {
         val now = System.currentTimeMillis()
         prefs.edit()
@@ -72,10 +72,6 @@ class ChallengePreferences(context: Context) {
             .putLong(KEY_START_TIME, now)
             .putLong(KEY_END_TIME, now + durationMs)
             .putLong(KEY_DURATION_MS, durationMs)
-            .putInt(KEY_CURRENT_REQUEST_STEP, 1)
-            .putBoolean(KEY_REQUEST_1_CONSUMED, false)
-            .putBoolean(KEY_REQUEST_2_CONSUMED, false)
-            .putBoolean(KEY_REQUEST_3_CONSUMED, false)
             .apply()
     }
 
