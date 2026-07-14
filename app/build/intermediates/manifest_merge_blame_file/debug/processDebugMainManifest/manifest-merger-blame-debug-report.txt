@@ -1,0 +1,198 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.analoganchor.offlinechallenge"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+7-->INJECTED
+8        android:minSdkVersion="26"
+8-->INJECTED
+9        android:targetSdkVersion="36" />
+9-->INJECTED
+10
+11    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+11-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:3:5-77
+11-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:3:22-74
+12    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+12-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:4:5-89
+12-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:4:22-86
+13    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+13-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:5:5-81
+13-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:5:22-78
+14    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+14-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:6:5-77
+14-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:6:22-74
+15
+16    <permission
+16-->[androidx.core:core:1.18.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9b12fd4a4eb8e7c33cc5ec4527696126\transformed\core-1.18.0\AndroidManifest.xml:22:5-24:47
+17        android:name="com.analoganchor.offlinechallenge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+17-->[androidx.core:core:1.18.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9b12fd4a4eb8e7c33cc5ec4527696126\transformed\core-1.18.0\AndroidManifest.xml:23:9-81
+18        android:protectionLevel="signature" />
+18-->[androidx.core:core:1.18.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9b12fd4a4eb8e7c33cc5ec4527696126\transformed\core-1.18.0\AndroidManifest.xml:24:9-44
+19
+20    <uses-permission android:name="com.analoganchor.offlinechallenge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+20-->[androidx.core:core:1.18.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9b12fd4a4eb8e7c33cc5ec4527696126\transformed\core-1.18.0\AndroidManifest.xml:26:5-97
+20-->[androidx.core:core:1.18.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9b12fd4a4eb8e7c33cc5ec4527696126\transformed\core-1.18.0\AndroidManifest.xml:26:22-94
+21
+22    <application
+22-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:8:5-40:19
+23        android:allowBackup="false"
+23-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:9:9-36
+24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+24-->[androidx.core:core:1.18.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9b12fd4a4eb8e7c33cc5ec4527696126\transformed\core-1.18.0\AndroidManifest.xml:28:18-86
+25        android:debuggable="true"
+26        android:extractNativeLibs="false"
+26-->INJECTED
+27        android:label="@string/app_name"
+27-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:10:9-41
+28        android:supportsRtl="true"
+28-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:11:9-35
+29        android:theme="@style/Theme.OfflineChallenge" >
+29-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:12:9-54
+30        <activity
+30-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:14:9-21:20
+31            android:name="com.analoganchor.offlinechallenge.MainActivity"
+31-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:15:13-41
+32            android:exported="true" >
+32-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:16:13-36
+33            <intent-filter>
+33-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:17:13-20:29
+34                <action android:name="android.intent.action.MAIN" />
+34-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:18:17-69
+34-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:18:25-66
+35
+36                <category android:name="android.intent.category.LAUNCHER" />
+36-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:19:17-77
+36-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:19:27-74
+37            </intent-filter>
+38        </activity>
+39
+40        <service
+40-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:23:9-31:19
+41            android:name="com.analoganchor.offlinechallenge.service.MyVpnService"
+41-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:24:13-49
+42            android:exported="false"
+42-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:25:13-37
+43            android:foregroundServiceType="specialUse"
+43-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:26:13-55
+44            android:permission="android.permission.BIND_VPN_SERVICE" >
+44-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:27:13-69
+45            <intent-filter>
+45-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:28:13-30:29
+46                <action android:name="android.net.VpnService" />
+46-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:29:17-65
+46-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:29:25-62
+47            </intent-filter>
+48        </service>
+49
+50        <receiver
+50-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:33:9-39:20
+51            android:name="com.analoganchor.offlinechallenge.service.BootReceiver"
+51-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:34:13-49
+52            android:exported="false" >
+52-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:35:13-37
+53            <intent-filter>
+53-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:36:13-38:29
+54                <action android:name="android.intent.action.BOOT_COMPLETED" />
+54-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:37:17-79
+54-->C:\Analog Anchor Offline Challenge\app\src\main\AndroidManifest.xml:37:25-76
+55            </intent-filter>
+56        </receiver>
+57
+58        <activity
+58-->[androidx.compose.ui:ui-tooling-android:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8a22e78af9a8f613031fbef6c6bbbc3a\transformed\ui-tooling\AndroidManifest.xml:23:9-25:39
+59            android:name="androidx.compose.ui.tooling.PreviewActivity"
+59-->[androidx.compose.ui:ui-tooling-android:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8a22e78af9a8f613031fbef6c6bbbc3a\transformed\ui-tooling\AndroidManifest.xml:24:13-71
+60            android:exported="true" />
+60-->[androidx.compose.ui:ui-tooling-android:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8a22e78af9a8f613031fbef6c6bbbc3a\transformed\ui-tooling\AndroidManifest.xml:25:13-36
+61        <activity
+61-->[androidx.compose.ui:ui-test-manifest:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\781b4b65c916a99c33c0b53e99acb577\transformed\ui-test-manifest-1.11.0-beta02\AndroidManifest.xml:23:9-26:79
+62            android:name="androidx.activity.ComponentActivity"
+62-->[androidx.compose.ui:ui-test-manifest:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\781b4b65c916a99c33c0b53e99acb577\transformed\ui-test-manifest-1.11.0-beta02\AndroidManifest.xml:24:13-63
+63            android:exported="true"
+63-->[androidx.compose.ui:ui-test-manifest:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\781b4b65c916a99c33c0b53e99acb577\transformed\ui-test-manifest-1.11.0-beta02\AndroidManifest.xml:25:13-36
+64            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+64-->[androidx.compose.ui:ui-test-manifest:1.11.0-beta02] C:\Users\DELL\.gradle\caches\9.4.1\transforms\781b4b65c916a99c33c0b53e99acb577\transformed\ui-test-manifest-1.11.0-beta02\AndroidManifest.xml:26:13-76
+65
+66        <uses-library
+66-->[androidx.window:window:1.5.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\4476b0943cc91be70fc31f692d665a49\transformed\window-1.5.0\AndroidManifest.xml:23:9-25:40
+67            android:name="androidx.window.extensions"
+67-->[androidx.window:window:1.5.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\4476b0943cc91be70fc31f692d665a49\transformed\window-1.5.0\AndroidManifest.xml:24:13-54
+68            android:required="false" />
+68-->[androidx.window:window:1.5.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\4476b0943cc91be70fc31f692d665a49\transformed\window-1.5.0\AndroidManifest.xml:25:13-37
+69        <uses-library
+69-->[androidx.window:window:1.5.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\4476b0943cc91be70fc31f692d665a49\transformed\window-1.5.0\AndroidManifest.xml:26:9-28:40
+70            android:name="androidx.window.sidecar"
+70-->[androidx.window:window:1.5.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\4476b0943cc91be70fc31f692d665a49\transformed\window-1.5.0\AndroidManifest.xml:27:13-51
+71            android:required="false" />
+71-->[androidx.window:window:1.5.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\4476b0943cc91be70fc31f692d665a49\transformed\window-1.5.0\AndroidManifest.xml:28:13-37
+72
+73        <provider
+73-->[androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:24:9-32:20
+74            android:name="androidx.startup.InitializationProvider"
+74-->[androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:25:13-67
+75            android:authorities="com.analoganchor.offlinechallenge.androidx-startup"
+75-->[androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:26:13-68
+76            android:exported="false" >
+76-->[androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:27:13-37
+77            <meta-data
+77-->[androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:29:13-31:52
+78                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+78-->[androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:30:17-75
+79                android:value="androidx.startup" />
+79-->[androidx.emoji2:emoji2:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\30068f0013d5fcb357936e69555640f5\transformed\emoji2-1.4.0\AndroidManifest.xml:31:17-49
+80            <meta-data
+80-->[androidx.lifecycle:lifecycle-process:2.9.4] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8dfc5c62d9e08e3a2f552ec53dbbf79d\transformed\lifecycle-process-2.9.4\AndroidManifest.xml:29:13-31:52
+81                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+81-->[androidx.lifecycle:lifecycle-process:2.9.4] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8dfc5c62d9e08e3a2f552ec53dbbf79d\transformed\lifecycle-process-2.9.4\AndroidManifest.xml:30:17-78
+82                android:value="androidx.startup" />
+82-->[androidx.lifecycle:lifecycle-process:2.9.4] C:\Users\DELL\.gradle\caches\9.4.1\transforms\8dfc5c62d9e08e3a2f552ec53dbbf79d\transformed\lifecycle-process-2.9.4\AndroidManifest.xml:31:17-49
+83            <meta-data
+83-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:29:13-31:52
+84                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+84-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:30:17-85
+85                android:value="androidx.startup" />
+85-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:31:17-49
+86        </provider>
+87
+88        <receiver
+88-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:34:9-52:20
+89            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+89-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:35:13-76
+90            android:directBootAware="false"
+90-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:36:13-44
+91            android:enabled="true"
+91-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:37:13-35
+92            android:exported="true"
+92-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:38:13-36
+93            android:permission="android.permission.DUMP" >
+93-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:39:13-57
+94            <intent-filter>
+94-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:40:13-42:29
+95                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+95-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:17-91
+95-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:41:25-88
+96            </intent-filter>
+97            <intent-filter>
+97-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:43:13-45:29
+98                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+98-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:17-85
+98-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:44:25-82
+99            </intent-filter>
+100            <intent-filter>
+100-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:46:13-48:29
+101                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+101-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:17-88
+101-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:47:25-85
+102            </intent-filter>
+103            <intent-filter>
+103-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:49:13-51:29
+104                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+104-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:17-95
+104-->[androidx.profileinstaller:profileinstaller:1.4.0] C:\Users\DELL\.gradle\caches\9.4.1\transforms\9ba871075466fb1ebd56bc4807f31359\transformed\profileinstaller-1.4.0\AndroidManifest.xml:50:25-92
+105            </intent-filter>
+106        </receiver>
+107    </application>
+108
+109</manifest>
