@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">تحدي الأوفلاين</string>
+    <string name="app_name">أوفلاين</string>
     <string name="challenge_active">التحدي نشط</string>
     <string name="challenge_complete">أحسنت! أكملت التحدي بنجاح</string>
     <string name="duration_12h">١٢ ساعة</string>

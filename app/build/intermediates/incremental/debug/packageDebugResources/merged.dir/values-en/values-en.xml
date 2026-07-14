@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Offline Challenge</string>
+    <string name="app_name">Offline</string>
     <string name="challenge_active">Challenge active</string>
     <string name="challenge_complete">Well done! You completed the challenge</string>
     <string name="duration_12h">12 hours</string>

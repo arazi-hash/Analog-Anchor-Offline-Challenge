@@ -86,11 +86,11 @@ class MyVpnService : VpnService() {
             }
         }
 
-        // Update notification every 30 seconds with progress
+        // Update notification every 1 second with progress
         notificationUpdater = serviceScope.launch {
             val prefs = ChallengePreferences(this@MyVpnService)
             while (true) {
-                delay(30_000)
+                delay(1_000)
                 if (prefs.isExpired()) {
                     // Challenge timer expired — auto-stop
                     prefs.endChallenge()
@@ -101,6 +101,8 @@ class MyVpnService : VpnService() {
                 val progress = prefs.getProgress()
                 val remaining = prefs.getRemainingMillis()
                 updateNotification(progress, remaining)
+                // Also update widget every minute only to save battery, but we'll just let it update here.
+                // Actually widget updating every second is too much, but we'll do it since they want real-time visualization.
                 com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
             }
         }
@@ -133,13 +135,22 @@ class MyVpnService : VpnService() {
 
     // ── Notification ──────────────────────────────────────────────────
 
+    private fun getLocalizedContext(): android.content.Context {
+        val prefs = ChallengePreferences(this)
+        val locale = java.util.Locale(prefs.language)
+        val config = android.content.res.Configuration(resources.configuration)
+        config.setLocale(locale)
+        return createConfigurationContext(config)
+    }
+
     private fun createNotificationChannel() {
+        val locContext = getLocalizedContext()
         val channel = NotificationChannel(
             CHANNEL_ID,
-            getString(R.string.notification_channel_name),
+            locContext.getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_LOW // Low = no sound, but persistent
         ).apply {
-            description = getString(R.string.notification_channel_desc)
+            description = locContext.getString(R.string.notification_channel_desc)
             setShowBadge(false)
         }
         val manager = getSystemService(NotificationManager::class.java)
@@ -147,6 +158,7 @@ class MyVpnService : VpnService() {
     }
 
     private fun buildNotification(progress: Float, remainingMillis: Long): Notification {
+        val locContext = getLocalizedContext()
         val pendingIntent = PendingIntent.getActivity(
             this, 0,
             Intent(this, MainActivity::class.java),
@@ -154,8 +166,8 @@ class MyVpnService : VpnService() {
         )
 
         val percent = (progress * 100).toInt()
-        val title = "${getString(R.string.notification_title)} — $percent%"
-        val body = formatRemaining(remainingMillis)
+        val title = "${locContext.getString(R.string.notification_title)} — $percent%"
+        val body = formatRemaining(remainingMillis, locContext)
 
         return Notification.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
@@ -174,11 +186,12 @@ class MyVpnService : VpnService() {
         manager.notify(NOTIFICATION_ID, buildNotification(progress, remainingMillis))
     }
 
-    private fun formatRemaining(millis: Long): String {
+    private fun formatRemaining(millis: Long, locContext: android.content.Context): String {
         val totalSeconds = millis / 1000
         val hours = totalSeconds / 3600
         val minutes = (totalSeconds % 3600) / 60
-        // Use Arabic string resource pattern
-        return "${getString(R.string.time_remaining)} ${hours}h ${minutes}m"
+        val seconds = totalSeconds % 60
+        val timeString = if (hours > 0) "${hours}h ${minutes}m ${seconds}s" else "${minutes}m ${seconds}s"
+        return "${locContext.getString(R.string.time_remaining)} $timeString"
     }
 }

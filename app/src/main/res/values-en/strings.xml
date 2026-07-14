@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Offline Challenge</string>
+    <string name="app_name">Offline</string>
     <string name="shield_title">Setting up your Offline Shield…</string>
     <string name="shield_body">This app uses a local privacy layer to enforce your challenge commitment. Your data never leaves your device. Please approve the next system prompt to activate your shield.</string>
     <string name="shield_activate">Activate Shield</string>
