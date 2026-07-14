@@ -35,3 +35,4 @@ string verify_token
 string vpn_active
 string vpn_inactive
 style Theme.OfflineChallenge
+xml challenge_widget_info

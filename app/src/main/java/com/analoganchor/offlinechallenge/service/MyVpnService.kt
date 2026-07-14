@@ -95,11 +95,13 @@ class MyVpnService : VpnService() {
                     // Challenge timer expired — auto-stop
                     prefs.endChallenge()
                     stopVpn()
+                    com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
                     break
                 }
                 val progress = prefs.getProgress()
                 val remaining = prefs.getRemainingMillis()
                 updateNotification(progress, remaining)
+                com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
             }
         }
 

@@ -33,3 +33,4 @@ int string verify_token 0x0
 int string vpn_active 0x0
 int string vpn_inactive 0x0
 int style Theme_OfflineChallenge 0x0
+int xml challenge_widget_info 0x0

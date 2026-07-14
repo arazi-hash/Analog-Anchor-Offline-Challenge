@@ -139,6 +139,7 @@ class MainActivity : ComponentActivity() {
             action = MyVpnService.ACTION_START
         }
         startForegroundService(intent)
+        com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this)
     }
 
     private fun stopVpnService() {
@@ -146,5 +147,6 @@ class MainActivity : ComponentActivity() {
             action = MyVpnService.ACTION_STOP
         }
         startService(intent)
+        com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this)
     }
 }
