@@ -7,9 +7,9 @@
 ### 📥 تنزيل التطبيق مباشرة
 اضغط على الزر أدناه لتنزيل ملف الـ APK مباشرة لجهازك الأندرويد:
 
-[![تنزيل تطبيق أندرويد APK](./download_banner_ar.png)](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/latest/download/app-debug.apk)
+[![تنزيل تطبيق أندرويد APK](./download_banner_ar.png)](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/download/latest/app-debug.apk)
 
-*إذا لم يبدأ التحميل التلقائي، يمكنك الضغط [هنا لتنزيل التطبيق مباشرة](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/latest/download/app-debug.apk).*
+*إذا لم يبدأ التحميل التلقائي، يمكنك الضغط [هنا لتنزيل التطبيق مباشرة](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/download/latest/app-debug.apk).*
 
 ---
 
@@ -42,9 +42,9 @@
 ### 📥 Direct APK Download
 Click the banner below to download the APK file directly to your Android device:
 
-[![Download Android APK](./download_banner.png)](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/latest/download/app-debug.apk)
+[![Download Android APK](./download_banner.png)](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/download/latest/app-debug.apk)
 
-*If the download does not start automatically, you can click [here to download directly](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/latest/download/app-debug.apk).*
+*If the download does not start automatically, you can click [here to download directly](https://github.com/arazi-hash/Analog-Anchor-Offline-Challenge/releases/download/latest/app-debug.apk).*
 
 ---
 
