@@ -7,6 +7,9 @@ on:
     branches: [ "master", "main" ]
   workflow_dispatch: # Allows manual trigger from the Actions tab
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,3 +36,16 @@ jobs:
       with:
         name: offline-challenge-debug-apk
         path: app/build/outputs/apk/debug/app-debug.apk
+
+    - name: Create or Update Latest Release
+      uses: ncipollo/release-action@v1
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+      with:
+        allowUpdates: true
+        artifactErrorsFailBuild: true
+        artifacts: "app/build/outputs/apk/debug/app-debug.apk"
+        body: "Automatically built and updated application. / تم بناء وتحديث التطبيق تلقائياً."
+        name: "Latest Build (التحديث الأخير)"
+        tag: "latest"
+        prerelease: true
+        token: ${{ secrets.GITHUB_TOKEN }}
