@@ -83,8 +83,8 @@ class ChallengePreferences(context: Context) {
 
     private fun generateDiscountCodeForDuration(durationMs: Long): String? {
         val prefix = when (durationMs) {
+            72 * 60 * 60 * 1000L -> "OFFLINE72"
             36 * 60 * 60 * 1000L -> "OFFLINE36"
-            24 * 60 * 60 * 1000L -> "OFFLINE24"
             18 * 60 * 60 * 1000L -> "OFFLINE18"
             2 * 60 * 1000L -> "OFFLINETEST"
             else -> null
@@ -97,8 +97,8 @@ class ChallengePreferences(context: Context) {
 
     private fun getDiscountAmountForDuration(durationMs: Long): Int {
         return when (durationMs) {
-            36 * 60 * 60 * 1000L -> 15
-            24 * 60 * 60 * 1000L -> 10
+            72 * 60 * 60 * 1000L -> 15
+            36 * 60 * 60 * 1000L -> 10
             18 * 60 * 60 * 1000L -> 5
             2 * 60 * 1000L -> 15
             else -> 0

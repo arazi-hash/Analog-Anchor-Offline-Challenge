@@ -18,8 +18,8 @@
     <string name="vpn_inactive">الدرع غير مفعّل</string>
     <string name="duration_12h">١٢ ساعة</string>
     <string name="duration_18h">١٨ ساعة</string>
-    <string name="duration_24h">٢٤ ساعة</string>
     <string name="duration_36h">٣٦ ساعة</string>
+    <string name="duration_72h">٧٢ ساعة</string>
     <string name="duration_test">دقيقتان (اختبار)</string>
     <string name="select_duration">اختر مدة التحدي</string>
     <string name="setup_subtitle">يساعدك هذا التحدي على فصل هاتفك والتركيز. اختر مدة الانقطاع التام.</string>

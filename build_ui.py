@@ -140,8 +140,8 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
             2 * 60 * 1000L to stringResource(R.string.duration_test),
             12 * 60 * 60 * 1000L to stringResource(R.string.duration_12h),
             18 * 60 * 60 * 1000L to stringResource(R.string.duration_18h),
-            24 * 60 * 60 * 1000L to stringResource(R.string.duration_24h),
-            36 * 60 * 60 * 1000L to stringResource(R.string.duration_36h)
+            36 * 60 * 60 * 1000L to stringResource(R.string.duration_36h),
+            72 * 60 * 60 * 1000L to stringResource(R.string.duration_72h)
         )
         
         durations.forEach { (ms, label) ->

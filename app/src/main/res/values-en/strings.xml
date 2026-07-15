@@ -18,8 +18,8 @@
     <string name="vpn_inactive">Shield inactive</string>
     <string name="duration_12h">12 hours</string>
     <string name="duration_18h">18 hours</string>
-    <string name="duration_24h">24 hours</string>
     <string name="duration_36h">36 hours</string>
+    <string name="duration_72h">72 hours</string>
     <string name="duration_test">2 minutes (test)</string>
     <string name="select_duration">Select challenge duration</string>
     <string name="setup_subtitle">This challenge helps you disconnect and focus. Select your complete blackout duration.</string>
