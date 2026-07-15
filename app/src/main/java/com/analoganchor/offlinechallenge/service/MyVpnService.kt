@@ -94,6 +94,7 @@ class MyVpnService : VpnService() {
                 if (prefs.isExpired()) {
                     // Challenge timer expired — auto-stop
                     prefs.endChallenge()
+                    prefs.isCompletedPendingShow = true
                     stopVpn()
                     com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
                     break

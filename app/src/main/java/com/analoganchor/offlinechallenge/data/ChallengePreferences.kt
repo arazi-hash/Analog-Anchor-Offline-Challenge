@@ -69,14 +69,55 @@ class ChallengePreferences(context: Context) {
         prefs.edit().putBoolean(key, true).apply()
     }
 
+    var discountCode: String?
+        get() = prefs.getString("challenge_discount_code", null)
+        set(value) = prefs.edit().putString("challenge_discount_code", value).apply()
+
+    var discountAmount: Int
+        get() = prefs.getInt("challenge_discount_amount", 0)
+        set(value) = prefs.edit().putInt("challenge_discount_amount", value).apply()
+
+    var isCompletedPendingShow: Boolean
+        get() = prefs.getBoolean("completed_pending_show", false)
+        set(value) = prefs.edit().putBoolean("completed_pending_show", value).apply()
+
+    private fun generateDiscountCodeForDuration(durationMs: Long): String? {
+        val prefix = when (durationMs) {
+            36 * 60 * 60 * 1000L -> "OFFLINE36"
+            24 * 60 * 60 * 1000L -> "OFFLINE24"
+            18 * 60 * 60 * 1000L -> "OFFLINE18"
+            2 * 60 * 1000L -> "OFFLINETEST"
+            else -> null
+        } ?: return null
+
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        val suffix = (1..4).map { chars.random() }.joinToString("")
+        return "$prefix-$suffix"
+    }
+
+    private fun getDiscountAmountForDuration(durationMs: Long): Int {
+        return when (durationMs) {
+            36 * 60 * 60 * 1000L -> 15
+            24 * 60 * 60 * 1000L -> 10
+            18 * 60 * 60 * 1000L -> 5
+            2 * 60 * 1000L -> 15
+            else -> 0
+        }
+    }
+
     /** Start a new challenge. Does NOT reset emergency request state as it is a global limit. */
     fun startChallenge(durationMs: Long) {
         val now = System.currentTimeMillis()
+        val code = generateDiscountCodeForDuration(durationMs)
+        val amount = getDiscountAmountForDuration(durationMs)
         prefs.edit()
             .putBoolean(KEY_ACTIVE, true)
             .putLong(KEY_START_TIME, now)
             .putLong(KEY_END_TIME, now + durationMs)
             .putLong(KEY_DURATION_MS, durationMs)
+            .putString("challenge_discount_code", code)
+            .putInt("challenge_discount_amount", amount)
+            .putBoolean("completed_pending_show", false)
             .apply()
     }
 

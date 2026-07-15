@@ -79,7 +79,9 @@ class MainActivity : ComponentActivity() {
     fun AppNavHost() {
         val navController = rememberNavController()
 
-        val startRoute = if (challengePrefs.isActive) {
+        val startRoute = if (challengePrefs.isCompletedPendingShow) {
+            "completion"
+        } else if (challengePrefs.isActive) {
             "challenge"
         } else {
             "setup"
@@ -118,12 +120,15 @@ class MainActivity : ComponentActivity() {
                     challengePrefs = challengePrefs,
                     onEmergencyUnlock = {
                         stopVpnService()
+                        challengePrefs.endChallenge()
                         navController.navigate("setup") {
                             popUpTo(0) { inclusive = true }
                         }
                     },
                     onChallengeComplete = {
                         stopVpnService()
+                        challengePrefs.endChallenge()
+                        challengePrefs.isCompletedPendingShow = true
                         navController.navigate("completion") {
                             popUpTo("challenge") { inclusive = true }
                         }
@@ -133,7 +138,9 @@ class MainActivity : ComponentActivity() {
 
             composable("completion") {
                 CompletionScreen(
+                    challengePrefs = challengePrefs,
                     onHome = {
+                        challengePrefs.isCompletedPendingShow = false
                         navController.navigate("setup") {
                             popUpTo(0) { inclusive = true }
                         }
