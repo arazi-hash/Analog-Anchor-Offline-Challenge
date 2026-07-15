@@ -25,6 +25,7 @@ class MyVpnService : VpnService() {
     companion object {
         private const val TAG = "OfflineChallenge"
         private const val CHANNEL_ID = "offline_challenge_channel"
+        private const val COMPLETION_CHANNEL_ID = "challenge_completion_channel"
         private const val NOTIFICATION_ID = 1
         const val ACTION_START = "com.analoganchor.offlinechallenge.START_VPN"
         const val ACTION_STOP = "com.analoganchor.offlinechallenge.STOP_VPN"
@@ -96,6 +97,7 @@ class MyVpnService : VpnService() {
                     prefs.endChallenge()
                     prefs.isCompletedPendingShow = true
                     stopVpn()
+                    showCompletionNotification()
                     com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
                     break
                 }
@@ -146,6 +148,8 @@ class MyVpnService : VpnService() {
 
     private fun createNotificationChannel() {
         val locContext = getLocalizedContext()
+        val manager = getSystemService(NotificationManager::class.java)
+
         val channel = NotificationChannel(
             CHANNEL_ID,
             locContext.getString(R.string.notification_channel_name),
@@ -154,8 +158,48 @@ class MyVpnService : VpnService() {
             description = locContext.getString(R.string.notification_channel_desc)
             setShowBadge(false)
         }
-        val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)
+
+        val compChannelName = if (ChallengePreferences(this).language == "ar") "إكمال التحدي" else "Challenge Completion"
+        val completionChannel = NotificationChannel(
+            COMPLETION_CHANNEL_ID,
+            compChannelName,
+            NotificationManager.IMPORTANCE_HIGH // High = makes sound, vibrates, pops up on screen
+        ).apply {
+            enableVibration(true)
+            setShowBadge(true)
+        }
+        manager.createNotificationChannel(completionChannel)
+    }
+
+    private fun showCompletionNotification() {
+        val locContext = getLocalizedContext()
+        val manager = getSystemService(NotificationManager::class.java)
+        
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val title = locContext.getString(R.string.notification_title)
+        val body = if (ChallengePreferences(this).language == "ar") {
+            "تهانينا! لقد أكملت التحدي بنجاح. اضغط هنا للحصول على رمز الخصم الخاص بك."
+        } else {
+            "Congratulations! You completed the challenge. Tap here to claim your discount code."
+        }
+
+        val notification = Notification.Builder(this, COMPLETION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        manager.notify(2, notification)
     }
 
     private fun buildNotification(progress: Float, remainingMillis: Long): Notification {
