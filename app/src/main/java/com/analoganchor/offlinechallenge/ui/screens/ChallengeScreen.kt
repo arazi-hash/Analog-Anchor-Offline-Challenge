@@ -39,8 +39,19 @@ fun ChallengeScreen(
     var requestStep by remember { mutableIntStateOf(challengePrefs.currentRequestStep) }
 
     LaunchedEffect(Unit) {
-        while (challengePrefs.isActive) {
-            delay(1000)
+        while (true) {
+            val active = challengePrefs.isActive
+            val pendingShow = challengePrefs.isCompletedPendingShow
+
+            if (pendingShow) {
+                onChallengeComplete()
+                break
+            }
+            if (!active) {
+                onEmergencyUnlock()
+                break
+            }
+
             progress = challengePrefs.getProgress()
             requestStep = challengePrefs.currentRequestStep
             val remaining = challengePrefs.getRemainingMillis()
@@ -54,6 +65,7 @@ fun ChallengeScreen(
                 onChallengeComplete()
                 break
             }
+            delay(1000)
         }
     }
 
