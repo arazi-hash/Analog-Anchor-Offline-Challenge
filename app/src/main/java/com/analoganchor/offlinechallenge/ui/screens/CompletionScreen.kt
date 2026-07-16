@@ -82,137 +82,214 @@ fun CompletionScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (isAr) "🎁 مكافأة الالتزام!" else "🎁 Commitment Reward!",
+                        text = if (isAr) "🎁 خطوات الحصول على الخصم" else "🎁 How to Claim Your Discount",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = CyanGlow,
                         textAlign = TextAlign.Center
                     )
                     
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
                     
-                    Text(
-                        text = if (isAr) {
-                            "لقد حصلت على خصم بقيمة $discountAmount% لالتزامك بالتحدي! انسخ الرمز أدناه لاستخدامه في موقعنا، أو شاركه معنا مباشرة عبر الواتساب لتفعيل خصمك."
-                        } else {
-                            "You earned a $discountAmount% discount for completing the challenge! Copy the code below to use on our website, or share it with us directly on WhatsApp to claim your discount."
-                        },
-                        fontSize = 13.sp,
-                        color = TextSecondary,
-                        textAlign = TextAlign.Center,
-                        lineHeight = 20.sp
-                    )
-                    
-                    Spacer(modifier = Modifier.height(18.dp))
-                    
-                    // Code Display Box
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Obsidian, RoundedCornerShape(10.dp))
-                            .border(BorderStroke(1.dp, TrackColor), RoundedCornerShape(10.dp))
-                            .padding(vertical = 12.dp, horizontal = 8.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = discountCode ?: "",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = CyanGlow,
-                            fontFamily = FontFamily.Monospace,
-                            textAlign = TextAlign.Center,
-                            letterSpacing = 1.sp
-                        )
-                    }
-                    
-                    Spacer(modifier = Modifier.height(18.dp))
-                    
-                    // Go to Website Button (Primary action - Full Width)
-                    Button(
-                        onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://get-analog-anchor.com"))
-                            context.startActivity(intent)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
-                    ) {
-                        Text(
-                            text = if (isAr) "🌐 انتقال للموقع الإلكتروني" else "🌐 Go to Website",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Obsidian
-                        )
-                    }
-                    
-                    Spacer(modifier = Modifier.height(12.dp))
-                    
-                    // Row with Copy and WhatsApp buttons (Backup / Secondary actions)
+                    // --- STEP 1 ---
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        // Copy Button
-                        Button(
-                            onClick = {
-                                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                val clip = ClipData.newPlainText("Discount Code", discountCode)
-                                clipboard.setPrimaryClip(clip)
-                                Toast.makeText(
-                                    context,
-                                    if (isAr) "تم نسخ الرمز!" else "Code copied!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            },
+                        // Circular Number Badge
+                        Box(
                             modifier = Modifier
-                                .weight(1f)
-                                .height(44.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = TrackColor)
+                                .size(28.dp)
+                                .background(CyanGlow.copy(alpha = 0.1f), RoundedCornerShape(14.dp))
+                                .border(BorderStroke(1.dp, CyanGlow), RoundedCornerShape(14.dp)),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = if (isAr) "نسخ الرمز" else "Copy Code",
-                                fontSize = 12.sp,
+                                text = if (isAr) "١" else "1",
+                                color = CyanGlow,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimary
+                                fontSize = 14.sp
                             )
                         }
                         
-                        // WhatsApp Share Button
-                        Button(
-                            onClick = {
-                                val whatsappMsg = if (isAr) {
-                                    "أهلاً، لقد أكملت تحدي الأوفلاين بنجاح وحصلت على رمز الخصم: $discountCode"
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = if (isAr) "إرسال إثبات السكرين تايم" else "Send Screen Time Proof",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = TextPrimary
+                            )
+                            
+                            Spacer(modifier = Modifier.height(4.dp))
+                            
+                            Text(
+                                text = if (isAr) {
+                                    "للحفاظ على مصداقية التحدي ومكافأة الملتزمين فعلياً، يرجى إرسال لقطة شاشة لإحصاءات وقت الشاشة عبر واتساب للتحقق."
                                 } else {
-                                    "Hello, I successfully completed the offline challenge and earned my discount code: $discountCode"
-                                }
-                                val whatsappUrl = "https://wa.me/97333371163?text=" + Uri.encode(whatsappMsg)
-                                try {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl))
-                                    context.startActivity(intent)
-                                } catch (e: Exception) {
-                                    Toast.makeText(
-                                        context,
-                                        if (isAr) "لم نتمكن من فتح واتساب" else "Could not open WhatsApp",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            },
+                                    "To keep the challenge fair for everyone, please send us a screenshot of your screen time stats via WhatsApp to verify your success."
+                                },
+                                fontSize = 13.sp,
+                                color = TextSecondary,
+                                lineHeight = 18.sp
+                            )
+                            
+                            Spacer(modifier = Modifier.height(10.dp))
+                            
+                            // WhatsApp Share Button
+                            Button(
+                                onClick = {
+                                    val whatsappMsg = if (isAr) {
+                                        "أهلاً، لقد أكملت تحدي الأوفلاين بنجاح وحصلت على رمز الخصم: $discountCode"
+                                    } else {
+                                        "Hello, I successfully completed the offline challenge and earned my discount code: $discountCode"
+                                    }
+                                    val whatsappUrl = "https://wa.me/97333371163?text=" + Uri.encode(whatsappMsg)
+                                    try {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl))
+                                        context.startActivity(intent)
+                                    } catch (e: Exception) {
+                                        Toast.makeText(
+                                            context,
+                                            if (isAr) "لم نتمكن من فتح واتساب" else "Could not open WhatsApp",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(42.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = DeepSurface),
+                                border = BorderStroke(1.dp, Color(0xFF25D366))
+                            ) {
+                                Text(
+                                    text = if (isAr) "💬 إرسال وقت الشاشة عبر واتساب" else "💬 Share Screen Time via WhatsApp",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF25D366)
+                                )
+                            }
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(24.dp))
+                    
+                    // --- STEP 2 ---
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Circular Number Badge
+                        Box(
                             modifier = Modifier
-                                .weight(1f)
-                                .height(44.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = DeepSurface),
-                            border = BorderStroke(1.dp, Color(0xFF25D366))
+                                .size(28.dp)
+                                .background(CyanGlow.copy(alpha = 0.1f), RoundedCornerShape(14.dp))
+                                .border(BorderStroke(1.dp, CyanGlow), RoundedCornerShape(14.dp)),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = if (isAr) "💬 الواتساب" else "💬 WhatsApp",
-                                fontSize = 12.sp,
+                                text = if (isAr) "٢" else "2",
+                                color = CyanGlow,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF25D366)
+                                fontSize = 14.sp
                             )
+                        }
+                        
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = if (isAr) "تفعيل رمز الخصم" else "Apply Your Discount Code",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = TextPrimary
+                            )
+                            
+                            Spacer(modifier = Modifier.height(4.dp))
+                            
+                            Text(
+                                text = if (isAr) {
+                                    "تفضل بزيارة موقعنا لشراء مرساة الأنالوج وتطبيق رمز الخصم الحصري الخاص بك."
+                                } else {
+                                    "Visit our store to purchase your Analog Anchor and apply your exclusive coupon code."
+                                },
+                                fontSize = 13.sp,
+                                color = TextSecondary,
+                                lineHeight = 18.sp
+                            )
+                            
+                            Spacer(modifier = Modifier.height(14.dp))
+                            
+                            // Code Display Box & Copy Row
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .weight(1.5f)
+                                        .background(Obsidian, RoundedCornerShape(10.dp))
+                                        .border(BorderStroke(1.dp, TrackColor), RoundedCornerShape(10.dp))
+                                        .padding(vertical = 10.dp, horizontal = 8.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = discountCode ?: "",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = CyanGlow,
+                                        fontFamily = FontFamily.Monospace,
+                                        textAlign = TextAlign.Center,
+                                        letterSpacing = 1.sp
+                                    )
+                                }
+                                
+                                Button(
+                                    onClick = {
+                                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                        val clip = ClipData.newPlainText("Discount Code", discountCode)
+                                        clipboard.setPrimaryClip(clip)
+                                        Toast.makeText(
+                                            context,
+                                            if (isAr) "تم نسخ الرمز!" else "Code copied!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(40.dp),
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = TrackColor)
+                                ) {
+                                    Text(
+                                        text = if (isAr) "نسخ الرمز" else "Copy Code",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = TextPrimary
+                                    )
+                                }
+                            }
+                            
+                            Spacer(modifier = Modifier.height(10.dp))
+                            
+                            // Go to Website Button
+                            Button(
+                                onClick = {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://get-analog-anchor.com"))
+                                    context.startActivity(intent)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(44.dp),
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
+                            ) {
+                                Text(
+                                    text = if (isAr) "🌐 زيارة الموقع الإلكتروني" else "🌐 Visit Website",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Obsidian
+                                )
+                            }
                         }
                     }
                 }
