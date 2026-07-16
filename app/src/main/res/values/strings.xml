@@ -28,4 +28,5 @@
     <string name="challenge_active">التحدي نشط</string>
     <string name="stop_vpn">إيقاف الدرع</string>
     <string name="request_step">رمز الطوارئ %d من 3</string>
+    <string name="shield_active">درع الأوفلاين نشط</string>
 </resources>

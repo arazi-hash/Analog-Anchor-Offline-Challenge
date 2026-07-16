@@ -28,4 +28,5 @@
     <string name="challenge_active">Challenge active</string>
     <string name="stop_vpn">Stop Shield</string>
     <string name="request_step">Emergency code %d of 3</string>
+    <string name="shield_active">Offline Shield is Active</string>
 </resources>

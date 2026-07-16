@@ -1,6 +1,7 @@
 package com.analoganchor.offlinechallenge.ui.screens
 
 import android.app.Activity
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,20 +30,25 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
             .background(Obsidian)
     ) {
         // Language Toggle
-        TextButton(
+        OutlinedButton(
             onClick = {
                 prefs.language = if (prefs.language == "ar") "en" else "ar"
                 (context as? Activity)?.recreate()
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(16.dp)
+                .statusBarsPadding()
+                .padding(top = 16.dp, end = 16.dp)
+                .height(44.dp),
+            shape = RoundedCornerShape(22.dp),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = CyanGlow),
+            border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.5f))
         ) {
             Text(
-                text = if (prefs.language == "ar") "EN" else "عربي",
+                text = if (prefs.language == "ar") "English" else "العربية",
                 color = CyanGlow,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 14.sp
             )
         }
 

@@ -79,7 +79,7 @@ fun ChallengeScreen(
         Spacer(modifier = Modifier.height(48.dp))
         
         Text(
-            text = "درع الأوفلاين نشط",
+            text = stringResource(R.string.shield_active),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = CyanGlow
@@ -135,7 +135,7 @@ fun ChallengeScreen(
                     value = tokenInput,
                     onValueChange = { tokenInput = it; tokenResult = "" },
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("الصق رمز الطوارئ هنا", color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.token_hint), color = TextSecondary) },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = CyanGlow,
                         unfocusedBorderColor = TrackColor,
