@@ -45,77 +45,77 @@ fun CompletionScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Obsidian)
-            .padding(24.dp)
+            .padding(horizontal = 16.dp, vertical = 16.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(R.string.challenge_complete).split("!").first() + "!",
-            fontSize = 40.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.Black,
             color = CyanGlow,
             textAlign = TextAlign.Center
         )
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         
         Text(
             text = stringResource(R.string.challenge_complete).split("!").getOrElse(1) { "" }.trim(),
-            fontSize = 16.sp,
+            fontSize = 14.sp,
             color = TextPrimary,
             textAlign = TextAlign.Center,
-            lineHeight = 26.sp
+            lineHeight = 22.sp
         )
         
         if (hasDiscount) {
             Card(
-                shape = RoundedCornerShape(20.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = DeepSurface),
                 border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.2f)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp)
+                    .padding(vertical = 16.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(20.dp),
+                    modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = if (isAr) "🎁 خطوات الحصول على الخصم" else "🎁 How to Claim Your Discount",
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = CyanGlow,
                         textAlign = TextAlign.Center
                     )
                     
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
                     
                     // --- STEP 1 ---
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         // Circular Number Badge
                         Box(
                             modifier = Modifier
-                                .size(28.dp)
-                                .background(CyanGlow.copy(alpha = 0.1f), RoundedCornerShape(14.dp))
-                                .border(BorderStroke(1.dp, CyanGlow), RoundedCornerShape(14.dp)),
+                                .size(24.dp)
+                                .background(CyanGlow.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                                .border(BorderStroke(1.dp, CyanGlow), RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = if (isAr) "١" else "1",
                                 color = CyanGlow,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp
+                                fontSize = 12.sp
                             )
                         }
                         
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = if (isAr) "إرسال إثبات السكرين تايم" else "Send Screen Time Proof",
-                                fontSize = 15.sp,
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TextPrimary
                             )
@@ -128,12 +128,25 @@ fun CompletionScreen(
                                 } else {
                                     "To keep the challenge fair for everyone, please send us a screenshot of your screen time stats via WhatsApp to verify your success."
                                 },
-                                fontSize = 13.sp,
+                                fontSize = 12.sp,
                                 color = TextSecondary,
-                                lineHeight = 18.sp
+                                lineHeight = 17.sp
                             )
                             
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
+                            
+                            Text(
+                                text = if (isAr) {
+                                    "💡 (توجيه: يمكنك العثور عليه في الإعدادات ➔ الرفاهية الرقمية ورقابة الآباء ➔ وقت الشاشة)."
+                                } else {
+                                    "💡 (Tip: Find it in Settings ➔ Digital Wellbeing & Parental Controls ➔ Screen Time)."
+                                },
+                                fontSize = 11.sp,
+                                color = TextSecondary.copy(alpha = 0.8f),
+                                lineHeight = 15.sp
+                            )
+                            
+                            Spacer(modifier = Modifier.height(8.dp))
                             
                             // WhatsApp Share Button
                             Button(
@@ -157,14 +170,15 @@ fun CompletionScreen(
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(42.dp),
-                                shape = RoundedCornerShape(10.dp),
+                                    .height(38.dp),
+                                shape = RoundedCornerShape(8.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = DeepSurface),
-                                border = BorderStroke(1.dp, Color(0xFF25D366))
+                                border = BorderStroke(1.dp, Color(0xFF25D366)),
+                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text(
                                     text = if (isAr) "💬 إرسال وقت الشاشة عبر واتساب" else "💬 Share Screen Time via WhatsApp",
-                                    fontSize = 12.sp,
+                                    fontSize = 11.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color(0xFF25D366)
                                 )
@@ -172,33 +186,33 @@ fun CompletionScreen(
                         }
                     }
                     
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     
                     // --- STEP 2 ---
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         // Circular Number Badge
                         Box(
                             modifier = Modifier
-                                .size(28.dp)
-                                .background(CyanGlow.copy(alpha = 0.1f), RoundedCornerShape(14.dp))
-                                .border(BorderStroke(1.dp, CyanGlow), RoundedCornerShape(14.dp)),
+                                .size(24.dp)
+                                .background(CyanGlow.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                                .border(BorderStroke(1.dp, CyanGlow), RoundedCornerShape(12.dp)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = if (isAr) "٢" else "2",
                                 color = CyanGlow,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp
+                                fontSize = 12.sp
                             )
                         }
                         
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = if (isAr) "تفعيل رمز الخصم" else "Apply Your Discount Code",
-                                fontSize = 15.sp,
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = TextPrimary
                             )
@@ -211,38 +225,40 @@ fun CompletionScreen(
                                 } else {
                                     "Visit our store to purchase your Analog Anchor and apply your exclusive coupon code."
                                 },
-                                fontSize = 13.sp,
+                                fontSize = 12.sp,
                                 color = TextSecondary,
-                                lineHeight = 18.sp
+                                lineHeight = 17.sp
                             )
                             
-                            Spacer(modifier = Modifier.height(14.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
                             
-                            // Code Display Box & Copy Row
+                            // Code Display Box (Full Width)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Obsidian, RoundedCornerShape(8.dp))
+                                    .border(BorderStroke(1.dp, TrackColor), RoundedCornerShape(8.dp))
+                                    .padding(vertical = 8.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = discountCode ?: "",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = CyanGlow,
+                                    fontFamily = FontFamily.Monospace,
+                                    textAlign = TextAlign.Center,
+                                    letterSpacing = 1.sp
+                                )
+                            }
+                            
+                            Spacer(modifier = Modifier.height(8.dp))
+                            
+                            // Row with Copy and Website buttons
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1.5f)
-                                        .background(Obsidian, RoundedCornerShape(10.dp))
-                                        .border(BorderStroke(1.dp, TrackColor), RoundedCornerShape(10.dp))
-                                        .padding(vertical = 10.dp, horizontal = 8.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = discountCode ?: "",
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = CyanGlow,
-                                        fontFamily = FontFamily.Monospace,
-                                        textAlign = TextAlign.Center,
-                                        letterSpacing = 1.sp
-                                    )
-                                }
-                                
                                 Button(
                                     onClick = {
                                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -256,9 +272,10 @@ fun CompletionScreen(
                                     },
                                     modifier = Modifier
                                         .weight(1f)
-                                        .height(40.dp),
-                                    shape = RoundedCornerShape(10.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = TrackColor)
+                                        .height(38.dp),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = TrackColor),
+                                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
                                 ) {
                                     Text(
                                         text = if (isAr) "نسخ الرمز" else "Copy Code",
@@ -267,28 +284,26 @@ fun CompletionScreen(
                                         color = TextPrimary
                                     )
                                 }
-                            }
-                            
-                            Spacer(modifier = Modifier.height(10.dp))
-                            
-                            // Go to Website Button
-                            Button(
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://get-analog-anchor.com"))
-                                    context.startActivity(intent)
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(44.dp),
-                                shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
-                            ) {
-                                Text(
-                                    text = if (isAr) "🌐 زيارة الموقع الإلكتروني" else "🌐 Visit Website",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Obsidian
-                                )
+                                
+                                Button(
+                                    onClick = {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://get-analog-anchor.com"))
+                                        context.startActivity(intent)
+                                    },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .height(38.dp),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = CyanGlow),
+                                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = if (isAr) "🌐 زيارة الموقع" else "🌐 Visit Website",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Obsidian
+                                    )
+                                }
                             }
                         }
                     }
@@ -296,19 +311,19 @@ fun CompletionScreen(
             }
         }
         
-        Spacer(modifier = Modifier.height(if (hasDiscount) 8.dp else 40.dp))
+        Spacer(modifier = Modifier.height(if (hasDiscount) 8.dp else 24.dp))
         
         Button(
             onClick = onHome,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
-            shape = RoundedCornerShape(16.dp),
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = DeepSurface)
         ) {
             Text(
                 text = if (isAr) "العودة للرئيسية" else "Back to Setup",
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = CyanGlow
             )

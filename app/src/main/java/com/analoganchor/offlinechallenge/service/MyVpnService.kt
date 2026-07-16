@@ -4,9 +4,14 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.net.VpnService
+import android.os.Build
 import android.os.ParcelFileDescriptor
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.util.Log
 import com.analoganchor.offlinechallenge.MainActivity
 import com.analoganchor.offlinechallenge.R
@@ -167,9 +172,36 @@ class MyVpnService : VpnService() {
             NotificationManager.IMPORTANCE_HIGH // High = makes sound, vibrates, pops up on screen
         ).apply {
             enableVibration(true)
+            vibrationPattern = longArrayOf(0, 1500, 400, 1500, 400, 1500)
             setShowBadge(true)
         }
         manager.createNotificationChannel(completionChannel)
+    }
+
+    private fun triggerCompletionVibration() {
+        try {
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                vibratorManager.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            }
+            
+            val pattern = longArrayOf(0, 1500, 400, 1500, 400, 1500)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createWaveform(
+                    pattern,
+                    intArrayOf(0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE),
+                    -1
+                ))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(pattern, -1)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to vibrate: ${e.message}")
+        }
     }
 
     private fun showCompletionNotification() {
@@ -200,6 +232,7 @@ class MyVpnService : VpnService() {
             .build()
 
         manager.notify(2, notification)
+        triggerCompletionVibration()
     }
 
     private fun buildNotification(progress: Float, remainingMillis: Long): Notification {
