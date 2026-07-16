@@ -146,6 +146,20 @@ fun CompletionScreen(
                                 lineHeight = 15.sp
                             )
                             
+                            Spacer(modifier = Modifier.height(4.dp))
+                            
+                            Text(
+                                text = if (isAr) {
+                                    "⚠️ نصيحة: خذ لقطة الشاشة الآن وقبل تشغيل الإنترنت لتجنب تشتيتك بالإشعارات الواردة!"
+                                } else {
+                                    "⚠️ Tip: Screenshot your stats now *before* turning on your internet to avoid getting distracted by incoming notifications!"
+                                },
+                                fontSize = 11.sp,
+                                color = AmberWarning,
+                                fontWeight = FontWeight.Bold,
+                                lineHeight = 15.sp
+                            )
+                            
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             // WhatsApp Share Button
