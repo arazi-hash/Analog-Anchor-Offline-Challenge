@@ -30,7 +30,7 @@
     <string name="request_step">رمز الطوارئ %d من 3</string>
     <string name="shield_active">درع الأوفلاين نشط</string>
     <string name="website_info">لمزيد من المعلومات، تفضل بزيارة get-analog-anchor.com</string>
-    <string name="whatsapp_support">واتساب فقط: +973 33371163</string>
+    <string name="whatsapp_support">واتساب فقط: &#x200E;+973 33371163</string>
     <string name="support_note">الدعم متوفر عبر رسائل الواتساب فقط</string>
     <string name="tip_offline_apps_title">🗺️ توصيات مهمة قبل البدء</string>
     <string name="tip_offline_apps_body">يُنصح بتنزيل الخرائط الأوفلاين (مثل Google Maps أو HERE WeGo) وتنزيل لغات الترجـمة أوفلاين (مثل Google Translate) لسهولة التنقل والترجمة بدون إنترنت.</string>

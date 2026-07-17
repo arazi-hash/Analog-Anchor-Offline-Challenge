@@ -74,9 +74,16 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                             fontSize = 13.sp
                         )
                         Text(
-                            text = stringResource(R.string.website_info),
-                            fontSize = 13.sp,
+                            text = if (isAr) "لمزيد من المعلومات، تفضل بزيارة " else "For more information, visit ",
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
+                            color = TextPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "get-analog-anchor.com",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
                             color = CyanGlow,
                             textAlign = TextAlign.Center,
                             textDecoration = TextDecoration.Underline
@@ -85,7 +92,7 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Line 2: WhatsApp Number
+                    // Line 2: WhatsApp Number with forced LTR country code formatting
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -98,7 +105,14 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                             fontSize = 13.sp
                         )
                         Text(
-                            text = stringResource(R.string.whatsapp_support),
+                            text = if (isAr) "واتساب فقط: " else "WhatsApp only: ",
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF25D366),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "\u200E+973 33371163",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF25D366),
@@ -108,7 +122,7 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Line 3: WhatsApp Support Notice (Messages or Calls Only)
+                    // Line 3: WhatsApp Support Notice (Messages Only)
                     Surface(
                         shape = RoundedCornerShape(8.dp),
                         color = Obsidian.copy(alpha = 0.6f),
