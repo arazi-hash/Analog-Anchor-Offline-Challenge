@@ -29,4 +29,13 @@
     <string name="stop_vpn">Stop Shield</string>
     <string name="request_step">Emergency code %d of 3</string>
     <string name="shield_active">Offline Shield is Active</string>
+    <string name="website_info">For more information, visit get-analog-anchor.com</string>
+    <string name="whatsapp_support">WhatsApp only: +973 33371163</string>
+    <string name="support_note">Support available via WhatsApp messages only</string>
+    <string name="tip_offline_apps_title">🗺️ Recommended Pre-Challenge Downloads</string>
+    <string name="tip_offline_apps_body">We recommend downloading offline maps (e.g., Google Maps offline areas, HERE WeGo) and offline languages (Google Translate) before starting so you can navigate easily offline.</string>
+    <string name="tip_nfc_title">💳 NFC &amp; Bank Card Payments</string>
+    <string name="tip_nfc_body">Rest assured, your phone\'s NFC bank card payments (Google Wallet / POS) work completely fine offline at supermarkets and stores!</string>
+    <string name="tip_battery_title">🔋 Battery Saving Tip</string>
+    <string name="tip_battery_body">We suggest manually turning off Wi-Fi and Mobile Data to conserve battery power during the challenge.</string>
 </resources>

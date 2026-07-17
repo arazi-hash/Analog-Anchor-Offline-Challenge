@@ -29,4 +29,13 @@
     <string name="stop_vpn">إيقاف الدرع</string>
     <string name="request_step">رمز الطوارئ %d من 3</string>
     <string name="shield_active">درع الأوفلاين نشط</string>
+    <string name="website_info">لمزيد من المعلومات، تفضل بزيارة get-analog-anchor.com</string>
+    <string name="whatsapp_support">واتساب فقط: +973 33371163</string>
+    <string name="support_note">الدعم متوفر عبر رسائل الواتساب فقط</string>
+    <string name="tip_offline_apps_title">🗺️ توصيات مهمة قبل البدء</string>
+    <string name="tip_offline_apps_body">يُنصح بتنزيل الخرائط الأوفلاين (مثل Google Maps أو HERE WeGo) وتنزيل لغات الترجـمة أوفلاين (مثل Google Translate) لسهولة التنقل والترجمة بدون إنترنت.</string>
+    <string name="tip_nfc_title">💳 المدفوعات والبطاقات البنكية (NFC)</string>
+    <string name="tip_nfc_body">اطمئن، دفع الهاتف والبطاقات عبر NFC (مثل Google Wallet) يعمل بشكل طبيعي أوفلاين تماماً عند التسوق في السوبرماركت والمتاجر.</string>
+    <string name="tip_battery_title">🔋 توفير البطارية</string>
+    <string name="tip_battery_body">نقترح إيقاف الواي فاي وبيانات الهاتف يدوياً لتوفير طاقة البطارية أثناء التحدي.</string>
 </resources>
