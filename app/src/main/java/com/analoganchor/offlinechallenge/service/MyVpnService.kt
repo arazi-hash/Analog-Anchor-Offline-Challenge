@@ -60,10 +60,14 @@ class MyVpnService : VpnService() {
         // Start as foreground service immediately
         startForeground(NOTIFICATION_ID, buildNotification(0f, 0L))
 
-        // Build VPN tunnel that blackholes ALL traffic
+        // Build VPN tunnel that blackholes ALL traffic (IPv4 & IPv6)
         val builder = Builder()
             .addAddress("10.1.1.1", 24)
             .addRoute("0.0.0.0", 0)       // Capture all IPv4 traffic
+            .addAddress("fd00::1", 128)
+            .addRoute("::", 0)            // Capture all IPv6 traffic
+            .addDnsServer("10.1.1.1")     // Sinkhole IPv4 DNS
+            .addDnsServer("fd00::1")      // Sinkhole IPv6 DNS
             .setSession(getString(R.string.app_name))
             .setBlocking(false)
 

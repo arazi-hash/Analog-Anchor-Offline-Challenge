@@ -21,8 +21,32 @@ class ChallengePreferences(context: Context) {
         private const val KEY_REQUEST_3_CONSUMED = "request_3_consumed"
     }
 
+    private val directContext: Context = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        context.createDeviceProtectedStorageContext()
+    } else {
+        context
+    }
+
     private val prefs: SharedPreferences =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        directContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    init {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            val normalPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            if (normalPrefs.contains(KEY_ACTIVE) && !prefs.contains(KEY_ACTIVE)) {
+                val editor = prefs.edit()
+                for ((key, value) in normalPrefs.all) {
+                    when (value) {
+                        is Boolean -> editor.putBoolean(key, value)
+                        is Long -> editor.putLong(key, value)
+                        is Int -> editor.putInt(key, value)
+                        is String -> editor.putString(key, value)
+                    }
+                }
+                editor.apply()
+            }
+        }
+    }
 
     var language: String
         get() = prefs.getString(KEY_LANGUAGE, "ar") ?: "ar"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">أوفلاين</string>
+    <string name="app_name">Offline أوفلاين</string>
     <string name="shield_title">جارٍ تفعيل درع الأوفلاين…</string>
     <string name="shield_body">يستخدم هذا التطبيق طبقة حماية محلية لتنفيذ التزامك بالتحدي. بياناتك لا تغادر جهازك أبداً. يرجى الموافقة على الرسالة التالية من النظام لتفعيل الدرع.</string>
     <string name="shield_activate">تفعيل الدرع</string>

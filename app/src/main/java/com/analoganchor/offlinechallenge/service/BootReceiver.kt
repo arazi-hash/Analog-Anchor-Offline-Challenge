@@ -13,7 +13,17 @@ import com.analoganchor.offlinechallenge.data.ChallengePreferences
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
+        val intentAction = intent.action
+        val validActions = setOf(
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_LOCKED_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+            "android.intent.action.QUICKBOOT_POWERON",
+            "com.htc.intent.action.QUICKBOOT_POWERON",
+            "android.intent.action.REBOOT"
+        )
+
+        if (intentAction !in validActions) return
 
         val prefs = ChallengePreferences(context)
 
