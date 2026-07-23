@@ -22,3 +22,7 @@ local.properties
 # OS files
 .DS_Store
 Thumbs.db
+
+# Signing Keys
+*.jks
+*.keystore
