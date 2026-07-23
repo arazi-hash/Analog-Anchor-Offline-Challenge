@@ -13,6 +13,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
@@ -62,20 +63,61 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val showNotificationRationale = mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         
-        // Request Notification Permission for Android 13+
+        challengePrefs = ChallengePreferences(this)
+
+        // Check Notification Permission for Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                showNotificationRationale.value = true
             }
         }
-        challengePrefs = ChallengePreferences(this)
 
         setContent {
             OfflineChallengeTheme(language = challengePrefs.language) {
+                if (showNotificationRationale.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    val isAr = challengePrefs.language == "ar"
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = { showNotificationRationale.value = false },
+                        title = {
+                            androidx.compose.material3.Text(
+                                if (isAr) "🔔 تفعيل الإشعارات لشريط التقدم" else "🔔 Enable Live Progress Notifications",
+                                style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+                            )
+                        },
+                        text = {
+                            androidx.compose.material3.Text(
+                                if (isAr) 
+                                    "يتطلب تطبيق الأوفلاين التنبيهات لعرض نسبة إنجاز التحدي والوقت المتبقي مباشرة في شريط الإشعارات وشاشة القفل." 
+                                else 
+                                    "Offline Challenge uses notifications to display your live progress percentage and remaining time directly on your lock screen and notification bar.",
+                                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                            )
+                        },
+                        confirmButton = {
+                            androidx.compose.material3.Button(
+                                onClick = {
+                                    showNotificationRationale.value = false
+                                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                }
+                            ) {
+                                androidx.compose.material3.Text(if (isAr) "سماح بالتنبيهات" else "Allow Notifications")
+                            }
+                        },
+                        dismissButton = {
+                            androidx.compose.material3.TextButton(
+                                onClick = { showNotificationRationale.value = false }
+                            ) {
+                                androidx.compose.material3.Text(if (isAr) "ليس الآن" else "Not Now")
+                            }
+                        }
+                    )
+                }
                 AppNavHost()
             }
         }
