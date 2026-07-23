@@ -49,13 +49,17 @@ class MainActivity : ComponentActivity() {
         }
 
     override fun attachBaseContext(newBase: android.content.Context) {
-        val prefs = com.analoganchor.offlinechallenge.data.ChallengePreferences(newBase)
-        val locale = java.util.Locale(prefs.language)
-        java.util.Locale.setDefault(locale)
-        val config = android.content.res.Configuration(newBase.resources.configuration)
-        config.setLocale(locale)
-        config.setLayoutDirection(locale)
-        super.attachBaseContext(newBase.createConfigurationContext(config))
+        try {
+            val prefs = com.analoganchor.offlinechallenge.data.ChallengePreferences(newBase)
+            val locale = java.util.Locale(prefs.language)
+            java.util.Locale.setDefault(locale)
+            val config = android.content.res.Configuration(newBase.resources.configuration)
+            config.setLocale(locale)
+            config.setLayoutDirection(locale)
+            super.attachBaseContext(newBase.createConfigurationContext(config))
+        } catch (e: Exception) {
+            super.attachBaseContext(newBase)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

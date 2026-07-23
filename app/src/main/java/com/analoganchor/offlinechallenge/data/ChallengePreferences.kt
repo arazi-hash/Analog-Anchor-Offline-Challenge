@@ -22,29 +22,40 @@ class ChallengePreferences(context: Context) {
     }
 
     private val directContext: Context = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-        context.createDeviceProtectedStorageContext()
+        try {
+            context.createDeviceProtectedStorageContext() ?: context
+        } catch (e: Exception) {
+            context
+        }
     } else {
         context
     }
 
-    private val prefs: SharedPreferences =
+    private val prefs: SharedPreferences = try {
         directContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    } catch (e: Exception) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
 
     init {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            val normalPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            if (normalPrefs.contains(KEY_ACTIVE) && !prefs.contains(KEY_ACTIVE)) {
-                val editor = prefs.edit()
-                for ((key, value) in normalPrefs.all) {
-                    when (value) {
-                        is Boolean -> editor.putBoolean(key, value)
-                        is Long -> editor.putLong(key, value)
-                        is Int -> editor.putInt(key, value)
-                        is String -> editor.putString(key, value)
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                val normalPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                if (normalPrefs.contains(KEY_ACTIVE) && !prefs.contains(KEY_ACTIVE)) {
+                    val editor = prefs.edit()
+                    for ((key, value) in normalPrefs.all) {
+                        when (value) {
+                            is Boolean -> editor.putBoolean(key, value)
+                            is Long -> editor.putLong(key, value)
+                            is Int -> editor.putInt(key, value)
+                            is String -> editor.putString(key, value)
+                        }
                     }
+                    editor.apply()
                 }
-                editor.apply()
             }
+        } catch (e: Exception) {
+            // Ignore migration exception
         }
     }
 
