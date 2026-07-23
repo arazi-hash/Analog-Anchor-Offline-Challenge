@@ -2,7 +2,7 @@
 # By default, the flags in this file are appended to flags specified
 # in getDefaultProguardFile("proguard-android-optimize.txt").
 
-# Keep all project classes & members
+# Keep project classes & members
 -keep class com.analoganchor.offlinechallenge.** { *; }
 -keepclassmembers class com.analoganchor.offlinechallenge.** { *; }
 
@@ -15,3 +15,13 @@
 -keep class androidx.navigation.** { *; }
 -keep class androidx.core.** { *; }
 -keep class androidx.compose.** { *; }
+
+# Keep WorkManager & Room Database generated implementations (prevents WorkDatabase reflection crash)
+-keep class androidx.work.** { *; }
+-keepclassmembers class androidx.work.** { *; }
+-keep class androidx.work.impl.** { *; }
+-keepclassmembers class androidx.work.impl.** { *; }
+-keep class androidx.room.** { *; }
+-keepclassmembers class * extends androidx.room.RoomDatabase { *; }
+-dontwarn androidx.work.**
+-dontwarn androidx.room.**
