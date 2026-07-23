@@ -66,7 +66,8 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.clickable {
-                            openUrl(context, "https://get-analog-anchor.com/")
+                            val websiteUrl = if (isAr) "https://get-analog-anchor.com/" else "https://get-analog-anchor.com/?lang=en"
+                            openUrl(context, websiteUrl)
                         }
                     ) {
                         Text(

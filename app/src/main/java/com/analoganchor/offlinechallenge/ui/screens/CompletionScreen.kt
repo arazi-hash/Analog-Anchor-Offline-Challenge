@@ -301,7 +301,8 @@ fun CompletionScreen(
                                 
                                 Button(
                                     onClick = {
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://get-analog-anchor.com"))
+                                        val websiteUrl = if (isAr) "https://get-analog-anchor.com" else "https://get-analog-anchor.com/?lang=en"
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
                                         context.startActivity(intent)
                                     },
                                     modifier = Modifier
