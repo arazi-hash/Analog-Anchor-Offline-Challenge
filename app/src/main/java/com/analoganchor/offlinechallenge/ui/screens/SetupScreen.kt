@@ -48,132 +48,75 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // --- Upper Section: Professional Support & Info Header Card ---
-            Card(
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = DeepSurface),
-                border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.3f)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // Line 1: Website Info
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.clickable {
-                            val websiteUrl = if (isAr) "https://get-analog-anchor.com/" else "https://get-analog-anchor.com/?lang=en"
-                            openUrl(context, websiteUrl)
-                        }
-                    ) {
-                        Text(
-                            text = "🌐  ",
-                            fontSize = 13.sp
-                        )
-                        Text(
-                            text = if (isAr) "لمزيد من المعلومات، تفضل بزيارة " else "For more information, visit ",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = TextPrimary,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "get-analog-anchor.com",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = CyanGlow,
-                            textAlign = TextAlign.Center,
-                            textDecoration = TextDecoration.Underline
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Line 2: WhatsApp Number with forced LTR country code formatting
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.clickable {
-                            openUrl(context, "https://wa.me/97333371163")
-                        }
-                    ) {
-                        Text(
-                            text = "💬  ",
-                            fontSize = 13.sp
-                        )
-                        Text(
-                            text = if (isAr) "واتساب فقط: " else "WhatsApp only: ",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF25D366),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "\u200E+973 33371163",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF25D366),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // Line 3: WhatsApp Support Notice (Messages Only)
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = Obsidian.copy(alpha = 0.6f),
-                        border = BorderStroke(1.dp, TextSecondary.copy(alpha = 0.15f))
-                    ) {
-                        Text(
-                            text = stringResource(R.string.support_note),
-                            fontSize = 11.sp,
-                            color = TextSecondary,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 16.sp,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // --- App Branding Hero ---
+            // --- 1. App Branding Hero (At Very Top) ---
             Text(
                 text = stringResource(R.string.app_name),
-                fontSize = 36.sp,
+                fontSize = 32.sp,
                 fontWeight = FontWeight.Black,
                 color = CyanGlow,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = stringResource(R.string.setup_subtitle),
-                fontSize = 14.sp,
+                fontSize = 13.sp,
                 color = TextSecondary,
                 textAlign = TextAlign.Center,
-                lineHeight = 20.sp,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                lineHeight = 18.sp,
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // --- Duration Selector Section ---
+            // --- 2. Attention & Pre-Commitment Philosophy Card (Decide Once for Your Attention) ---
+            Card(
+                shape = RoundedCornerShape(14.dp),
+                colors = CardDefaults.cardColors(containerColor = DeepSurface.copy(alpha = 0.7f)),
+                border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.35f)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        val websiteUrl = if (isAr) "https://get-analog-anchor.com/" else "https://get-analog-anchor.com/?lang=en"
+                        openUrl(context, websiteUrl)
+                    }
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.think_about_it_title),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = AmberWarning,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.think_about_it_body),
+                        fontSize = 11.sp,
+                        color = TextSecondary,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 16.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // --- 3. Section Header: Select Challenge Duration ---
             Text(
                 text = stringResource(R.string.select_duration),
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = TextPrimary,
-                modifier = Modifier.padding(bottom = 16.dp)
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
 
+            // --- 4. Duration Buttons (2m, 12h, 18h, 36h, 72h) ---
             val durations = listOf(
                 2 * 60 * 1000L to stringResource(R.string.duration_test),
                 12 * 60 * 60 * 1000L to stringResource(R.string.duration_12h),
@@ -188,30 +131,113 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                     onClick = { onDurationSelected(ms) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp)
-                        .padding(vertical = 5.dp),
-                    shape = RoundedCornerShape(14.dp),
+                        .height(48.dp)
+                        .padding(vertical = 3.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (isTestDuration) DeepSurface.copy(alpha = 0.9f) else DeepSurface
                     ),
                     border = if (isTestDuration) BorderStroke(1.dp, AmberWarning.copy(alpha = 0.4f)) else BorderStroke(1.dp, CyanGlow.copy(alpha = 0.15f))
                 ) {
+                    Text(
+                        text = label,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isTestDuration) AmberWarning else CyanGlow
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // --- 5. Support & Info Card (Moved to Bottom Area) ---
+            Card(
+                shape = RoundedCornerShape(14.dp),
+                colors = CardDefaults.cardColors(containerColor = DeepSurface),
+                border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.3f)),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Website Info
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.clickable {
+                            val websiteUrl = if (isAr) "https://get-analog-anchor.com/" else "https://get-analog-anchor.com/?lang=en"
+                            openUrl(context, websiteUrl)
+                        }
+                    ) {
+                        Text(text = "🌐  ", fontSize = 12.sp)
+                        Text(
+                            text = if (isAr) "لمزيد من المعلومات، تفضل بزيارة " else "For more information, visit ",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = TextPrimary,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "get-analog-anchor.com",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = CyanGlow,
+                            textAlign = TextAlign.Center,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    // WhatsApp Number
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.clickable {
+                            openUrl(context, "https://wa.me/97333371163")
+                        }
+                    ) {
+                        Text(text = "💬  ", fontSize = 12.sp)
+                        Text(
+                            text = if (isAr) "واتساب فقط: " else "WhatsApp only: ",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF25D366),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "\u200E+973 33371163",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF25D366),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    // Support Badge
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = Obsidian.copy(alpha = 0.6f),
+                        border = BorderStroke(1.dp, TextSecondary.copy(alpha = 0.15f))
                     ) {
                         Text(
-                            text = label,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isTestDuration) AmberWarning else CyanGlow
+                            text = stringResource(R.string.support_note),
+                            fontSize = 10.sp,
+                            color = TextSecondary,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 14.sp,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp)) // Padding before bottom language toggle
+            Spacer(modifier = Modifier.height(70.dp)) // Padding for bottom language toggle
         }
 
         // --- Bottom Section: Language Switcher Toggle ---

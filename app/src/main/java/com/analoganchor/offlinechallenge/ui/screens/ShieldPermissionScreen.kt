@@ -46,6 +46,8 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
+
                     Text(
                         text = stringResource(R.string.shield_title),
                         fontSize = 22.sp,

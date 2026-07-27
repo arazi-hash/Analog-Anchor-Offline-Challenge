@@ -45,56 +45,119 @@ fun CompletionScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Obsidian)
-            .padding(horizontal = 16.dp, vertical = 16.dp)
+            .statusBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(R.string.challenge_complete).split("!").first() + "!",
-            fontSize = 32.sp,
+            fontSize = 28.sp,
             fontWeight = FontWeight.Black,
             color = CyanGlow,
             textAlign = TextAlign.Center
         )
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(2.dp))
         
         Text(
             text = stringResource(R.string.challenge_complete).split("!").getOrElse(1) { "" }.trim(),
-            fontSize = 14.sp,
+            fontSize = 13.sp,
             color = TextPrimary,
             textAlign = TextAlign.Center,
-            lineHeight = 22.sp
+            lineHeight = 18.sp
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // --- Reclaimed Attention & Analog Anchor Card ---
+        Card(
+            shape = RoundedCornerShape(14.dp),
+            colors = CardDefaults.cardColors(containerColor = DeepSurface),
+            border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.4f)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.reclaimed_attention_title),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = CyanGlow,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = stringResource(R.string.reclaimed_attention_body),
+                    fontSize = 11.sp,
+                    color = TextPrimary,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 16.sp
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Button(
+                    onClick = {
+                        val websiteUrl = if (isAr) "https://get-analog-anchor.com/" else "https://get-analog-anchor.com/?lang=en"
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            // ignore if no browser app available
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(36.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
+                ) {
+                    Text(
+                        text = stringResource(R.string.explore_analog_anchor),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Obsidian
+                    )
+                }
+            }
+        }
         
         if (hasDiscount) {
             Card(
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(14.dp),
                 colors = CardDefaults.cardColors(containerColor = DeepSurface),
                 border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.2f)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 6.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = if (isAr) "🎁 خطوات الحصول على الخصم" else "🎁 How to Claim Your Discount",
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = CyanGlow,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     
-                    Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     
                     // --- STEP 1 ---
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.Top
                     ) {
                         // Circular Number Badge
                         Box(
@@ -112,7 +175,7 @@ fun CompletionScreen(
                             )
                         }
                         
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 text = if (isAr) "إرسال إثبات السكرين تايم" else "Send Screen Time Proof",
                                 fontSize = 14.sp,
@@ -159,53 +222,54 @@ fun CompletionScreen(
                                 fontWeight = FontWeight.Bold,
                                 lineHeight = 15.sp
                             )
-                            
-                            Spacer(modifier = Modifier.height(8.dp))
-                            
-                            // WhatsApp Share Button
-                            Button(
-                                onClick = {
-                                    val whatsappMsg = if (isAr) {
-                                        "أهلاً، لقد أكملت تحدي الأوفلاين بنجاح وحصلت على رمز الخصم: $discountCode"
-                                    } else {
-                                        "Hello, I successfully completed the offline challenge and earned my discount code: $discountCode"
-                                    }
-                                    val whatsappUrl = "https://wa.me/97333371163?text=" + Uri.encode(whatsappMsg)
-                                    try {
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl))
-                                        context.startActivity(intent)
-                                    } catch (e: Exception) {
-                                        Toast.makeText(
-                                            context,
-                                            if (isAr) "لم نتمكن من فتح واتساب" else "Could not open WhatsApp",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(38.dp),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = DeepSurface),
-                                border = BorderStroke(1.dp, Color(0xFF25D366)),
-                                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                            ) {
-                                Text(
-                                    text = if (isAr) "💬 إرسال وقت الشاشة عبر واتساب" else "💬 Share Screen Time via WhatsApp",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF25D366)
-                                )
-                            }
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(8.dp))
                     
-                    Spacer(modifier = Modifier.height(20.dp))
+                    // WhatsApp Share Button (Full Width Stretched)
+                    Button(
+                        onClick = {
+                            val whatsappMsg = if (isAr) {
+                                "أهلاً، لقد أكملت تحدي الأوفلاين بنجاح وحصلت على رمز الخصم: $discountCode"
+                            } else {
+                                "Hello, I successfully completed the offline challenge and earned my discount code: $discountCode"
+                            }
+                            val whatsappUrl = "https://wa.me/97333371163?text=" + Uri.encode(whatsappMsg)
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl))
+                                context.startActivity(intent)
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    context,
+                                    if (isAr) "لم نتمكن من فتح واتساب" else "Could not open WhatsApp",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = DeepSurface),
+                        border = BorderStroke(1.dp, Color(0xFF25D366)),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = if (isAr) "💬 إرسال وقت الشاشة عبر واتساب" else "💬 Share Screen Time via WhatsApp",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF25D366)
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
                     
                     // --- STEP 2 ---
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.Top
                     ) {
                         // Circular Number Badge
                         Box(
@@ -223,7 +287,7 @@ fun CompletionScreen(
                             )
                         }
                         
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 text = if (isAr) "تفعيل رمز الخصم" else "Apply Your Discount Code",
                                 fontSize = 14.sp,
@@ -237,89 +301,89 @@ fun CompletionScreen(
                                 text = if (isAr) {
                                     "تفضل بزيارة موقعنا لشراء مرساة الأنالوج وتطبيق رمز الخصم الحصري الخاص بك."
                                 } else {
-                                    "Visit our store to purchase your Analog Anchor and apply your exclusive coupon code."
+                                    "Visit our website to purchase Analog Anchor and apply your exclusive discount code."
                                 },
                                 fontSize = 12.sp,
                                 color = TextSecondary,
                                 lineHeight = 17.sp
                             )
-                            
-                            Spacer(modifier = Modifier.height(10.dp))
-                            
-                            // Code Display Box (Full Width)
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Obsidian, RoundedCornerShape(8.dp))
-                                    .border(BorderStroke(1.dp, TrackColor), RoundedCornerShape(8.dp))
-                                    .padding(vertical = 8.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = discountCode ?: "",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = CyanGlow,
-                                    fontFamily = FontFamily.Monospace,
-                                    textAlign = TextAlign.Center,
-                                    letterSpacing = 1.sp
-                                )
-                            }
-                            
-                            Spacer(modifier = Modifier.height(8.dp))
-                            
-                            // Row with Copy and Website buttons
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Button(
-                                    onClick = {
-                                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                        val clip = ClipData.newPlainText("Discount Code", discountCode)
-                                        clipboard.setPrimaryClip(clip)
-                                        Toast.makeText(
-                                            context,
-                                            if (isAr) "تم نسخ الرمز!" else "Code copied!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(38.dp),
-                                    shape = RoundedCornerShape(8.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = TrackColor),
-                                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
-                                ) {
-                                    Text(
-                                        text = if (isAr) "نسخ الرمز" else "Copy Code",
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = TextPrimary
-                                    )
-                                }
-                                
-                                Button(
-                                    onClick = {
-                                        val websiteUrl = if (isAr) "https://get-analog-anchor.com" else "https://get-analog-anchor.com/?lang=en"
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
-                                        context.startActivity(intent)
-                                    },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(38.dp),
-                                    shape = RoundedCornerShape(8.dp),
-                                    colors = ButtonDefaults.buttonColors(containerColor = CyanGlow),
-                                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
-                                ) {
-                                    Text(
-                                        text = if (isAr) "🌐 زيارة الموقع" else "🌐 Visit Website",
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Obsidian
-                                    )
-                                }
-                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Code Display Box (Full Width Stretched)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Obsidian, RoundedCornerShape(8.dp))
+                            .border(BorderStroke(1.dp, TrackColor), RoundedCornerShape(8.dp))
+                            .padding(vertical = 10.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = discountCode ?: "",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = CyanGlow,
+                            fontFamily = FontFamily.Monospace,
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 1.sp
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    // Row with Copy and Website buttons (Full Width Stretched)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                val clip = ClipData.newPlainText("Discount Code", discountCode)
+                                clipboard.setPrimaryClip(clip)
+                                Toast.makeText(
+                                    context,
+                                    if (isAr) "تم نسخ الرمز!" else "Code copied!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(38.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = TrackColor),
+                            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = if (isAr) "نسخ الرمز" else "Copy Code",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = TextPrimary
+                            )
+                        }
+                        
+                        Button(
+                            onClick = {
+                                val websiteUrl = if (isAr) "https://get-analog-anchor.com" else "https://get-analog-anchor.com/?lang=en"
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
+                                context.startActivity(intent)
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(38.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = CyanGlow),
+                            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = if (isAr) "🌐 زيارة الموقع" else "🌐 Visit Website",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Obsidian
+                            )
                         }
                     }
                 }

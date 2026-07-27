@@ -22,7 +22,7 @@
     <string name="duration_72h">٧٢ ساعة</string>
     <string name="duration_test">دقيقتان (اختبار)</string>
     <string name="select_duration">اختر مدة التحدي</string>
-    <string name="setup_subtitle">يساعدك هذا التحدي على فصل هاتفك والتركيز. اختر مدة الانقطاع التام.</string>
+    <string name="setup_subtitle">في جوهره، هذا أسهل طريق لتحويل هاتفك الذكي إلى هاتف بسيط (Dumb Phone).</string>
     <string name="verify_token">تحقق من الرمز</string>
     <string name="no_challenge_active">لا يوجد تحدي نشط</string>
     <string name="challenge_active">التحدي نشط</string>
@@ -33,9 +33,18 @@
     <string name="whatsapp_support">واتساب فقط: &#x200E;+973 33371163</string>
     <string name="support_note">الدعم متوفر عبر رسائل الواتساب فقط</string>
     <string name="tip_offline_apps_title">🗺️ توصيات مهمة قبل البدء</string>
-    <string name="tip_offline_apps_body">يُنصح بتنزيل الخرائط الأوفلاين (مثل Google Maps أو HERE WeGo) وتنزيل لغات الترجـمة أوفلاين (مثل Google Translate) لسهولة التنقل والترجمة بدون إنترنت.</string>
+    <string name="tip_offline_apps_body">يُنصح بتجهيز منظومة جوجل للأوفلاين (الخرائط الأوفلاين في Google Maps، وباقات الترجمة في Google Translate، وتطبيق Google AI Edge Gallery—أداة ذكاء اصطناعي محلي أوفلاين تعمل بدون إنترنت وبسلاسة حتى على أجهزة 6GB RAM) لئلا تبقى لديك أي حجّة للاتصال بالإنترنت أثناء التحدي!</string>
     <string name="tip_nfc_title">💳 المدفوعات والبطاقات البنكية (NFC)</string>
     <string name="tip_nfc_body">اطمئن، دفع الهاتف والبطاقات عبر NFC (مثل Google Wallet) يعمل بشكل طبيعي أوفلاين تماماً عند التسوق في السوبرماركت والمتاجر.</string>
     <string name="tip_battery_title">🔋 توفير البطارية</string>
     <string name="tip_battery_body">نقترح إيقاف الواي فاي وبيانات الهاتف يدوياً لتوفير طاقة البطارية أثناء التحدي.</string>
+    
+    <!-- Brand Philosophy & Promo Strings -->
+    <string name="philosophy_quote">"قوة الإرادة مجرد وهم أمام خوارزميات بمليارات الدولارات. استعد انتباهك بقرار واحد تتخذه قبل أن يحصل الهاتف على صوتك."</string>
+    <string name="think_about_it_title">🧠 اتخذ القرار مرة واحدة لحماية انتباهك</string>
+    <string name="think_about_it_body">هذا التحدي الأوفلاين هو خطوتك الأولى لاستعادة انتباهك، وفهم ما يقتطعه الاتصال الدائم من حضورك الذهني. بعد انتهاء التحدي، يساعدك تطبيق &#x200E;Analog Anchor&#x200E; الرئيسي على بناء تحكّم واعٍ ومباشر في اتصالك — لتبقى في حالة حضور وتفاعل مقصود قبل أن يستحوذ الهاتف على يومك.</string>
+    <string name="header_sovereignty_promo">💡 مستعد للسيادة الرقمية الدائمة؟ تطبيقنا الرئيسي &#x200E;Analog Anchor&#x200E; يعتمد نظام التزام مسبق وذكي — يعيد إليك التحكم الواعي والمباشر في وقت وكيفية اتصالك.</string>
+    <string name="reclaimed_attention_title">🧘 استعدت انتباهك وحضورك الذهني</string>
+    <string name="reclaimed_attention_body">استشعر هذا الهدوء — الصفاء، السكينة، والغياب التام لضوضاء الخوارزميات. لقد أثبتّ أن انتباهك ملكٌ لك وحدك.\n\nاحمِ هذا الصفاء. تم تصميم تطبيق &#x200E;Analog Anchor&#x200E; الرئيسي ليحافظ على حضورك الذهني على المدى الطويل عبر التزام مسبق — ليكون كل اتصال بالعالم الرقمي قراراً واعياً ومقصوداً منك.</string>
+    <string name="explore_analog_anchor">🌐 اكتشف &#x200E;Analog Anchor&#x200E; ←</string>
 </resources>

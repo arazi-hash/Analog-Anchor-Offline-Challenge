@@ -19,6 +19,13 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.analoganchor.offlinechallenge.data.ChallengePreferences
 import com.analoganchor.offlinechallenge.service.MyVpnService
 import com.analoganchor.offlinechallenge.ui.screens.ChallengeScreen
@@ -31,21 +38,36 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var challengePrefs: ChallengePreferences
     private var pendingDurationMs: Long = 0L
+    private var pendingVpnCallback: (() -> Unit)? = null
 
     private val vpnPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             startVpnService()
+            pendingVpnCallback?.invoke()
+            pendingVpnCallback = null
         } else {
-            Toast.makeText(this, "تم رفض الإذن. لا يمكن تشغيل الدرع.", Toast.LENGTH_SHORT).show()
+            pendingVpnCallback = null
+            val isAr = challengePrefs.language == "ar"
+            Toast.makeText(
+                this,
+                if (isAr) "يتطلب تفعيل الدرع الموافقة على إذن VPN" else "VPN permission is required to activate the shield.",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
-                // Permission denied - VPN notification might not show
+                // If notification permission is denied, notify user about home screen widget
+                val isAr = challengePrefs.language == "ar"
+                Toast.makeText(
+                    this,
+                    if (isAr) "يمكنك استخدام أداة الشاشة الرئيسية (Widget) لمتابعة التحدي مباشرة!" else "You can add the Home Screen Widget to track your challenge live!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -93,29 +115,56 @@ class MainActivity : ComponentActivity() {
                         text = {
                             androidx.compose.material3.Text(
                                 if (isAr) 
-                                    "يتطلب تطبيق الأوفلاين التنبيهات لعرض نسبة إنجاز التحدي والوقت المتبقي مباشرة في شريط الإشعارات وشاشة القفل." 
+                                    "يتطلب تطبيق الأوفلاين التنبيهات لعرض نسبة إنجاز التحدي والوقت المتبقي مباشرة في شريط الإشعارات وشاشة القفل.\n\n💡 ملاحظة: إذا رفضت التنبيهات، يمكنك دائماً إضافة أداة الشاشة الرئيسية (Widget) لمتابعة التحدي!" 
                                 else 
-                                    "Offline Challenge uses notifications to display your live progress percentage and remaining time directly on your lock screen and notification bar.",
+                                    "Offline Challenge uses notifications to display your live progress percentage and remaining time directly on your lock screen and notification bar.\n\n💡 Tip: If you decline notifications, you can add our Home Screen Widget to track your progress!",
                                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
                             )
                         },
                         confirmButton = {
-                            androidx.compose.material3.Button(
-                                onClick = {
-                                    showNotificationRationale.value = false
-                                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                                }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                androidx.compose.material3.Text(if (isAr) "سماح بالتنبيهات" else "Allow Notifications")
+                                androidx.compose.material3.OutlinedButton(
+                                    onClick = {
+                                        showNotificationRationale.value = false
+                                        requestPinWidget(this@MainActivity)
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp),
+                                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
+                                ) {
+                                    androidx.compose.material3.Text(
+                                        text = if (isAr) "استخدام الويدجت" else "Use Widget Instead",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1
+                                    )
+                                }
+
+                                androidx.compose.material3.Button(
+                                    onClick = {
+                                        showNotificationRationale.value = false
+                                        requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp),
+                                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
+                                ) {
+                                    androidx.compose.material3.Text(
+                                        text = if (isAr) "سماح بالتنبيهات" else "Allow Notifications",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1
+                                    )
+                                }
                             }
                         },
-                        dismissButton = {
-                            androidx.compose.material3.TextButton(
-                                onClick = { showNotificationRationale.value = false }
-                            ) {
-                                androidx.compose.material3.Text(if (isAr) "ليس الآن" else "Not Now")
-                            }
-                        }
+                        dismissButton = null
                     )
                 }
                 AppNavHost()
@@ -148,10 +197,11 @@ class MainActivity : ComponentActivity() {
             composable("shield_permission") {
                 ShieldPermissionScreen(
                     onActivate = {
-                        requestVpnPermission()
-                        challengePrefs.startChallenge(pendingDurationMs)
-                        navController.navigate("challenge") {
-                            popUpTo("setup") { inclusive = true }
+                        requestVpnPermission {
+                            challengePrefs.startChallenge(pendingDurationMs)
+                            navController.navigate("challenge") {
+                                popUpTo("setup") { inclusive = true }
+                            }
                         }
                     }
                 )
@@ -160,7 +210,7 @@ class MainActivity : ComponentActivity() {
             composable("challenge") {
                 LaunchedEffect(Unit) {
                     if (!MyVpnService.isRunning && challengePrefs.isActive) {
-                        requestVpnPermission()
+                        requestVpnPermission { /* VPN restarted */ }
                     }
                 }
 
@@ -198,12 +248,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun requestVpnPermission() {
+    private fun requestVpnPermission(onGranted: () -> Unit) {
         val vpnIntent = VpnService.prepare(this)
         if (vpnIntent != null) {
-            vpnPermissionLauncher.launch(vpnIntent)
+            pendingVpnCallback = onGranted
+            try {
+                vpnPermissionLauncher.launch(vpnIntent)
+            } catch (e: Exception) {
+                pendingVpnCallback = null
+            }
         } else {
             startVpnService()
+            onGranted()
         }
     }
 
@@ -221,5 +277,35 @@ class MainActivity : ComponentActivity() {
         }
         startService(intent)
         com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this)
+    }
+
+    private fun requestPinWidget(context: android.content.Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val appWidgetManager = android.appwidget.AppWidgetManager.getInstance(context)
+            val myProvider = android.content.ComponentName(context, com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver::class.java)
+            if (appWidgetManager.isRequestPinAppWidgetSupported) {
+                val options = android.os.Bundle().apply {
+                    putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 270)
+                    putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 500)
+                    putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 48)
+                    putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 100)
+                }
+                appWidgetManager.requestPinAppWidget(myProvider, options, null)
+            } else {
+                val isAr = challengePrefs.language == "ar"
+                Toast.makeText(
+                    context,
+                    if (isAr) "يمكنك إضافة الويدجت من شاشة هاتفك الرئيسية." else "Add the widget from your home screen.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        } else {
+            val isAr = challengePrefs.language == "ar"
+            Toast.makeText(
+                context,
+                if (isAr) "يمكنك إضافة الويدجت من شاشة هاتفك الرئيسية." else "Add the widget from your home screen.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 }

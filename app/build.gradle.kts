@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.analoganchor.offlinechallenge"
-    compileSdk { version = release(36) { minorApiLevel = 1 } }
+    compileSdk = 36
 
     signingConfigs {
         create("debugConfig") {
@@ -14,14 +14,20 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        create("releaseConfig") {
+            storeFile = file("../new-release-key.jks")
+            storePassword = "AnalogAnchor2026!"
+            keyAlias = "releasekey"
+            keyPassword = "AnalogAnchor2026!"
+        }
     }
 
     defaultConfig {
         applicationId = "com.analoganchor.offlinechallenge"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.4"
+        versionCode = 6
+        versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,6 +37,7 @@ android {
             signingConfig = signingConfigs.getByName("debugConfig")
         }
         release {
+            signingConfig = signingConfigs.getByName("releaseConfig")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

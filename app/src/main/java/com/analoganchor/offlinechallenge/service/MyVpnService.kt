@@ -58,7 +58,33 @@ class MyVpnService : VpnService() {
         }
 
         // Start as foreground service immediately
-        startForeground(NOTIFICATION_ID, buildNotification(0f, 0L))
+        val notification = buildNotification(0f, 0L)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    startForeground(
+                        NOTIFICATION_ID,
+                        notification,
+                        android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                    )
+                } else {
+                    startForeground(
+                        NOTIFICATION_ID,
+                        notification,
+                        android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "startForeground with type failed: ${e.message}")
+                try {
+                    startForeground(NOTIFICATION_ID, notification)
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Fallback startForeground failed: ${ex.message}")
+                }
+            }
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
 
         // Build VPN tunnel that blackholes ALL traffic (IPv4 & IPv6)
         val builder = Builder()
@@ -71,11 +97,17 @@ class MyVpnService : VpnService() {
             .setSession(getString(R.string.app_name))
             .setBlocking(false)
 
-        localTunnel = builder.establish()
+        try {
+            localTunnel = builder.establish()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to establish VPN tunnel: ${e.message}")
+            stopVpn()
+            return START_NOT_STICKY
+        }
 
         if (localTunnel == null) {
-            Log.e(TAG, "Failed to establish VPN tunnel")
-            stopSelf()
+            Log.e(TAG, "Failed to establish VPN tunnel (null descriptor)")
+            stopVpn()
             return START_NOT_STICKY
         }
 
@@ -251,16 +283,24 @@ class MyVpnService : VpnService() {
         val title = "${locContext.getString(R.string.notification_title)} — $percent%"
         val body = formatRemaining(remainingMillis, locContext)
 
-        return Notification.Builder(this, CHANNEL_ID)
+        val builder = Notification.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(body)
             .setSmallIcon(android.R.drawable.ic_lock_lock)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
+            .setAutoCancel(false)
             .setProgress(100, percent, false)
             .setCategory(Notification.CATEGORY_SERVICE)
-            .setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
-            .build()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
+        }
+
+        val notification = builder.build()
+        @Suppress("DEPRECATION")
+        notification.flags = notification.flags or Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+        return notification
     }
 
     private fun updateNotification(progress: Float, remainingMillis: Long) {

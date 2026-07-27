@@ -22,7 +22,7 @@
     <string name="duration_72h">72 hours</string>
     <string name="duration_test">2 minutes (test)</string>
     <string name="select_duration">Select challenge duration</string>
-    <string name="setup_subtitle">This challenge helps you disconnect and focus. Select your complete blackout duration.</string>
+    <string name="setup_subtitle">Essentially, this is the easiest way to turn your smartphone into a dumb phone.</string>
     <string name="verify_token">Verify Token</string>
     <string name="no_challenge_active">No active challenge</string>
     <string name="challenge_active">Challenge active</string>
@@ -33,9 +33,18 @@
     <string name="whatsapp_support">WhatsApp only: +973 33371163</string>
     <string name="support_note">Support available via WhatsApp messages only</string>
     <string name="tip_offline_apps_title">🗺️ Recommended Pre-Challenge Downloads</string>
-    <string name="tip_offline_apps_body">We recommend downloading offline maps (e.g., Google Maps offline areas, HERE WeGo) and offline languages (Google Translate) before starting so you can navigate easily offline.</string>
+    <string name="tip_offline_apps_body">We recommend setting up Google’s offline ecosystem (Google Maps offline areas, Google Translate, and Google AI Edge Gallery—a powerful local offline AI tool that runs smoothly even on 6GB RAM devices) leaving you with no excuse to access the internet!</string>
     <string name="tip_nfc_title">💳 NFC &amp; Bank Card Payments</string>
     <string name="tip_nfc_body">Rest assured, your phone\'s NFC bank card payments (Google Wallet / POS) work completely fine offline at supermarkets and stores!</string>
     <string name="tip_battery_title">🔋 Battery Saving Tip</string>
     <string name="tip_battery_body">We suggest manually turning off Wi-Fi and Mobile Data to conserve battery power during the challenge.</string>
+    
+    <!-- Brand Philosophy & Promo Strings -->
+    <string name="philosophy_quote">"Willpower is a myth against trillion-dollar algorithms. Take back your attention by deciding once before the screen gets a vote."</string>
+    <string name="think_about_it_title">🧠 Decide Once for Your Attention</string>
+    <string name="think_about_it_body">This offline challenge is your first step to understand what constant connectivity costs your daily presence. After completing this challenge, the main Analog Anchor app helps you build conscious control over your connection—keeping you intentional before the screen takes over.</string>
+    <string name="header_sovereignty_promo">💡 Ready for digital sovereignty? Our main Analog Anchor app gives you physical pre-commitment—putting you in intentional, conscious control of when and how you connect.</string>
+    <string name="reclaimed_attention_title">🧘 Your Attention Has Been Reclaimed</string>
+    <string name="reclaimed_attention_body">Feel that mental space—the calm, the clarity, the absence of algorithmic noise. You’ve proven that your attention belongs to you.\n\nProtect this clarity. The main Analog Anchor app preserves your attention long-term through physical pre-commitment—ensuring every connection to the digital world is a conscious, intentional choice.</string>
+    <string name="explore_analog_anchor">🌐 Explore Analog Anchor →</string>
 </resources>
