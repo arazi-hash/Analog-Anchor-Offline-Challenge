@@ -23,5 +23,12 @@
 -keepclassmembers class androidx.work.impl.** { *; }
 -keep class androidx.room.** { *; }
 -keepclassmembers class * extends androidx.room.RoomDatabase { *; }
--dontwarn androidx.work.**
--dontwarn androidx.room.**
+# Keep R class fields for RemoteViews & layout reflection
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+# Keep SplashScreen library classes
+-keep class androidx.core.splashscreen.** { *; }
+-dontwarn androidx.core.splashscreen.**
+

@@ -47,11 +47,15 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
 
-        // Restart the VPN service
+        // Restart the VPN service safely (catch background execution restrictions on Android 12+)
         Log.d("OfflineChallenge", "Boot: Restarting VPN for active challenge")
-        val serviceIntent = Intent(context, MyVpnService::class.java).apply {
-            action = MyVpnService.ACTION_START
+        try {
+            val serviceIntent = Intent(context, MyVpnService::class.java).apply {
+                action = MyVpnService.ACTION_START
+            }
+            context.startForegroundService(serviceIntent)
+        } catch (e: Exception) {
+            Log.e("OfflineChallenge", "Boot: Could not start foreground service from background: ${e.message}")
         }
-        context.startForegroundService(serviceIntent)
     }
 }

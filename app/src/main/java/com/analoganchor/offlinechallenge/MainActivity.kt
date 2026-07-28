@@ -72,23 +72,28 @@ class MainActivity : ComponentActivity() {
         }
 
     override fun attachBaseContext(newBase: android.content.Context) {
-        try {
+        val contextToAttach = try {
             val prefs = com.analoganchor.offlinechallenge.data.ChallengePreferences(newBase)
             val locale = java.util.Locale(prefs.language)
             java.util.Locale.setDefault(locale)
             val config = android.content.res.Configuration(newBase.resources.configuration)
             config.setLocale(locale)
             config.setLayoutDirection(locale)
-            super.attachBaseContext(newBase.createConfigurationContext(config))
+            newBase.createConfigurationContext(config)
         } catch (e: Exception) {
-            super.attachBaseContext(newBase)
+            newBase
         }
+        super.attachBaseContext(contextToAttach)
     }
 
     private val showNotificationRationale = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        try {
+            installSplashScreen()
+        } catch (e: Exception) {
+            // Ignore splashscreen initialization errors on custom ROMs
+        }
         super.onCreate(savedInstanceState)
         
         challengePrefs = ChallengePreferences(this)

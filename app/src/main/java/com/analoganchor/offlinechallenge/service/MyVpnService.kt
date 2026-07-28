@@ -217,12 +217,13 @@ class MyVpnService : VpnService() {
     private fun triggerCompletionVibration() {
         try {
             val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                vibratorManager.defaultVibrator
+                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vibratorManager?.defaultVibrator
             } else {
                 @Suppress("DEPRECATION")
-                getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
             }
+            if (vibrator == null || !vibrator.hasVibrator()) return
             
             val pattern = longArrayOf(0, 1500, 400, 1500, 400, 1500)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -262,7 +263,7 @@ class MyVpnService : VpnService() {
         val notification = Notification.Builder(this, COMPLETION_CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(body)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
@@ -286,7 +287,7 @@ class MyVpnService : VpnService() {
         val builder = Notification.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(body)
-            .setSmallIcon(android.R.drawable.ic_lock_lock)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setAutoCancel(false)

@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@layout/widget_challenge_layout,@drawable/bg_widget_rounded,@drawable/widget_progress_bar,@xml/challenge_widget_info,@drawable/*,@mipmap/*" />
