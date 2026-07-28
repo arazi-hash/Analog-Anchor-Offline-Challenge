@@ -175,7 +175,7 @@ fun CompletionScreen(
                             )
                         }
                         
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = if (isAr) "إرسال إثبات السكرين تايم" else "Send Screen Time Proof",
                                 fontSize = 14.sp,
@@ -287,7 +287,7 @@ fun CompletionScreen(
                             )
                         }
                         
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = if (isAr) "تفعيل رمز الخصم" else "Apply Your Discount Code",
                                 fontSize = 14.sp,

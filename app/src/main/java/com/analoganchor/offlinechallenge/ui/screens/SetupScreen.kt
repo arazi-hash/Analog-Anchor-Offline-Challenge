@@ -18,9 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.analoganchor.offlinechallenge.R
@@ -164,58 +167,66 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Website Info
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.clickable {
-                            val websiteUrl = if (isAr) "https://get-analog-anchor.com/" else "https://get-analog-anchor.com/?lang=en"
-                            openUrl(context, websiteUrl)
+                    val websiteText = remember(isAr) {
+                        buildAnnotatedString {
+                            append("🌐  ")
+                            append(if (isAr) "لمزيد من المعلومات، تفضل بزيارة " else "For more information, visit ")
+                            withStyle(
+                                style = SpanStyle(
+                                    color = CyanGlow,
+                                    fontWeight = FontWeight.Bold,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            ) {
+                                append("get-analog-anchor.com")
+                            }
                         }
-                    ) {
-                        Text(text = "🌐  ", fontSize = 12.sp)
-                        Text(
-                            text = if (isAr) "لمزيد من المعلومات، تفضل بزيارة " else "For more information, visit ",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = TextPrimary,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "get-analog-anchor.com",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = CyanGlow,
-                            textAlign = TextAlign.Center,
-                            textDecoration = TextDecoration.Underline
-                        )
                     }
+
+                    Text(
+                        text = websiteText,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = TextPrimary,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val websiteUrl = if (isAr) "https://get-analog-anchor.com/" else "https://get-analog-anchor.com/?lang=en"
+                                openUrl(context, websiteUrl)
+                            }
+                    )
 
                     Spacer(modifier = Modifier.height(6.dp))
 
                     // WhatsApp Number
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.clickable {
-                            openUrl(context, "https://wa.me/97333371163")
+                    val whatsappText = remember(isAr) {
+                        buildAnnotatedString {
+                            append("💬  ")
+                            withStyle(
+                                style = SpanStyle(
+                                    color = Color(0xFF25D366),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            ) {
+                                append(if (isAr) "واتساب فقط: " else "WhatsApp only: ")
+                                append("\u200E+973 33371163")
+                            }
                         }
-                    ) {
-                        Text(text = "💬  ", fontSize = 12.sp)
-                        Text(
-                            text = if (isAr) "واتساب فقط: " else "WhatsApp only: ",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF25D366),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "\u200E+973 33371163",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF25D366),
-                            textAlign = TextAlign.Center
-                        )
                     }
+
+                    Text(
+                        text = whatsappText,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                openUrl(context, "https://wa.me/97333371163")
+                            }
+                    )
 
                     Spacer(modifier = Modifier.height(6.dp))
 

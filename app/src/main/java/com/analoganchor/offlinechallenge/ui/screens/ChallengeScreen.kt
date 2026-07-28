@@ -32,6 +32,7 @@ fun ChallengeScreen(
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val isAr = challengePrefs.language == "ar"
     var progress by remember { mutableFloatStateOf(challengePrefs.getProgress()) }
     var remainingText by remember { mutableStateOf("") }
     var tokenInput by remember { mutableStateOf("") }
@@ -88,7 +89,7 @@ fun ChallengeScreen(
         Spacer(modifier = Modifier.height(48.dp))
         
         Text(
-            text = "${(progress * 100).toInt()}٪",
+            text = if (isAr) "${(progress * 100).toInt()}٪" else "${(progress * 100).toInt()}%",
             fontSize = 64.sp,
             fontWeight = FontWeight.Black,
             color = TextPrimary
@@ -192,7 +193,7 @@ fun ChallengeScreen(
                         text = tokenResult,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (tokenResult.contains("قبول")) CyanGlow else Color(0xFFFF5252)
+                        color = if (tokenResult.contains("قبول") || tokenResult == context.getString(R.string.token_accepted)) CyanGlow else Color(0xFFFF5252)
                     )
                 }
             }
