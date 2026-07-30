@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.analoganchor.offlinechallenge.data.ChallengePreferences
 import com.analoganchor.offlinechallenge.service.MyVpnService
+import com.analoganchor.offlinechallenge.service.NetworkGuard
+import com.analoganchor.offlinechallenge.service.VpnGuardWorker
 import com.analoganchor.offlinechallenge.ui.screens.ChallengeScreen
 import com.analoganchor.offlinechallenge.ui.screens.CompletionScreen
 import com.analoganchor.offlinechallenge.ui.screens.SetupScreen
@@ -273,6 +275,9 @@ class MainActivity : ComponentActivity() {
             action = MyVpnService.ACTION_START
         }
         startForegroundService(intent)
+        // Arm Layer 2 & 3 guards for reboot protection
+        VpnGuardWorker.schedule(this)
+        NetworkGuard.register(this)
         com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this)
     }
 
@@ -281,6 +286,9 @@ class MainActivity : ComponentActivity() {
             action = MyVpnService.ACTION_STOP
         }
         startService(intent)
+        // Disarm Layer 2 & 3 guards — challenge is ending
+        VpnGuardWorker.cancel(this)
+        NetworkGuard.unregister(this)
         com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this)
     }
 

@@ -9,6 +9,8 @@ import com.analoganchor.offlinechallenge.data.ChallengePreferences
 
 /**
  * Restarts the VPN service after device reboot if a challenge is still active.
+ * Also arms Layer 2 (WorkManager) and Layer 3 (NetworkCallback) guards as
+ * backup safety nets in case the VPN fails to start immediately.
  */
 class BootReceiver : BroadcastReceiver() {
 
@@ -39,11 +41,24 @@ class BootReceiver : BroadcastReceiver() {
             return
         }
 
+        // Arm Layer 2 & 3 guards immediately — these work even if VPN can't start yet
+        try {
+            VpnGuardWorker.schedule(context)
+        } catch (e: Exception) {
+            Log.e("OfflineChallenge", "Boot: Could not schedule VpnGuardWorker: ${e.message}")
+        }
+        try {
+            NetworkGuard.register(context)
+        } catch (e: Exception) {
+            Log.e("OfflineChallenge", "Boot: Could not register NetworkGuard: ${e.message}")
+        }
+
         // Check if VPN permission is still granted
         val vpnIntent = VpnService.prepare(context)
         if (vpnIntent != null) {
             // VPN permission was revoked — can't auto-start without user interaction
-            Log.w("OfflineChallenge", "Boot: VPN permission not granted, cannot auto-restart")
+            // But Layer 2 & 3 guards are armed and will catch it when app opens
+            Log.w("OfflineChallenge", "Boot: VPN permission not granted, guards armed as backup")
             return
         }
 

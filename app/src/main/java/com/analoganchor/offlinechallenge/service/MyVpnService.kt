@@ -137,6 +137,9 @@ class MyVpnService : VpnService() {
                     // Challenge timer expired — auto-stop
                     prefs.endChallenge()
                     prefs.isCompletedPendingShow = true
+                    // Disarm Layer 2 & 3 guards — challenge is over
+                    VpnGuardWorker.cancel(this@MyVpnService)
+                    NetworkGuard.unregister(this@MyVpnService)
                     stopVpn()
                     showCompletionNotification()
                     com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
