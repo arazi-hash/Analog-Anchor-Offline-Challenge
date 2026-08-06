@@ -184,6 +184,13 @@ class ChallengePreferences(context: Context) {
         return System.currentTimeMillis() >= endTimeMillis
     }
 
+    /** Check if challenge is active and non-expired, but VPN service is not running (e.g. after reboot/kill) */
+    fun isShieldBroken(): Boolean {
+        if (!isActive) return false
+        if (isExpired()) return false
+        return !com.analoganchor.offlinechallenge.service.MyVpnService.isRunning
+    }
+
     /** Reset everything */
     fun reset() {
         prefs.edit().clear().apply()

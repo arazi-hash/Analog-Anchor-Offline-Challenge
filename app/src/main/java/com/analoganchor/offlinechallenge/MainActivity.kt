@@ -215,10 +215,54 @@ class MainActivity : ComponentActivity() {
             }
 
             composable("challenge") {
+                val showRebootCalibrationDialog = remember { mutableStateOf(false) }
+
                 LaunchedEffect(Unit) {
                     if (!MyVpnService.isRunning && challengePrefs.isActive) {
                         requestVpnPermission { /* VPN restarted */ }
+                        if (!MyVpnService.isRunning) {
+                            showRebootCalibrationDialog.value = true
+                        }
                     }
+                }
+
+                if (showRebootCalibrationDialog.value) {
+                    val isAr = challengePrefs.language == "ar"
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = { /* Non-dismissable */ },
+                        title = {
+                            androidx.compose.material3.Text(
+                                if (isAr) "🛡️ مطلوب معايرة حماية النظام" else "🛡️ System Protection Calibration Required",
+                                style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+                            )
+                        },
+                        text = {
+                            androidx.compose.material3.Text(
+                                if (isAr)
+                                    "تم اكتشاف إعادة تشغيل للهاتف أو انقطاع في النظام أثناء التحدي النشط.\n\nللحفاظ على استمرار الحماية التلقائية بعد إعادة تشغيل الهاتف، يُرجى تفعيل التغطية الدائمة في إعدادات النظام."
+                                else
+                                    "A device restart or system interruption was detected during your active challenge.\n\nTo maintain automatic shield protection across device reboots, please activate System Always-On Protection.",
+                                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                            )
+                        },
+                        confirmButton = {
+                            androidx.compose.material3.Button(
+                                onClick = {
+                                    showRebootCalibrationDialog.value = false
+                                    requestVpnPermission { /* Restart VPN */ }
+                                    openVpnSettings(this@MainActivity)
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(10.dp)
+                            ) {
+                                androidx.compose.material3.Text(
+                                    text = if (isAr) "تفعيل التغطية الدائمة" else "Activate Always-On Protection",
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        },
+                        dismissButton = null
+                    )
                 }
 
                 ChallengeScreen(
@@ -303,14 +347,6 @@ class MainActivity : ComponentActivity() {
                     putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 48)
                     putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 100)
                 }
-                appWidgetManager.requestPinAppWidget(myProvider, options, null)
-            } else {
-                val isAr = challengePrefs.language == "ar"
-                Toast.makeText(
-                    context,
-                    if (isAr) "يمكنك إضافة الويدجت من شاشة هاتفك الرئيسية." else "Add the widget from your home screen.",
-                    Toast.LENGTH_LONG
-                ).show()
             }
         } else {
             val isAr = challengePrefs.language == "ar"
@@ -319,6 +355,31 @@ class MainActivity : ComponentActivity() {
                 if (isAr) "يمكنك إضافة الويدجت من شاشة هاتفك الرئيسية." else "Add the widget from your home screen.",
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    private fun openVpnSettings(context: android.content.Context) {
+        try {
+            val intent = Intent("android.net.vpn.SETTINGS").apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(intent)
+        } catch (e1: Exception) {
+            try {
+                val intent = Intent(android.provider.Settings.ACTION_VPN_SETTINGS).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(intent)
+            } catch (e2: Exception) {
+                try {
+                    val intent = Intent(android.provider.Settings.ACTION_SETTINGS).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(intent)
+                } catch (e3: Exception) {
+                    // Ignore if settings cannot be opened
+                }
+            }
         }
     }
 }
