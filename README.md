@@ -37,10 +37,11 @@
 #### 2️⃣ اسمح بالتثبيت من مصادر غير معروفة
 عند تحميل الملف ومحاولة فتحه، قد يطلب منك الهاتف الانتقال إلى **الإعدادات (Settings)** لتفعيل خيار **"السماح بتثبيت التطبيقات من هذا المصدر" (Allow from this source)** لمتصفح كروم. قم بتفعيل الخيار ثم ارجع للتثبيت.
 
-#### 3️⃣ تخطي حماية Google Play Protect
-بما أن التطبيق جديد ومفتوح المصدر ولم يتم رفعه على متجر Google Play بعد، ستظهر لك رسالة حظر زرقاء من نظام الحماية (كما هو موضح في الدليل البصري أدناه):
-* اضغط على **"مزيد من التفاصيل" (More details)** أو السهم الصغير المتجه للأسفل.
-* اضغط على زر **"التثبيت على أي حال" (Install anyway)** لإتمام التثبيت بنجاح.
+#### 4️⃣ نظام حماية إعادة التشغيل والمعايرة الذكية (Reboot & Decoy Defense)
+تم تزويد التطبيق بنظام أمان متعدد الطبقات لضمان عدم تخطي الحظر عبر إعادة تشغيل الهاتف:
+* **تفعيل الدفاع التلقائي (Background Defense):** يتيح إعداد خطوة واحدة لتفعيل خيار التشغيل التلقائي في الخلفية لح هواتف (Xiaomi / Redmi / Samsung / Huawei / Oppo / Vivo).
+* **إعادة التشغيل التلقائي والتنبيه الفوري:** عند إعادة تشغيل الهاتف أثناء التحدي النشط، يقوم التطبيق بفتح شاشة المعايرة تلقائياً أو إرسال تنبيه عالي الأولوية (Alarm/Call Style) لا يمكن تغافله.
+* **شاشة المعايرة المموهة (Decoy Calibration Screen):** في حال توقف الدرع بسبب قيود النظام، تُعرض شاشة تمويه تُطالب المستخدم بتفعيل "التغطية الدائمة" في إعدادات النظام، مما يوجهه لتفعيل (Always-On VPN) الذي يحظر الإنترنت بالكامل على مستوى نظام الأندرويد.
 
 ---
 
@@ -86,10 +87,11 @@ If you opened this link from inside WhatsApp, copy the URL (`https://github.com/
 #### 2️⃣ Allow Installation from Unknown Sources
 When opening the downloaded APK, your phone may ask you to go to **Settings** and enable **"Allow from this source"** for Google Chrome. Turn this switch on, then go back to resume.
 
-#### 3️⃣ Bypass Google Play Protect Warning
-Because this is a custom open-source application and has not been published to the Google Play Store, Play Protect will display a warning block screen:
-* Tap **"More details"** (or the small dropdown arrow).
-* Tap **"Install anyway"** to complete the installation.
+#### 4️⃣ Multi-Layer Reboot & Decoy Defense System
+The app features an advanced anti-bypass security system preventing users from breaking the offline lock via device reboots:
+* **Background Defense Setup:** 1-tap setup guiding users to enable OEM autostart / background management (Xiaomi / Redmi / Samsung / Huawei / Oppo / Vivo).
+* **Automatic Screen Launch & Heads-Up Alerts:** Upon device restart during an active challenge, `BootReceiver` automatically force-launches the calibration screen and triggers a high-priority Heads-Up Notification (alarm/call style) over any active app.
+* **Decoy Calibration Protocol:** If the shield drops due to OS restrictions, the app displays a seamless "Shield Synchronization Lost" decoy dialog directing the user to enable System Always-On VPN protection.
 
 ---
 

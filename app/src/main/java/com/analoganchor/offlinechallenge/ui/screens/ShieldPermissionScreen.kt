@@ -144,6 +144,47 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
                         }
                     }
 
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // --- Tip 4: Background Shield Defense (Decoy Autostart helper) ---
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    Card(
+                        shape = RoundedCornerShape(14.dp),
+                        colors = CardDefaults.cardColors(containerColor = Obsidian.copy(alpha = 0.6f)),
+                        border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.3f)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(14.dp)) {
+                            Text(
+                                text = "⚡ تفعيل الدفاع في الخلفية (موصى به)",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = CyanGlow,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            Text(
+                                text = "لضمان استمرار الحماية التلقائية بعد إعادة تشغيل الهاتف وفي وضع توفير البطارية، يُفضل السماح بالتشغيل التلقائي في الخلفية.",
+                                fontSize = 12.sp,
+                                color = TextSecondary,
+                                lineHeight = 18.sp
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButton(
+                                onClick = { com.analoganchor.offlinechallenge.util.AutostartHelper.openAutostartSettings(context) },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(10.dp),
+                                border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.5f))
+                            ) {
+                                Text(
+                                    text = "تفعيل الدفاع التلقائي",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = CyanGlow
+                                )
+                            }
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
