@@ -240,7 +240,7 @@ class MainActivity : ComponentActivity() {
                                         val filtered = input.filter { it.isDigit() }
                                         if (filtered.length <= 4) {
                                             confirmPinText = filtered
-                                            if (filtered.length == 4) {
+                                            if (filtered.length == 3) {
                                                 modalKeyboardController?.hide()
                                             }
                                         }
