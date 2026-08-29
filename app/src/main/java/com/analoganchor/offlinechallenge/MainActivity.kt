@@ -553,7 +553,10 @@ class MainActivity : ComponentActivity() {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         window.decorView.postDelayed({
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        }, 2500)
+        }, 2200)
+        window.decorView.postDelayed({
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }, 4400)
     }
 }
 

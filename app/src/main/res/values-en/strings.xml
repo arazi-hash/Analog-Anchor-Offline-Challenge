@@ -52,6 +52,8 @@
     <string name="tip_autostart_title">⚡ Background Shield Defense (Recommended)</string>
     <string name="tip_autostart_body">To ensure automatic protection persists across reboots and battery saver mode, enable background autostart.</string>
     <string name="tip_autostart_button">Enable Background Defense</string>
+    <string name="tip_autostart_active">✅ Background Defense Active</string>
+    <string name="tip_autostart_already_active_toast">✅ Background Defense is already enabled and active!</string>
     
     <!-- Device Admin & Commitment PIN -->
     <string name="disclosure_title">🛡️ Advanced Shield Protection</string>
@@ -64,8 +66,8 @@
     <string name="pin_activate_warning">⚠️ This locks your commitment. Only the emergency support code can undo it. Turning this off means giving up on yourself.</string>
     <string name="pin_activate_button">🔒 Activate \u0026 Lock Protection</string>
     <string name="pin_wrong">Incorrect PIN. Stay committed! 💪</string>
-    <string name="pin_forgotten_success">✅ Perfect! You forgot the PIN as intended..\n⚙️ Now tap the gear icon next to Offline to enable Always-On VPN</string>
-    <string name="pin_remembered_success">🛡️ Shield locked successfully..\n⚙️ Now tap the gear icon next to Offline to enable Always-On VPN</string>
+    <string name="pin_forgotten_success">✅ PIN forgotten as intended!\n⚙️ Tap ⚙️ on Offline for Always-On</string>
+    <string name="pin_remembered_success">🛡️ Shield locked successfully!\n⚙️ Tap ⚙️ on Offline for Always-On</string>
     <string name="always_on_banner">⚠️ Always-On VPN not enabled — Tap to activate</string>
     <string name="device_admin_description">Device admin protection — prevents app uninstallation during an active offline challenge.</string>
 </resources>

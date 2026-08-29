@@ -242,14 +242,15 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                                 lineHeight = 18.sp
                             )
                             Spacer(modifier = Modifier.height(8.dp))
+                            val isAutostartActive = com.analoganchor.offlinechallenge.util.AutostartHelper.isBatteryOptimizationIgnored(context)
                             OutlinedButton(
                                 onClick = { com.analoganchor.offlinechallenge.util.AutostartHelper.openAutostartSettings(context) },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp),
-                                border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.5f))
+                                border = BorderStroke(1.dp, if (isAutostartActive) CyanGlow else CyanGlow.copy(alpha = 0.5f))
                             ) {
                                 Text(
-                                    text = stringResource(R.string.tip_autostart_button),
+                                    text = if (isAutostartActive) stringResource(R.string.tip_autostart_active) else stringResource(R.string.tip_autostart_button),
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = CyanGlow

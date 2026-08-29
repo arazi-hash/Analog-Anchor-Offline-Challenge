@@ -15,7 +15,27 @@ object AutostartHelper {
 
     private const val TAG = "OfflineChallenge"
 
+    fun isBatteryOptimizationIgnored(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as? android.os.PowerManager
+            powerManager?.isIgnoringBatteryOptimizations(context.packageName) == true
+        } else {
+            true
+        }
+    }
+
     fun openAutostartSettings(context: Context) {
+        if (isBatteryOptimizationIgnored(context)) {
+            val isAr = com.analoganchor.offlinechallenge.data.ChallengePreferences(context).language == "ar"
+            val msg = if (isAr) {
+                "✅ الدفاع التلقائي في الخلفية مفعّل بالفعل ونشط!"
+            } else {
+                "✅ Background Defense is already enabled and active!"
+            }
+            android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
+
         // 1. Try direct system prompt dialog for Offline specifically (no scrolling required)
         try {
             val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
