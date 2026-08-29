@@ -65,9 +65,8 @@
     <string name="pin_activate_body">أدخل رمز الالتزام لتفعيل حماية النظام الدائمة (Always-On).</string>
     <string name="pin_activate_warning">⚠️ بهذه الخطوة توصد باب التراجع؛ لا خروج إلا برمز طوارئ من الدعم.</string>
     <string name="pin_activate_button">🔒 تفعيل وقفل الحماية</string>
-    <string name="pin_wrong">الرمز غير صحيح.. اثبت على عهدك! 💪</string>
-    <string name="pin_forgotten_success">✅ نسيت الرمز كما هو مطلوب!\n⚙️ اضغط ⚙️ بجانب التطبيق لـ Always-On</string>
-    <string name="pin_remembered_success">🛡️ تم قفل الدرع بنجاح!\n⚙️ اضغط ⚙️ بجانب التطبيق لـ Always-On</string>
+    <string name="pin_forgotten_success">✅ نسيت الرمز كما هو مطلوب!\nاضغط ⚙️ ثم فعّل زر Always-On 🔘</string>
+    <string name="pin_remembered_success">🛡️ تم قفل الدرع بنجاح!\nاضغط ⚙️ ثم فعّل زر Always-On 🔘</string>
     <string name="always_on_banner">⚠️ الحماية الدائمة (Always-On VPN) غير مفعّلة — اضغط للتفعيل</string>
-    <string name="device_admin_description">حماية مسؤول الجهاز — تمنع إلغاء تثبيت التطبيق أثناء التحدي الأوفلاين النشط.</string>
+    <string name="device_admin_description">تمنع إلغاء تثبيت التطبيق أثناء تحدي الأوفلاين، ويمكنك حذفه بسهولة بعد انتهاء التحدي.</string>
 </resources>

@@ -109,20 +109,24 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
 
                             Spacer(modifier = Modifier.height(10.dp))
 
+                            LaunchedEffect(pinText.length) {
+                                if (pinText.length >= 4) {
+                                    focusManager.clearFocus(force = true)
+                                    keyboardController?.hide()
+                                    val imm = view.context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+                                    imm?.hideSoftInputFromWindow(view.windowToken, 0)
+                                }
+                            }
+
                             OutlinedTextField(
                                 value = pinText,
                                 onValueChange = { input ->
                                     val filtered = input.filter { it.isDigit() }
                                     if (filtered.length <= 4) {
                                         pinText = filtered
-                                        if (filtered.length == 4) {
-                                            focusManager.clearFocus(force = true)
-                                            keyboardController?.hide()
-                                            val imm = view.context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
-                                            imm?.hideSoftInputFromWindow(view.windowToken, 0)
-                                        }
                                     }
                                 },
+                                readOnly = pinText.length >= 4,
                                 modifier = Modifier
                                     .width(160.dp)
                                     .height(48.dp),

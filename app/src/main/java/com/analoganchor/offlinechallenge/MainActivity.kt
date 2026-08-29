@@ -234,22 +234,24 @@ class MainActivity : ComponentActivity() {
                                     textAlign = TextAlign.Center
                                 )
 
-                                Spacer(modifier = Modifier.height(14.dp))
+                                LaunchedEffect(confirmPinText.length) {
+                                    if (confirmPinText.length >= 3) {
+                                        modalFocusManager.clearFocus(force = true)
+                                        modalKeyboardController?.hide()
+                                        val imm = modalView.context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+                                        imm?.hideSoftInputFromWindow(modalView.windowToken, 0)
+                                    }
+                                }
 
                                 OutlinedTextField(
                                     value = confirmPinText,
                                     onValueChange = { input ->
                                         val filtered = input.filter { it.isDigit() }
-                                        if (filtered.length <= 4) {
+                                        if (filtered.length <= 3) {
                                             confirmPinText = filtered
-                                            if (filtered.length >= 3) {
-                                                modalFocusManager.clearFocus(force = true)
-                                                modalKeyboardController?.hide()
-                                                val imm = modalView.context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
-                                                imm?.hideSoftInputFromWindow(modalView.windowToken, 0)
-                                            }
                                         }
                                     },
+                                    readOnly = confirmPinText.length >= 3,
                                     modifier = Modifier
                                         .width(160.dp)
                                         .height(48.dp),
