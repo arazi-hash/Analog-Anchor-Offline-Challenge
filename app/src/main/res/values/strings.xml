@@ -48,18 +48,23 @@
     <string name="reclaimed_attention_body">استشعر هذا الهدوء — الصفاء، السكينة، والغياب التام لضوضاء الخوارزميات. لقد أثبتّ أن انتباهك ملكٌ لك وحدك.\n\nاحمِ هذا الصفاء. تم تصميم تطبيق &#x200E;Analog Anchor&#x200E; الرئيسي ليحافظ على حضورك الذهني على المدى الطويل عبر التزام مسبق — ليكون كل اتصال بالعالم الرقمي قراراً واعياً ومقصوداً منك.</string>
     <string name="explore_analog_anchor">🌐 اكتشف &#x200E;Analog Anchor&#x200E; ←</string>
     
+    <!-- Tip 4 Autostart -->
+    <string name="tip_autostart_title">⚡ تفعيل الدفاع في الخلفية (موصى به)</string>
+    <string name="tip_autostart_body">لضمان استمرار الحماية التلقائية بعد إعادة تشغيل الهاتف وفي وضع توفير البطارية، يُفضل السماح بالتشغيل التلقائي في الخلفية.</string>
+    <string name="tip_autostart_button">تفعيل الدفاع التلقائي</string>
+    
     <!-- Device Admin & Commitment PIN -->
     <string name="disclosure_title">🛡️ حماية الدرع المتقدمة</string>
     <string name="disclosure_body">يطلب التطبيق صلاحية مسؤول الجهاز فقط لمنع إلغاء التثبيت أثناء التحدي. يمكنك الخروج في أي وقت عبر رمز الطوارئ من الدعم الفني.</string>
     <string name="pin_setup_title">🎲 حدد رمز الالتزام</string>
     <string name="pin_setup_hint">اضغط ٤ أرقام عشوائياً دون النظر إليها</string>
-    <string name="pin_setup_tip">💡 لا تحاول تذكّرها؛ الهدف هو أن تنساها تماماً.</string>
     <string name="pin_lock_start">🔒 قفل وبدء التحدي</string>
     <string name="pin_activate_title">🔐 تفعيل الحماية الدائمة</string>
     <string name="pin_activate_body">أدخل رمز الالتزام لتفعيل حماية النظام الدائمة (Always-On).</string>
     <string name="pin_activate_warning">⚠️ بهذه الخطوة توصد باب التراجع؛ لا خروج إلا برمز طوارئ من الدعم.</string>
     <string name="pin_activate_button">🔒 تفعيل وقفل الحماية</string>
     <string name="pin_wrong">الرمز غير صحيح.. اثبت على عهدك! 💪</string>
+    <string name="pin_forgotten_success">✅ رائع! نسيت الرمز كما هو مطلوب.. جارٍ تفعيل الدرع والقفل</string>
     <string name="always_on_banner">⚠️ الحماية الدائمة (Always-On VPN) غير مفعّلة — اضغط للتفعيل</string>
     <string name="device_admin_description">حماية مسؤول الجهاز — تمنع إلغاء تثبيت التطبيق أثناء التحدي الأوفلاين النشط.</string>
 </resources>

@@ -82,27 +82,29 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
                                 text = stringResource(R.string.pin_setup_title),
-                                fontSize = 15.sp,
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = AmberWarning,
                                 textAlign = TextAlign.Center
                             )
 
-                            Spacer(modifier = Modifier.height(6.dp))
+                            Spacer(modifier = Modifier.height(4.dp))
 
                             Text(
                                 text = stringResource(R.string.pin_setup_hint),
-                                fontSize = 12.sp,
+                                fontSize = 11.sp,
                                 color = TextSecondary,
                                 textAlign = TextAlign.Center
                             )
 
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
 
                             OutlinedTextField(
                                 value = pinText,
@@ -113,13 +115,13 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                                     }
                                 },
                                 modifier = Modifier
-                                    .fillMaxWidth(0.6f)
-                                    .height(56.dp),
+                                    .width(160.dp)
+                                    .height(48.dp),
                                 singleLine = true,
                                 visualTransformation = PasswordVisualTransformation(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                                 textStyle = LocalTextStyle.current.copy(
-                                    fontSize = 24.sp,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center,
                                     color = TextPrimary
@@ -129,17 +131,7 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                                     unfocusedBorderColor = AmberWarning.copy(alpha = 0.5f),
                                     cursorColor = AmberWarning
                                 ),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = stringResource(R.string.pin_setup_tip),
-                                fontSize = 11.sp,
-                                color = AmberWarning.copy(alpha = 0.9f),
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center
+                                shape = RoundedCornerShape(10.dp)
                             )
                         }
                     }
@@ -233,14 +225,14 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                     ) {
                         Column(modifier = Modifier.padding(14.dp)) {
                             Text(
-                                text = "⚡ تفعيل الدفاع في الخلفية (موصى به)",
+                                text = stringResource(R.string.tip_autostart_title),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = CyanGlow,
                                 modifier = Modifier.padding(bottom = 4.dp)
                             )
                             Text(
-                                text = "لضمان استمرار الحماية التلقائية بعد إعادة تشغيل الهاتف وفي وضع توفير البطارية، يُفضل السماح بالتشغيل التلقائي في الخلفية.",
+                                text = stringResource(R.string.tip_autostart_body),
                                 fontSize = 12.sp,
                                 color = TextSecondary,
                                 lineHeight = 18.sp
@@ -253,7 +245,7 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                                 border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.5f))
                             ) {
                                 Text(
-                                    text = "تفعيل الدفاع التلقائي",
+                                    text = stringResource(R.string.tip_autostart_button),
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = CyanGlow

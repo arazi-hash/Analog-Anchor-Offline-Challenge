@@ -204,7 +204,6 @@ class MainActivity : ComponentActivity() {
                 // 🔐 Always-On VPN PIN Confirmation Modal
                 if (showAlwaysOnModalState.value) {
                     var confirmPinText by remember { mutableStateOf("") }
-                    var pinError by remember { mutableStateOf(false) }
 
                     AlertDialog(
                         onDismissRequest = { /* Non-dismissable to reinforce commitment ceremony */ },
@@ -232,25 +231,6 @@ class MainActivity : ComponentActivity() {
                                     textAlign = TextAlign.Center
                                 )
 
-                                Spacer(modifier = Modifier.height(12.dp))
-
-                                Card(
-                                    shape = RoundedCornerShape(12.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Obsidian.copy(alpha = 0.8f)),
-                                    border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.4f)),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.pin_activate_warning),
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = AmberWarning,
-                                        textAlign = TextAlign.Center,
-                                        lineHeight = 18.sp,
-                                        modifier = Modifier.padding(12.dp)
-                                    )
-                                }
-
                                 Spacer(modifier = Modifier.height(14.dp))
 
                                 OutlinedTextField(
@@ -259,59 +239,57 @@ class MainActivity : ComponentActivity() {
                                         val filtered = input.filter { it.isDigit() }
                                         if (filtered.length <= 4) {
                                             confirmPinText = filtered
-                                            pinError = false
                                         }
                                     },
                                     modifier = Modifier
-                                        .fillMaxWidth(0.7f)
-                                        .height(56.dp),
+                                        .width(160.dp)
+                                        .height(48.dp),
                                     singleLine = true,
                                     visualTransformation = PasswordVisualTransformation(),
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                                     textStyle = LocalTextStyle.current.copy(
-                                        fontSize = 24.sp,
+                                        fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold,
                                         textAlign = TextAlign.Center,
                                         color = TextPrimary
                                     ),
                                     colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = if (pinError) Color(0xFFFF5252) else AmberWarning,
-                                        unfocusedBorderColor = if (pinError) Color(0xFFFF5252) else AmberWarning.copy(alpha = 0.5f)
+                                        focusedBorderColor = AmberWarning,
+                                        unfocusedBorderColor = AmberWarning.copy(alpha = 0.5f),
+                                        cursorColor = AmberWarning
                                     ),
-                                    shape = RoundedCornerShape(12.dp)
+                                    shape = RoundedCornerShape(10.dp)
                                 )
-
-                                if (pinError) {
-                                    Spacer(modifier = Modifier.height(6.dp))
-                                    Text(
-                                        text = stringResource(R.string.pin_wrong),
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFFFF5252),
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
                             }
                         },
                         confirmButton = {
                             Button(
                                 onClick = {
-                                    if (confirmPinText == pendingPin || challengePrefs.verifyCommitmentPin(confirmPinText)) {
+                                    if (confirmPinText.length in 3..4) {
+                                        if (confirmPinText != pendingPin) {
+                                            Toast.makeText(
+                                                this@MainActivity,
+                                                getString(R.string.pin_forgotten_success),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
                                         showAlwaysOnModalState.value = false
                                         challengePrefs.startChallenge(pendingDurationMs, pendingPin)
                                         challengePrefs.isAlwaysOnVpnActivated = true
                                         startVpnService()
                                         openVpnSettings(this@MainActivity)
                                         onChallengeReadyNavigate?.invoke()
-                                    } else {
-                                        pinError = true
                                     }
                                 },
+                                enabled = confirmPinText.length in 3..4,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(48.dp),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = AmberWarning)
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = AmberWarning,
+                                    disabledContainerColor = AmberWarning.copy(alpha = 0.3f)
+                                )
                             ) {
                                 Text(
                                     text = stringResource(R.string.pin_activate_button),
