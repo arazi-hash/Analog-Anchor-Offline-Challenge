@@ -16,6 +16,18 @@ object AutostartHelper {
     private const val TAG = "OfflineChallenge"
 
     fun openAutostartSettings(context: Context) {
+        // 1. Try direct system prompt dialog for Offline specifically (no scrolling required)
+        try {
+            val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                data = android.net.Uri.parse("package:${context.packageName}")
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(intent)
+            return
+        } catch (e: Exception) {
+            Log.d(TAG, "ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS failed: ${e.message}")
+        }
+
         val manufacturer = Build.MANUFACTURER.lowercase()
         var opened = false
 
@@ -43,15 +55,16 @@ object AutostartHelper {
         }
 
         if (!opened) {
-            // Fallback: Open standard Battery Optimization settings
+            // Fallback: Open specific App Details page for Offline
             try {
-                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = android.net.Uri.parse("package:${context.packageName}")
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
                 context.startActivity(intent)
             } catch (e: Exception) {
                 try {
-                    val intent = Intent(Settings.ACTION_SETTINGS).apply {
+                    val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     context.startActivity(intent)

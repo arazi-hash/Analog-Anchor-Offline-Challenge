@@ -25,6 +25,7 @@ import com.analoganchor.offlinechallenge.ui.theme.*
 @Composable
 fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
     val context = LocalContext.current
+    val keyboardController = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
     var pinText by remember { mutableStateOf("") }
     val isPinValid = pinText.length in 3..4
 
@@ -112,6 +113,9 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                                     val filtered = input.filter { it.isDigit() }
                                     if (filtered.length <= 4) {
                                         pinText = filtered
+                                        if (filtered.length == 4) {
+                                            keyboardController?.hide()
+                                        }
                                     }
                                 },
                                 modifier = Modifier

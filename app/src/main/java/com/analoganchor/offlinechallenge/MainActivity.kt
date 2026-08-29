@@ -204,6 +204,7 @@ class MainActivity : ComponentActivity() {
                 // 🔐 Always-On VPN PIN Confirmation Modal
                 if (showAlwaysOnModalState.value) {
                     var confirmPinText by remember { mutableStateOf("") }
+                    val modalKeyboardController = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
 
                     AlertDialog(
                         onDismissRequest = { /* Non-dismissable to reinforce commitment ceremony */ },
@@ -239,6 +240,9 @@ class MainActivity : ComponentActivity() {
                                         val filtered = input.filter { it.isDigit() }
                                         if (filtered.length <= 4) {
                                             confirmPinText = filtered
+                                            if (filtered.length == 4) {
+                                                modalKeyboardController?.hide()
+                                            }
                                         }
                                     },
                                     modifier = Modifier
@@ -266,13 +270,13 @@ class MainActivity : ComponentActivity() {
                             Button(
                                 onClick = {
                                     if (confirmPinText.length in 3..4) {
-                                        if (confirmPinText != pendingPin) {
-                                            Toast.makeText(
-                                                this@MainActivity,
-                                                getString(R.string.pin_forgotten_success),
-                                                Toast.LENGTH_LONG
-                                            ).show()
+                                        val guidanceMsg = if (confirmPinText != pendingPin) {
+                                            getString(R.string.pin_forgotten_success)
+                                        } else {
+                                            getString(R.string.pin_remembered_success)
                                         }
+                                        showGuidanceToast(guidanceMsg)
+
                                         showAlwaysOnModalState.value = false
                                         challengePrefs.startChallenge(pendingDurationMs, pendingPin)
                                         challengePrefs.isAlwaysOnVpnActivated = true
@@ -543,6 +547,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun showGuidanceToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        window.decorView.postDelayed({
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }, 2500)
     }
 }
 

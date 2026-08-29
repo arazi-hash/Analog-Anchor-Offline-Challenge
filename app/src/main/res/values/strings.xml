@@ -64,7 +64,8 @@
     <string name="pin_activate_warning">⚠️ بهذه الخطوة توصد باب التراجع؛ لا خروج إلا برمز طوارئ من الدعم.</string>
     <string name="pin_activate_button">🔒 تفعيل وقفل الحماية</string>
     <string name="pin_wrong">الرمز غير صحيح.. اثبت على عهدك! 💪</string>
-    <string name="pin_forgotten_success">✅ رائع! نسيت الرمز كما هو مطلوب.. جارٍ تفعيل الدرع والقفل</string>
+    <string name="pin_forgotten_success">✅ رائع! نسيت الرمز كما هو مطلوب..\n⚙️ اضغط الآن على أيقونة الترس بجانب التطبيق لتفعيل (Always-On VPN)</string>
+    <string name="pin_remembered_success">🛡️ تم قفل الدرع بنجاح..\n⚙️ اضغط الآن على أيقونة الترس بجانب التطبيق لتفعيل (Always-On VPN)</string>
     <string name="always_on_banner">⚠️ الحماية الدائمة (Always-On VPN) غير مفعّلة — اضغط للتفعيل</string>
     <string name="device_admin_description">حماية مسؤول الجهاز — تمنع إلغاء تثبيت التطبيق أثناء التحدي الأوفلاين النشط.</string>
 </resources>

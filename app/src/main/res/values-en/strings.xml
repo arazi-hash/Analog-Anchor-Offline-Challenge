@@ -64,7 +64,8 @@
     <string name="pin_activate_warning">⚠️ This locks your commitment. Only the emergency support code can undo it. Turning this off means giving up on yourself.</string>
     <string name="pin_activate_button">🔒 Activate \u0026 Lock Protection</string>
     <string name="pin_wrong">Incorrect PIN. Stay committed! 💪</string>
-    <string name="pin_forgotten_success">✅ Perfect! You forgot the PIN as intended.. Locking your shield now</string>
+    <string name="pin_forgotten_success">✅ Perfect! You forgot the PIN as intended..\n⚙️ Now tap the gear icon next to Offline to enable Always-On VPN</string>
+    <string name="pin_remembered_success">🛡️ Shield locked successfully..\n⚙️ Now tap the gear icon next to Offline to enable Always-On VPN</string>
     <string name="always_on_banner">⚠️ Always-On VPN not enabled — Tap to activate</string>
     <string name="device_admin_description">Device admin protection — prevents app uninstallation during an active offline challenge.</string>
 </resources>
