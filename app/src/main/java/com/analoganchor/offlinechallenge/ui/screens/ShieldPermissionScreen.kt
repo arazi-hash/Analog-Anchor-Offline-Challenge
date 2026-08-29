@@ -26,6 +26,8 @@ import com.analoganchor.offlinechallenge.ui.theme.*
 fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
     val context = LocalContext.current
     val keyboardController = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    val view = androidx.compose.ui.platform.LocalView.current
     var pinText by remember { mutableStateOf("") }
     val isPinValid = pinText.length in 3..4
 
@@ -114,7 +116,10 @@ fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
                                     if (filtered.length <= 4) {
                                         pinText = filtered
                                         if (filtered.length == 4) {
+                                            focusManager.clearFocus(force = true)
                                             keyboardController?.hide()
+                                            val imm = view.context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+                                            imm?.hideSoftInputFromWindow(view.windowToken, 0)
                                         }
                                     }
                                 },

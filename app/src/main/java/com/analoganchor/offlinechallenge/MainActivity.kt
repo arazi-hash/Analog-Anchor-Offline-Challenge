@@ -205,6 +205,8 @@ class MainActivity : ComponentActivity() {
                 if (showAlwaysOnModalState.value) {
                     var confirmPinText by remember { mutableStateOf("") }
                     val modalKeyboardController = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
+                    val modalFocusManager = androidx.compose.ui.platform.LocalFocusManager.current
+                    val modalView = androidx.compose.ui.platform.LocalView.current
 
                     AlertDialog(
                         onDismissRequest = { /* Non-dismissable to reinforce commitment ceremony */ },
@@ -240,8 +242,11 @@ class MainActivity : ComponentActivity() {
                                         val filtered = input.filter { it.isDigit() }
                                         if (filtered.length <= 4) {
                                             confirmPinText = filtered
-                                            if (filtered.length == 3) {
+                                            if (filtered.length >= 3) {
+                                                modalFocusManager.clearFocus(force = true)
                                                 modalKeyboardController?.hide()
+                                                val imm = modalView.context.getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+                                                imm?.hideSoftInputFromWindow(modalView.windowToken, 0)
                                             }
                                         }
                                     },
