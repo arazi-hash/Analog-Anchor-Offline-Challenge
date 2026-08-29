@@ -2,32 +2,41 @@ package com.analoganchor.offlinechallenge
 
 import android.Manifest
 import android.app.Activity
+import android.app.admin.DevicePolicyManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.VpnService
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.analoganchor.offlinechallenge.data.ChallengePreferences
+import com.analoganchor.offlinechallenge.service.DeviceAdminReceiver
 import com.analoganchor.offlinechallenge.service.MyVpnService
 import com.analoganchor.offlinechallenge.service.NetworkGuard
 import com.analoganchor.offlinechallenge.service.VpnGuardWorker
@@ -35,19 +44,34 @@ import com.analoganchor.offlinechallenge.ui.screens.ChallengeScreen
 import com.analoganchor.offlinechallenge.ui.screens.CompletionScreen
 import com.analoganchor.offlinechallenge.ui.screens.SetupScreen
 import com.analoganchor.offlinechallenge.ui.screens.ShieldPermissionScreen
+import com.analoganchor.offlinechallenge.ui.theme.AmberWarning
+import com.analoganchor.offlinechallenge.ui.theme.CyanGlow
+import com.analoganchor.offlinechallenge.ui.theme.DeepSurface
+import com.analoganchor.offlinechallenge.ui.theme.Obsidian
 import com.analoganchor.offlinechallenge.ui.theme.OfflineChallengeTheme
+import com.analoganchor.offlinechallenge.ui.theme.TextPrimary
+import com.analoganchor.offlinechallenge.ui.theme.TextSecondary
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var challengePrefs: ChallengePreferences
     private var pendingDurationMs: Long = 0L
+    private var pendingPin: String = ""
     private var pendingVpnCallback: (() -> Unit)? = null
+
+    private val adminPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        // After Device Admin prompt completes (whether activated or cancelled), proceed to VPN request
+        requestVpnPermission {
+            showAlwaysOnModalState.value = true
+        }
+    }
 
     private val vpnPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            startVpnService()
             pendingVpnCallback?.invoke()
             pendingVpnCallback = null
         } else {
@@ -64,7 +88,6 @@ class MainActivity : ComponentActivity() {
     private val requestNotificationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
-                // If notification permission is denied, notify user about home screen widget
                 val isAr = challengePrefs.language == "ar"
                 Toast.makeText(
                     this,
@@ -74,9 +97,13 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-    override fun attachBaseContext(newBase: android.content.Context) {
+    private val showNotificationRationale = mutableStateOf(false)
+    private val showAlwaysOnModalState = mutableStateOf(false)
+    private var onChallengeReadyNavigate: (() -> Unit)? = null
+
+    override fun attachBaseContext(newBase: Context) {
         val contextToAttach = try {
-            val prefs = com.analoganchor.offlinechallenge.data.ChallengePreferences(newBase)
+            val prefs = ChallengePreferences(newBase)
             val locale = java.util.Locale(prefs.language)
             java.util.Locale.setDefault(locale)
             val config = android.content.res.Configuration(newBase.resources.configuration)
@@ -88,8 +115,6 @@ class MainActivity : ComponentActivity() {
         }
         super.attachBaseContext(contextToAttach)
     }
-
-    private val showNotificationRationale = mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
@@ -112,21 +137,21 @@ class MainActivity : ComponentActivity() {
             OfflineChallengeTheme(language = challengePrefs.language) {
                 if (showNotificationRationale.value && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     val isAr = challengePrefs.language == "ar"
-                    androidx.compose.material3.AlertDialog(
+                    AlertDialog(
                         onDismissRequest = { showNotificationRationale.value = false },
                         title = {
-                            androidx.compose.material3.Text(
+                            Text(
                                 if (isAr) "🔔 تفعيل الإشعارات لشريط التقدم" else "🔔 Enable Live Progress Notifications",
-                                style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium
                             )
                         },
                         text = {
-                            androidx.compose.material3.Text(
+                            Text(
                                 if (isAr) 
                                     "يتطلب تطبيق الأوفلاين التنبيهات لعرض نسبة إنجاز التحدي والوقت المتبقي مباشرة في شريط الإشعارات وشاشة القفل.\n\n💡 ملاحظة: إذا رفضت التنبيهات، يمكنك دائماً إضافة أداة الشاشة الرئيسية (Widget) لمتابعة التحدي!" 
                                 else 
                                     "Offline Challenge uses notifications to display your live progress percentage and remaining time directly on your lock screen and notification bar.\n\n💡 Tip: If you decline notifications, you can add our Home Screen Widget to track your progress!",
-                                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         },
                         confirmButton = {
@@ -137,7 +162,7 @@ class MainActivity : ComponentActivity() {
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                androidx.compose.material3.OutlinedButton(
+                                OutlinedButton(
                                     onClick = {
                                         showNotificationRationale.value = false
                                         requestPinWidget(this@MainActivity)
@@ -146,7 +171,7 @@ class MainActivity : ComponentActivity() {
                                     shape = RoundedCornerShape(10.dp),
                                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
                                 ) {
-                                    androidx.compose.material3.Text(
+                                    Text(
                                         text = if (isAr) "استخدام الويدجت" else "Use Widget Instead",
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
@@ -154,7 +179,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
 
-                                androidx.compose.material3.Button(
+                                Button(
                                     onClick = {
                                         showNotificationRationale.value = false
                                         requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -163,7 +188,7 @@ class MainActivity : ComponentActivity() {
                                     shape = RoundedCornerShape(10.dp),
                                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
                                 ) {
-                                    androidx.compose.material3.Text(
+                                    Text(
                                         text = if (isAr) "سماح بالتنبيهات" else "Allow Notifications",
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
@@ -175,6 +200,131 @@ class MainActivity : ComponentActivity() {
                         dismissButton = null
                     )
                 }
+
+                // 🔐 Always-On VPN PIN Confirmation Modal
+                if (showAlwaysOnModalState.value) {
+                    var confirmPinText by remember { mutableStateOf("") }
+                    var pinError by remember { mutableStateOf(false) }
+
+                    AlertDialog(
+                        onDismissRequest = { /* Non-dismissable to reinforce commitment ceremony */ },
+                        shape = RoundedCornerShape(20.dp),
+                        containerColor = DeepSurface,
+                        title = {
+                            Text(
+                                text = stringResource(R.string.pin_activate_title),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AmberWarning,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        },
+                        text = {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.pin_activate_body),
+                                    fontSize = 13.sp,
+                                    color = TextPrimary,
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Card(
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Obsidian.copy(alpha = 0.8f)),
+                                    border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.4f)),
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.pin_activate_warning),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = AmberWarning,
+                                        textAlign = TextAlign.Center,
+                                        lineHeight = 18.sp,
+                                        modifier = Modifier.padding(12.dp)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(14.dp))
+
+                                OutlinedTextField(
+                                    value = confirmPinText,
+                                    onValueChange = { input ->
+                                        val filtered = input.filter { it.isDigit() }
+                                        if (filtered.length <= 4) {
+                                            confirmPinText = filtered
+                                            pinError = false
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.7f)
+                                        .height(56.dp),
+                                    singleLine = true,
+                                    visualTransformation = PasswordVisualTransformation(),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                    textStyle = LocalTextStyle.current.copy(
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                        color = TextPrimary
+                                    ),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = if (pinError) Color(0xFFFF5252) else AmberWarning,
+                                        unfocusedBorderColor = if (pinError) Color(0xFFFF5252) else AmberWarning.copy(alpha = 0.5f)
+                                    ),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+
+                                if (pinError) {
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text(
+                                        text = stringResource(R.string.pin_wrong),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFFF5252),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    if (confirmPinText == pendingPin || challengePrefs.verifyCommitmentPin(confirmPinText)) {
+                                        showAlwaysOnModalState.value = false
+                                        challengePrefs.startChallenge(pendingDurationMs, pendingPin)
+                                        challengePrefs.isAlwaysOnVpnActivated = true
+                                        startVpnService()
+                                        openVpnSettings(this@MainActivity)
+                                        onChallengeReadyNavigate?.invoke()
+                                    } else {
+                                        pinError = true
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = AmberWarning)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.pin_activate_button),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Obsidian
+                                )
+                            }
+                        },
+                        dismissButton = null
+                    )
+                }
+
                 AppNavHost()
             }
         }
@@ -204,13 +354,15 @@ class MainActivity : ComponentActivity() {
 
             composable("shield_permission") {
                 ShieldPermissionScreen(
-                    onActivate = {
-                        requestVpnPermission {
-                            challengePrefs.startChallenge(pendingDurationMs)
+                    onActivate = { pin ->
+                        pendingPin = pin
+                        challengePrefs.setCommitmentPin(pin)
+                        onChallengeReadyNavigate = {
                             navController.navigate("challenge") {
                                 popUpTo("setup") { inclusive = true }
                             }
                         }
+                        requestAdminAndVpn()
                     }
                 )
             }
@@ -229,25 +381,25 @@ class MainActivity : ComponentActivity() {
 
                 if (showRebootCalibrationDialog.value) {
                     val isAr = challengePrefs.language == "ar"
-                    androidx.compose.material3.AlertDialog(
+                    AlertDialog(
                         onDismissRequest = { /* Non-dismissable */ },
                         title = {
-                            androidx.compose.material3.Text(
+                            Text(
                                 if (isAr) "🛡️ مطلوب معايرة حماية النظام" else "🛡️ System Protection Calibration Required",
-                                style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium
                             )
                         },
                         text = {
-                            androidx.compose.material3.Text(
+                            Text(
                                 if (isAr)
                                     "تم اكتشاف إعادة تشغيل للهاتف أو انقطاع في النظام أثناء التحدي النشط.\n\nللحفاظ على استمرار الحماية التلقائية بعد إعادة تشغيل الهاتف، يُرجى تفعيل التغطية الدائمة في إعدادات النظام."
                                 else
                                     "A device restart or system interruption was detected during your active challenge.\n\nTo maintain automatic shield protection across device reboots, please activate System Always-On Protection.",
-                                style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         },
                         confirmButton = {
-                            androidx.compose.material3.Button(
+                            Button(
                                 onClick = {
                                     showRebootCalibrationDialog.value = false
                                     requestVpnPermission { /* Restart VPN */ }
@@ -256,7 +408,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp)
                             ) {
-                                androidx.compose.material3.Text(
+                                Text(
                                     text = if (isAr) "تفعيل التغطية الدائمة" else "Activate Always-On Protection",
                                     fontWeight = FontWeight.Bold
                                 )
@@ -268,8 +420,10 @@ class MainActivity : ComponentActivity() {
 
                 ChallengeScreen(
                     challengePrefs = challengePrefs,
+                    onOpenVpnSettings = { openVpnSettings(this@MainActivity) },
                     onEmergencyUnlock = {
                         stopVpnService()
+                        removeDeviceAdmin()
                         challengePrefs.endChallenge()
                         navController.navigate("setup") {
                             popUpTo(0) { inclusive = true }
@@ -277,6 +431,7 @@ class MainActivity : ComponentActivity() {
                     },
                     onChallengeComplete = {
                         stopVpnService()
+                        removeDeviceAdmin()
                         challengePrefs.endChallenge()
                         challengePrefs.isCompletedPendingShow = true
                         navController.navigate("completion") {
@@ -300,6 +455,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun requestAdminAndVpn() {
+        val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as? DevicePolicyManager
+        val adminComp = DeviceAdminReceiver.getComponentName(this)
+        if (dpm?.isAdminActive(adminComp) != true) {
+            val adminIntent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+                putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminComp)
+                putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getString(R.string.device_admin_description))
+            }
+            adminPermissionLauncher.launch(adminIntent)
+        } else {
+            requestVpnPermission {
+                showAlwaysOnModalState.value = true
+            }
+        }
+    }
+
     private fun requestVpnPermission(onGranted: () -> Unit) {
         val vpnIntent = VpnService.prepare(this)
         if (vpnIntent != null) {
@@ -310,7 +481,6 @@ class MainActivity : ComponentActivity() {
                 pendingVpnCallback = null
             }
         } else {
-            startVpnService()
             onGranted()
         }
     }
@@ -337,12 +507,25 @@ class MainActivity : ComponentActivity() {
         com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this)
     }
 
-    private fun requestPinWidget(context: android.content.Context) {
+    private fun removeDeviceAdmin() {
+        try {
+            val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as? DevicePolicyManager
+            val adminComp = DeviceAdminReceiver.getComponentName(this)
+            if (dpm?.isAdminActive(adminComp) == true) {
+                dpm.removeActiveAdmin(adminComp)
+                Log.i("MainActivity", "Device Admin removed successfully")
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Failed to remove admin: ${e.message}")
+        }
+    }
+
+    private fun requestPinWidget(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val appWidgetManager = android.appwidget.AppWidgetManager.getInstance(context)
             val myProvider = android.content.ComponentName(context, com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver::class.java)
             if (appWidgetManager.isRequestPinAppWidgetSupported) {
-                val options = android.os.Bundle().apply {
+                val options = Bundle().apply {
                     putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 270)
                     putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 500)
                     putInt(android.appwidget.AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 48)
@@ -359,7 +542,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun openVpnSettings(context: android.content.Context) {
+    private fun openVpnSettings(context: Context) {
         try {
             val intent = Intent("android.net.vpn.SETTINGS").apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -384,3 +567,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

@@ -47,4 +47,19 @@
     <string name="reclaimed_attention_title">🧘 استعدت انتباهك وحضورك الذهني</string>
     <string name="reclaimed_attention_body">استشعر هذا الهدوء — الصفاء، السكينة، والغياب التام لضوضاء الخوارزميات. لقد أثبتّ أن انتباهك ملكٌ لك وحدك.\n\nاحمِ هذا الصفاء. تم تصميم تطبيق &#x200E;Analog Anchor&#x200E; الرئيسي ليحافظ على حضورك الذهني على المدى الطويل عبر التزام مسبق — ليكون كل اتصال بالعالم الرقمي قراراً واعياً ومقصوداً منك.</string>
     <string name="explore_analog_anchor">🌐 اكتشف &#x200E;Analog Anchor&#x200E; ←</string>
+    
+    <!-- Device Admin & Commitment PIN -->
+    <string name="disclosure_title">🛡️ حماية الدرع المتقدمة</string>
+    <string name="disclosure_body">يطلب التطبيق صلاحية مسؤول الجهاز فقط لمنع إلغاء التثبيت أثناء التحدي. يمكنك الخروج في أي وقت عبر رمز الطوارئ من الدعم الفني.</string>
+    <string name="pin_setup_title">🎲 حدد رمز الالتزام</string>
+    <string name="pin_setup_hint">اضغط 4 أرقام عشوائية بدون النظر</string>
+    <string name="pin_setup_tip">💡 لا تحفظه. الفكرة هي أن تنساه.</string>
+    <string name="pin_lock_start">🔒 قفل وبدء التحدي</string>
+    <string name="pin_activate_title">🔐 تفعيل الحماية الدائمة</string>
+    <string name="pin_activate_body">أدخل رمز الالتزام لتفعيل حماية النظام الدائمة (Always-On).</string>
+    <string name="pin_activate_warning">⚠️ هذا يقفل التزامك. فقط رمز الطوارئ من الدعم يمكنه التراجع عن ذلك. إيقاف هذه الحماية يعني التخلي عن نفسك.</string>
+    <string name="pin_activate_button">🔒 تفعيل وقفل الحماية</string>
+    <string name="pin_wrong">الرمز غير صحيح. ابقَ ملتزماً! 💪</string>
+    <string name="always_on_banner">⚠️ الحماية الدائمة (Always-On VPN) غير مفعّلة — اضغط للتفعيل</string>
+    <string name="device_admin_description">حماية مسؤول الجهاز — تمنع إلغاء تثبيت التطبيق أثناء التحدي الأوفلاين النشط.</string>
 </resources>

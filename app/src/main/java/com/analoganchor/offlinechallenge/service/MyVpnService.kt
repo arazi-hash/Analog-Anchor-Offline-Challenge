@@ -137,6 +137,15 @@ class MyVpnService : VpnService() {
                     // Challenge timer expired — auto-stop
                     prefs.endChallenge()
                     prefs.isCompletedPendingShow = true
+                    try {
+                        val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as? android.app.admin.DevicePolicyManager
+                        val adminComponent = DeviceAdminReceiver.getComponentName(this@MyVpnService)
+                        if (dpm?.isAdminActive(adminComponent) == true) {
+                            dpm.removeActiveAdmin(adminComponent)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to remove admin on completion: ${e.message}")
+                    }
                     // Disarm Layer 2 & 3 guards — challenge is over
                     VpnGuardWorker.cancel(this@MyVpnService)
                     NetworkGuard.unregister(this@MyVpnService)

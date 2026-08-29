@@ -47,4 +47,19 @@
     <string name="reclaimed_attention_title">🧘 Your Attention Has Been Reclaimed</string>
     <string name="reclaimed_attention_body">Feel that mental space—the calm, the clarity, the absence of algorithmic noise. You’ve proven that your attention belongs to you.\n\nProtect this clarity. The main Analog Anchor app preserves your attention long-term through physical pre-commitment—ensuring every connection to the digital world is a conscious, intentional choice.</string>
     <string name="explore_analog_anchor">🌐 Explore Analog Anchor →</string>
+    
+    <!-- Device Admin & Commitment PIN -->
+    <string name="disclosure_title">🛡️ Advanced Shield Protection</string>
+    <string name="disclosure_body">This app requests Device Admin permission solely to prevent uninstallation during your challenge. You can always exit via the emergency support code.</string>
+    <string name="pin_setup_title">🎲 Set Your Commitment PIN</string>
+    <string name="pin_setup_hint">Press 4 random digits without looking</string>
+    <string name="pin_setup_tip">💡 Don\'t memorize it. The whole point is to forget it.</string>
+    <string name="pin_lock_start">🔒 Lock \u0026 Start Challenge</string>
+    <string name="pin_activate_title">🔐 Activate Permanent Protection</string>
+    <string name="pin_activate_body">Enter your commitment PIN to activate Always-On system protection.</string>
+    <string name="pin_activate_warning">⚠️ This locks your commitment. Only the emergency support code can undo it. Turning this off means giving up on yourself.</string>
+    <string name="pin_activate_button">🔒 Activate \u0026 Lock Protection</string>
+    <string name="pin_wrong">Incorrect PIN. Stay committed! 💪</string>
+    <string name="always_on_banner">⚠️ Always-On VPN not enabled — Tap to activate</string>
+    <string name="device_admin_description">Device admin protection — prevents app uninstallation during an active offline challenge.</string>
 </resources>

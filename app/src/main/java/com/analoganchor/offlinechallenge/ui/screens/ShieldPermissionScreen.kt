@@ -5,13 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,7 +23,11 @@ import com.analoganchor.offlinechallenge.R
 import com.analoganchor.offlinechallenge.ui.theme.*
 
 @Composable
-fun ShieldPermissionScreen(onActivate: () -> Unit) {
+fun ShieldPermissionScreen(onActivate: (pin: String) -> Unit) {
+    val context = LocalContext.current
+    var pinText by remember { mutableStateOf("") }
+    val isPinValid = pinText.length in 3..4
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,39 +42,109 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Card(
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = DeepSurface),
-                border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.2f)),
+                border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.25f)),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp),
+                    modifier = Modifier.padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
-
                     Text(
-                        text = stringResource(R.string.shield_title),
-                        fontSize = 22.sp,
+                        text = stringResource(R.string.disclosure_title),
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = CyanGlow,
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = stringResource(R.string.shield_body),
-                        fontSize = 14.sp,
+                        text = stringResource(R.string.disclosure_body),
+                        fontSize = 13.sp,
                         color = TextPrimary,
                         textAlign = TextAlign.Center,
-                        lineHeight = 22.sp
+                        lineHeight = 20.sp
                     )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // --- 🎲 Forget-Me Commitment PIN Section ---
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Obsidian.copy(alpha = 0.8f)),
+                        border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.4f)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = stringResource(R.string.pin_setup_title),
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AmberWarning,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(6.dp))
+
+                            Text(
+                                text = stringResource(R.string.pin_setup_hint),
+                                fontSize = 12.sp,
+                                color = TextSecondary,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            OutlinedTextField(
+                                value = pinText,
+                                onValueChange = { input ->
+                                    val filtered = input.filter { it.isDigit() }
+                                    if (filtered.length <= 4) {
+                                        pinText = filtered
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(0.6f)
+                                    .height(56.dp),
+                                singleLine = true,
+                                visualTransformation = PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                textStyle = LocalTextStyle.current.copy(
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center,
+                                    color = TextPrimary
+                                ),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = AmberWarning,
+                                    unfocusedBorderColor = AmberWarning.copy(alpha = 0.5f),
+                                    cursorColor = AmberWarning
+                                ),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = stringResource(R.string.pin_setup_tip),
+                                fontSize = 11.sp,
+                                color = AmberWarning.copy(alpha = 0.9f),
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(14.dp))
 
                     // --- Tip 1: Offline Maps & Translation Recommendation ---
                     Card(
@@ -92,7 +170,7 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     // --- Tip 2: NFC Bank Card Payment Assurance ---
                     Card(
@@ -118,7 +196,7 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     // --- Tip 3: Battery Saving Recommendation ---
                     Card(
@@ -144,10 +222,9 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    // --- Tip 4: Background Shield Defense (Decoy Autostart helper) ---
-                    val context = androidx.compose.ui.platform.LocalContext.current
+                    // --- Tip 4: Background Shield Defense ---
                     Card(
                         shape = RoundedCornerShape(14.dp),
                         colors = CardDefaults.cardColors(containerColor = Obsidian.copy(alpha = 0.6f)),
@@ -185,18 +262,26 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     Button(
-                        onClick = onActivate,
+                        onClick = {
+                            if (isPinValid) {
+                                onActivate(pinText)
+                            }
+                        },
+                        enabled = isPinValid,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(54.dp),
                         shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = CyanGlow,
+                            disabledContainerColor = CyanGlow.copy(alpha = 0.3f)
+                        )
                     ) {
                         Text(
-                            text = stringResource(R.string.shield_activate),
+                            text = stringResource(R.string.pin_lock_start),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Obsidian
@@ -209,3 +294,4 @@ fun ShieldPermissionScreen(onActivate: () -> Unit) {
         }
     }
 }
+

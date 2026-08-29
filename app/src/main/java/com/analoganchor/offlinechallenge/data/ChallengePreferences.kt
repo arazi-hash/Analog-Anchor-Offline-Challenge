@@ -19,6 +19,9 @@ class ChallengePreferences(context: Context) {
         private const val KEY_REQUEST_1_CONSUMED = "request_1_consumed"
         private const val KEY_REQUEST_2_CONSUMED = "request_2_consumed"
         private const val KEY_REQUEST_3_CONSUMED = "request_3_consumed"
+        private const val KEY_COMMITMENT_PIN_HASH = "commitment_pin_hash"
+        private const val KEY_ALWAYS_ON_ACTIVATED = "always_on_vpn_activated"
+        private const val KEY_DEVICE_ADMIN_ACTIVE = "device_admin_active"
     }
 
     private val directContext: Context = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -140,12 +143,43 @@ class ChallengePreferences(context: Context) {
         }
     }
 
+    var isAlwaysOnVpnActivated: Boolean
+        get() = prefs.getBoolean(KEY_ALWAYS_ON_ACTIVATED, false)
+        set(value) = prefs.edit().putBoolean(KEY_ALWAYS_ON_ACTIVATED, value).apply()
+
+    var isDeviceAdminActive: Boolean
+        get() = prefs.getBoolean(KEY_DEVICE_ADMIN_ACTIVE, false)
+        set(value) = prefs.edit().putBoolean(KEY_DEVICE_ADMIN_ACTIVE, value).apply()
+
+    fun setCommitmentPin(pin: String) {
+        val hash = hashPin(pin)
+        prefs.edit().putString(KEY_COMMITMENT_PIN_HASH, hash).apply()
+    }
+
+    fun verifyCommitmentPin(pin: String): Boolean {
+        val stored = prefs.getString(KEY_COMMITMENT_PIN_HASH, null) ?: return true
+        return stored == hashPin(pin)
+    }
+
+    fun hasCommitmentPin(): Boolean {
+        return !prefs.getString(KEY_COMMITMENT_PIN_HASH, null).isNullOrEmpty()
+    }
+
+    fun clearCommitmentPin() {
+        prefs.edit().remove(KEY_COMMITMENT_PIN_HASH).apply()
+    }
+
+    private fun hashPin(pin: String): String {
+        val bytes = java.security.MessageDigest.getInstance("SHA-256").digest(pin.toByteArray())
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
+
     /** Start a new challenge. Does NOT reset emergency request state as it is a global limit. */
-    fun startChallenge(durationMs: Long) {
+    fun startChallenge(durationMs: Long, pin: String? = null) {
         val now = System.currentTimeMillis()
         val code = generateDiscountCodeForDuration(durationMs)
         val amount = getDiscountAmountForDuration(durationMs)
-        prefs.edit()
+        val editor = prefs.edit()
             .putBoolean(KEY_ACTIVE, true)
             .putLong(KEY_START_TIME, now)
             .putLong(KEY_END_TIME, now + durationMs)
@@ -153,12 +187,19 @@ class ChallengePreferences(context: Context) {
             .putString("challenge_discount_code", code)
             .putInt("challenge_discount_amount", amount)
             .putBoolean("completed_pending_show", false)
-            .apply()
+        if (!pin.isNullOrEmpty()) {
+            editor.putString(KEY_COMMITMENT_PIN_HASH, hashPin(pin))
+        }
+        editor.apply()
     }
 
-    /** End the challenge. */
+    /** End the challenge and clear PIN/protection states. */
     fun endChallenge() {
-        prefs.edit().putBoolean(KEY_ACTIVE, false).apply()
+        prefs.edit()
+            .putBoolean(KEY_ACTIVE, false)
+            .remove(KEY_COMMITMENT_PIN_HASH)
+            .putBoolean(KEY_ALWAYS_ON_ACTIVATED, false)
+            .apply()
     }
 
     /** Returns progress as 0.0 to 1.0 */
