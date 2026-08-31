@@ -69,4 +69,10 @@
     <string name="pin_remembered_success">🛡️ تم قفل الدرع بنجاح!\nاضغط ⚙️ ثم فعّل زر Always-On 🔘</string>
     <string name="always_on_banner">⚠️ الحماية الدائمة (Always-On VPN) غير مفعّلة — اضغط للتفعيل</string>
     <string name="device_admin_description">تمنع إلغاء تثبيت التطبيق أثناء تحدي الأوفلاين، ويمكنك حذفه بسهولة بعد انتهاء التحدي.</string>
+    
+    <!-- Old-School Peace of Mind & Milestone -->
+    <string name="peace_of_mind_title">📻 هدوء الزمن الجميل</string>
+    <string name="peace_of_mind_body">المكالمات الهاتفية والرسائل النصية القصيرة تعمل بشكل طبيعي.. من يتصل بك الآن هو شخص يحتاجك فعلاً وليس لمجرد تضييع الوقت. استرخِ واستمتع بصفاء ذهنك وتركيزك!</string>
+    <string name="halfway_notification_title">⚡ قطعت نصف المسافة بنجاح!</string>
+    <string name="halfway_notification_body">أنت في منتصف التحدي، واصل الصمود! (للطوارئ يمكنك مراسلتي عبر رسالة نصية قصيرة SMS أو عبر الموقع لطلب رمز الدعم).</string>
 </resources>

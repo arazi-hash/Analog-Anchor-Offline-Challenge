@@ -156,6 +156,10 @@ class MyVpnService : VpnService() {
                 }
                 val progress = prefs.getProgress()
                 val remaining = prefs.getRemainingMillis()
+                if (progress >= 0.5f && !prefs.isHalfwayNotified) {
+                    prefs.isHalfwayNotified = true
+                    showHalfwayNotification()
+                }
                 updateNotification(progress, remaining)
                 // Also update widget every minute only to save battery, but we'll just let it update here.
                 // Actually widget updating every second is too much, but we'll do it since they want real-time visualization.
@@ -282,6 +286,61 @@ class MyVpnService : VpnService() {
 
         manager.notify(2, notification)
         triggerCompletionVibration()
+    }
+
+    private fun showHalfwayNotification() {
+        val locContext = getLocalizedContext()
+        val manager = getSystemService(NotificationManager::class.java)
+
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val title = locContext.getString(R.string.halfway_notification_title)
+        val body = locContext.getString(R.string.halfway_notification_body)
+
+        val notification = Notification.Builder(this, COMPLETION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(Notification.BigTextStyle().bigText(body))
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        manager.notify(3, notification)
+        triggerHalfwayVibration()
+    }
+
+    private fun triggerHalfwayVibration() {
+        try {
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vibratorManager?.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            }
+            if (vibrator == null || !vibrator.hasVibrator()) return
+
+            val pattern = longArrayOf(0, 500, 200, 500)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createWaveform(
+                    pattern,
+                    intArrayOf(0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE),
+                    -1
+                ))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(pattern, -1)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to vibrate for halfway milestone: ${e.message}")
+        }
     }
 
     private fun buildNotification(progress: Float, remainingMillis: Long): Notification {

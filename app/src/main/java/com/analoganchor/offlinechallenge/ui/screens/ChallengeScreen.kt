@@ -4,7 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -76,10 +78,11 @@ fun ChallengeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Obsidian)
-            .padding(24.dp),
+            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         
         Text(
             text = stringResource(R.string.shield_active),
@@ -111,25 +114,25 @@ fun ChallengeScreen(
             }
         }
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         
         Text(
             text = if (isAr) "${(progress * 100).toInt()}٪" else "${(progress * 100).toInt()}%",
-            fontSize = 64.sp,
+            fontSize = 56.sp,
             fontWeight = FontWeight.Black,
             color = TextPrimary
         )
         
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         
         Text(
             text = "${stringResource(R.string.time_remaining)} $remainingText",
-            fontSize = 18.sp,
+            fontSize = 16.sp,
             color = TextSecondary,
             fontFamily = FontFamily.Monospace
         )
         
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         
         LinearProgressIndicator(
             progress = { progress },
@@ -140,7 +143,33 @@ fun ChallengeScreen(
             trackColor = TrackColor
         )
         
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // 📻 Old-School Peace of Mind Section
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = DeepSurface.copy(alpha = 0.8f)),
+            border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.25f)),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(R.string.peace_of_mind_title),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = CyanGlow,
+                    modifier = Modifier.padding(bottom = 6.dp)
+                )
+                Text(
+                    text = stringResource(R.string.peace_of_mind_body),
+                    fontSize = 12.sp,
+                    color = TextSecondary,
+                    lineHeight = 18.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
         
         // Emergency Token Section
         Card(

@@ -69,4 +69,10 @@
     <string name="pin_remembered_success">🛡️ Shield locked successfully!\nTap ⚙️ then turn ON Always-On 🔘</string>
     <string name="always_on_banner">⚠️ Always-On VPN not enabled — Tap to activate</string>
     <string name="device_admin_description">Prevents app uninstallation during your offline challenge. You can easily uninstall it once the challenge ends.</string>
+    
+    <!-- Old-School Peace of Mind & Milestone -->
+    <string name="peace_of_mind_title">📻 Old-School Peace of Mind</string>
+    <string name="peace_of_mind_body">Phone calls and SMS messages work normally. Anyone reaching out right now is someone who genuinely needs you. Relax and embrace your uninterrupted focus!</string>
+    <string name="halfway_notification_title">⚡ Halfway There!</string>
+    <string name="halfway_notification_body">You\'ve conquered 50% of your challenge! Stay strong. (For emergencies, you can SMS me or reach out via web support for the unlock code).</string>
 </resources>
