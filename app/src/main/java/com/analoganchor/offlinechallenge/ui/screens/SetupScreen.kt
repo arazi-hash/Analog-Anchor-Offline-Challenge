@@ -17,7 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -97,8 +102,47 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(4.dp))
+
+                    val inlineContent = mapOf(
+                        "open_icon" to InlineTextContent(
+                            Placeholder(
+                                width = 11.sp,
+                                height = 11.sp,
+                                placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                            )
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_open_in_new),
+                                contentDescription = null,
+                                tint = CyanGlow,
+                                modifier = Modifier
+                                    .size(10.dp)
+                                    .padding(bottom = 1.dp)
+                            )
+                        }
+                    )
+
+                    val thinkAboutItAnnotated = remember(isAr) {
+                        buildAnnotatedString {
+                            append(if (isAr) "هذا التحدي الأوفلاين هو خطوتك الأولى لاستعادة انتباهك، وفهم ما يقتطعه الاتصال الدائم من حضورك الذهني. بعد انتهاء التحدي، يساعدك " else "This offline challenge is your first step to understand what constant connectivity costs your daily presence. After completing this challenge, ")
+                            withStyle(
+                                style = SpanStyle(
+                                    color = CyanGlow,
+                                    fontWeight = FontWeight.Bold,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            ) {
+                                append(if (isAr) "تطبيق Analog Anchor الرئيسي" else "the main Analog Anchor app")
+                                append(" ")
+                                appendInlineContent("open_icon", "[↗]")
+                            }
+                            append(if (isAr) " على بناء تحكّم واعٍ ومباشر في اتصالك — لتبقى في حالة حضور وتفاعل مقصود قبل أن يستحوذ الهاتف على يومك." else " helps you build conscious control over your connection—keeping you intentional before the screen takes over.")
+                        }
+                    }
+
                     Text(
-                        text = stringResource(R.string.think_about_it_body),
+                        text = thinkAboutItAnnotated,
+                        inlineContent = inlineContent,
                         fontSize = 11.sp,
                         color = TextSecondary,
                         textAlign = TextAlign.Center,
@@ -200,7 +244,7 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
 
                     Spacer(modifier = Modifier.height(6.dp))
 
-                    // WhatsApp Number
+                    // WhatsApp & SMS Number
                     val whatsappText = remember(isAr) {
                         buildAnnotatedString {
                             append("💬  ")
@@ -210,7 +254,7 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                                     fontWeight = FontWeight.Bold
                                 )
                             ) {
-                                append(if (isAr) "واتساب فقط: " else "WhatsApp only: ")
+                                append(if (isAr) "واتساب وSMS: " else "WhatsApp & SMS: ")
                                 append("\u200E+973 33371163")
                             }
                         }

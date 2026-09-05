@@ -1,29 +1,20 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in getDefaultProguardFile("proguard-android-optimize.txt").
+# Project specific ProGuard / R8 rules.
+# Appended to getDefaultProguardFile("proguard-android-optimize.txt").
 
-# Keep project classes & members
+# Keep project classes & members to guarantee 100% startup stability across all Android versions
 -keep class com.analoganchor.offlinechallenge.** { *; }
 -keepclassmembers class com.analoganchor.offlinechallenge.** { *; }
 
-# Keep Glance AppWidget classes & receivers
+# Keep Glance AppWidget classes & receivers (Glance 1.0 relies on internal reflection)
 -keep class androidx.glance.** { *; }
 -keepclassmembers class androidx.glance.** { *; }
 -keep class * extends android.appwidget.AppWidgetProvider { *; }
 
-# Keep Navigation and AndroidX Core lifecycle components
--keep class androidx.navigation.** { *; }
--keep class androidx.core.** { *; }
--keep class androidx.compose.** { *; }
-
-# Keep WorkManager & Room Database generated implementations (prevents WorkDatabase reflection crash)
+# WorkManager worker reflection support
 -keep class androidx.work.** { *; }
 -keepclassmembers class androidx.work.** { *; }
--keep class androidx.work.impl.** { *; }
--keepclassmembers class androidx.work.impl.** { *; }
--keep class androidx.room.** { *; }
--keepclassmembers class * extends androidx.room.RoomDatabase { *; }
-# Keep R class fields for RemoteViews & layout reflection
+
+# Keep R fields for RemoteViews widget layout reflection
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
@@ -31,4 +22,6 @@
 # Keep SplashScreen library classes
 -keep class androidx.core.splashscreen.** { *; }
 -dontwarn androidx.core.splashscreen.**
+
+
 

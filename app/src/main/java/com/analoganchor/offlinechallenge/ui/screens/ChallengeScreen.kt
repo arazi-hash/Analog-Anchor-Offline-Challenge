@@ -15,9 +15,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.analoganchor.offlinechallenge.R
@@ -42,6 +45,8 @@ fun ChallengeScreen(
     var tokenInput by remember { mutableStateOf("") }
     var tokenResult by remember { mutableStateOf("") }
     var requestStep by remember { mutableIntStateOf(challengePrefs.currentRequestStep) }
+    var isWifiOrDataOn by remember { mutableStateOf(false) }
+    var hasPassedHalfMinute by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -66,6 +71,13 @@ fun ChallengeScreen(
             val s = totalSec % 60
             remainingText = "${h}h ${m}m ${s}s"
 
+            val elapsed = System.currentTimeMillis() - challengePrefs.startTimeMillis
+            val passedHalfMin = elapsed >= 30 * 1000L
+            hasPassedHalfMinute = passedHalfMin
+            if (passedHalfMin) {
+                isWifiOrDataOn = com.analoganchor.offlinechallenge.util.NetworkHelper.isWifiOrDataActive(context)
+            }
+
             if (challengePrefs.isExpired()) {
                 onChallengeComplete()
                 break
@@ -78,11 +90,13 @@ fun ChallengeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Obsidian)
+            .statusBarsPadding()
+            .navigationBarsPadding()
             .padding(horizontal = 24.dp, vertical = 16.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         
         Text(
             text = stringResource(R.string.shield_active),
@@ -145,7 +159,7 @@ fun ChallengeScreen(
         
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 📻 Old-School Peace of Mind Section
+        // Reassurance & Battery Saving Section
         Card(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = DeepSurface.copy(alpha = 0.8f)),
@@ -153,19 +167,83 @@ fun ChallengeScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(Modifier.padding(16.dp)) {
+                val reassuranceText = remember(isAr) {
+                    buildAnnotatedString {
+                        append(if (isAr) "المكالمات الهاتفية والرسائل النصية القصيرة SMS تعمل بشكل طبيعي.. " else "Phone calls and SMS messages work normally. ")
+                        withStyle(
+                            style = SpanStyle(
+                                color = CyanGlow,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append(if (isAr) "من يتصل بك الآن هو شخص يحتاجك فعلاً وليس لمجرد تضييع الوقت." else "Anyone reaching out right now is someone who genuinely needs you.")
+                        }
+                        append(if (isAr) " استرخِ واستمتع بصفاء ذهنك!" else " Relax and embrace your uninterrupted focus!")
+                        append("\n\n")
+                        append(if (isAr) "لتوفير البطارية: نقترح إيقاف الواي فاي وبيانات الهاتف يدوياً؛ فالدرع يحجب الإنترنت بالكامل وإيقافهما يمنع استنزاف البطارية في البحث المستمر عن شبكات." else "Battery Saving Tip: We suggest manually turning off Wi-Fi and Mobile Data to conserve battery power, as the shield blocks internet access anyway.")
+                    }
+                }
+
                 Text(
-                    text = stringResource(R.string.peace_of_mind_title),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = CyanGlow,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                )
-                Text(
-                    text = stringResource(R.string.peace_of_mind_body),
+                    text = reassuranceText,
                     fontSize = 12.sp,
                     color = TextSecondary,
                     lineHeight = 18.sp
                 )
+
+                // Half-Minute Wi-Fi / Mobile Data Reminder (Only if 30 seconds elapsed)
+                if (hasPassedHalfMinute) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    if (isWifiOrDataOn) {
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = AmberWarning.copy(alpha = 0.12f),
+                            border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.5f)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Text(
+                                    text = stringResource(R.string.battery_reminder_inapp_warning),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = AmberWarning,
+                                    lineHeight = 17.sp
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                OutlinedButton(
+                                    onClick = { com.analoganchor.offlinechallenge.util.NetworkHelper.openNetworkSettings(context) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(8.dp),
+                                    border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.6f)),
+                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = AmberWarning),
+                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.open_network_settings),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = AmberWarning
+                                    )
+                                }
+                            }
+                        }
+                    } else {
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = CyanGlow.copy(alpha = 0.08f),
+                            border = BorderStroke(1.dp, CyanGlow.copy(alpha = 0.3f)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = stringResource(R.string.battery_reminder_inapp_ok),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = CyanGlow,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
 

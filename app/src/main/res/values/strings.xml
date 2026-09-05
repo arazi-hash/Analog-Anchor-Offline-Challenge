@@ -30,18 +30,40 @@
     <string name="request_step">رمز الطوارئ %d من 3</string>
     <string name="shield_active">درع الأوفلاين نشط</string>
     <string name="website_info">لمزيد من المعلومات، تفضل بزيارة get-analog-anchor.com</string>
-    <string name="whatsapp_support">واتساب فقط: &#x200E;+973 33371163</string>
-    <string name="support_note">الدعم متوفر عبر رسائل الواتساب فقط</string>
-    <string name="tip_offline_apps_title">🗺️ توصيات مهمة قبل البدء</string>
-    <string name="tip_offline_apps_body">يُنصح بتجهيز منظومة جوجل للأوفلاين (الخرائط الأوفلاين في Google Maps، وباقات الترجمة في Google Translate، وتطبيق Google AI Edge Gallery—أداة ذكاء اصطناعي محلي أوفلاين تعمل بدون إنترنت وبسلاسة حتى على أجهزة 6GB RAM) لئلا تبقى لديك أي حجّة للاتصال بالإنترنت أثناء التحدي!</string>
-    <string name="tip_nfc_title">💳 المدفوعات والبطاقات البنكية (NFC)</string>
-    <string name="tip_nfc_body">اطمئن، دفع الهاتف والبطاقات عبر NFC (مثل Google Wallet) يعمل بشكل طبيعي أوفلاين تماماً عند التسوق في السوبرماركت والمتاجر.</string>
+    <string name="whatsapp_support">واتساب ورسائل SMS: &#x200E;+973 33371163</string>
+    <string name="support_note">الدعم متوفر عبر الواتساب ورسائل SMS</string>
+    <string name="tip_no_excuse_title">حتى لا تبقى لديك أي حُجّة — نوصي بالتالي:</string>
+    <string name="tip_no_excuse_body">تجهيز منظومة جوجل للأوفلاين: تنزيل الخرائط الأوفلاين في Google Maps، وباقات الترجمة الأوفلاين في Google Translate، وتطبيق Google AI Edge Gallery (ذكاء اصطناعي محلي يعمل بدون إنترنت حتى على أجهزة 6GB RAM).\n\nاطمئن، دفع الهاتف والبطاقات عبر NFC (مثل Google Wallet) يعمل بشكل طبيعي أوفلاين تماماً عند التسوق في السوبرماركت والمتاجر.</string>
+    <string name="ecosystem_header">تجهيز منظومة جوجل للأوفلاين:</string>
+    <string name="eco_prefix">تجهيز منظومة جوجل للأوفلاين: تنزيل </string>
+    <string name="eco_maps">خرائط Google Maps أوفلاين</string>
+    <string name="eco_mid1">، وباقات </string>
+    <string name="eco_translate">ترجمة Google Translate أوفلاين</string>
+    <string name="eco_mid2">، وتطبيق </string>
+    <string name="eco_ai">Google AI Edge Gallery</string>
+    <string name="eco_suffix"> (ذكاء اصطناعي محلي يعمل بدون إنترنت حتى على أجهزة 6GB RAM).</string>
+    <string name="maps_offline_title">خرائط Google Maps (المناطق أوفلاين)</string>
+    <string name="translate_offline_title">ترجمة Google Translate (الباقات أوفلاين)</string>
+    <string name="ai_gallery_title">تطبيق Google AI Edge (ذكاء محلي 6GB+)</string>
+    <string name="action_tutorial">▶️ شرح التفعيل</string>
+    <string name="action_playstore">📲 متجر Play</string>
+    <string name="tip_nfc_assurance">اطمئن، دفع الهاتف والبطاقات عبر NFC (مثل Google Wallet) يعمل بشكل طبيعي أوفلاين تماماً عند التسوق في السوبرماركت والمتاجر.</string>
     <string name="tip_battery_title">🔋 توفير البطارية</string>
     <string name="tip_battery_body">نقترح إيقاف الواي فاي وبيانات الهاتف يدوياً لتوفير طاقة البطارية أثناء التحدي.</string>
+    <string name="share_commitment_button">📢 شارك حالة التزامك</string>
+    <string name="share_commitment_message">📵 أنا الآن أوفلاين وخارج التغطية الرقمية! قفلت هاتفي برمز التزام عشوائي لا أعرفه، ولن أتمكن من تصفح الإنترنت أو شبكات التواصل.\n\n📞 للضرورة القصوى: اتصل بي هاتفياً أو أرسل رسالة نصية قصيرة SMS (المكالمات والرسائل العادية تعمل كالمعتاد).\n\n🛡️ تحدي الأوفلاين — Offline أوفلاين:\n&#x200E;https://play.google.com/store/apps/details?id=com.analoganchor.offlinechallenge&amp;pcampaignid=web_share</string>
+    <string name="battery_reminder_notification_title">🔋 تذكير لتوفير البطارية</string>
+    <string name="battery_reminder_notification_body">الواي فاي أو بيانات الهاتف ما زالت قيد التشغيل. إيقافهما يدوياً يوفر طاقة البطارية أثناء التحدي.</string>
+    <string name="battery_reminder_inapp_warning">⚠️ الواي فاي أو بيانات الهاتف ما زالت مفعّلة — أوقفها لتوفير طاقة البطارية</string>
+    <string name="battery_reminder_inapp_ok">✅ تم إيقاف الواي فاي والبيانات — وضع حفظ البطارية الأقصى نشط</string>
+    <string name="open_network_settings">إعدادات الشبكة</string>
     
     <!-- Brand Philosophy & Promo Strings -->
     <string name="philosophy_quote">"قوة الإرادة مجرد وهم أمام خوارزميات بمليارات الدولارات. استعد انتباهك بقرار واحد تتخذه قبل أن يحصل الهاتف على صوتك."</string>
     <string name="think_about_it_title">🧠 اتخذ القرار مرة واحدة لحماية انتباهك</string>
+    <string name="think_about_it_prefix">هذا التحدي الأوفلاين هو خطوتك الأولى لاستعادة انتباهك، وفهم ما يقتطعه الاتصال الدائم من حضورك الذهني. بعد انتهاء التحدي، يساعدك </string>
+    <string name="think_about_it_highlight">تطبيق &#x200E;Analog Anchor&#x200E; الرئيسي</string>
+    <string name="think_about_it_suffix"> على بناء تحكّم واعٍ ومباشر في اتصالك — لتبقى في حالة حضور وتفاعل مقصود قبل أن يستحوذ الهاتف على يومك.</string>
     <string name="think_about_it_body">هذا التحدي الأوفلاين هو خطوتك الأولى لاستعادة انتباهك، وفهم ما يقتطعه الاتصال الدائم من حضورك الذهني. بعد انتهاء التحدي، يساعدك تطبيق &#x200E;Analog Anchor&#x200E; الرئيسي على بناء تحكّم واعٍ ومباشر في اتصالك — لتبقى في حالة حضور وتفاعل مقصود قبل أن يستحوذ الهاتف على يومك.</string>
     <string name="header_sovereignty_promo">💡 مستعد للسيادة الرقمية الدائمة؟ تطبيقنا الرئيسي &#x200E;Analog Anchor&#x200E; يعتمد نظام التزام مسبق وذكي — يعيد إليك التحكم الواعي والمباشر في وقت وكيفية اتصالك.</string>
     <string name="reclaimed_attention_title">🧘 استعدت انتباهك وحضورك الذهني</string>
@@ -49,16 +71,20 @@
     <string name="explore_analog_anchor">🌐 اكتشف &#x200E;Analog Anchor&#x200E; ←</string>
     
     <!-- Tip 4 Autostart -->
-    <string name="tip_autostart_title">⚡ تفعيل الدفاع في الخلفية (موصى به)</string>
-    <string name="tip_autostart_body">لضمان استمرار الحماية التلقائية بعد إعادة تشغيل الهاتف وفي وضع توفير البطارية، يُفضل السماح بالتشغيل التلقائي في الخلفية.</string>
+    <string name="tip_autostart_title">تفعيل الدفاع في الخلفية</string>
+    <string name="tip_autostart_body">لضمان استمرار الحماية التلقائية بعد إعادة تشغيل الهاتف وفي وضع توفير البطارية، يُشترط تفعيل الدفاع في الخلفية لبدء التحدي.</string>
     <string name="tip_autostart_button">تفعيل الدفاع التلقائي</string>
     <string name="tip_autostart_active">✅ الدفاع التلقائي مفعّل ونشط</string>
     <string name="tip_autostart_already_active_toast">✅ الدفاع التلقائي في الخلفية مفعّل بالفعل ونشط!</string>
+    <string name="tip_autostart_required_badge">⚠️ خطوة إلزامية لبدء التحدي</string>
+    <string name="tip_autostart_required_btn">يجب تفعيل الدفاع في الخلفية أولاً</string>
     
     <!-- Device Admin & Commitment PIN -->
     <string name="disclosure_title">🛡️ حماية الدرع المتقدمة</string>
     <string name="disclosure_body">يطلب التطبيق صلاحية مسؤول الجهاز فقط لمنع إلغاء التثبيت أثناء التحدي. يمكنك الخروج في أي وقت عبر رمز الطوارئ من الدعم الفني.</string>
-    <string name="pin_setup_title">🎲 حدد رمز الالتزام</string>
+    <string name="share_and_pin_title">شارك حالة الالتزام وحدد رمزك</string>
+    <string name="share_pill_label">شارك الحالة</string>
+    <string name="pin_setup_title">حدد رمز الالتزام</string>
     <string name="pin_setup_hint">اضغط ٤ أرقام عشوائياً دون النظر إليها</string>
     <string name="pin_lock_start">🔒 قفل وبدء التحدي</string>
     <string name="pin_activate_title">🔐 تفعيل الحماية الدائمة</string>
@@ -70,9 +96,13 @@
     <string name="always_on_banner">⚠️ الحماية الدائمة (Always-On VPN) غير مفعّلة — اضغط للتفعيل</string>
     <string name="device_admin_description">تمنع إلغاء تثبيت التطبيق أثناء تحدي الأوفلاين، ويمكنك حذفه بسهولة بعد انتهاء التحدي.</string>
     
-    <!-- Old-School Peace of Mind & Milestone -->
-    <string name="peace_of_mind_title">📻 هدوء الزمن الجميل</string>
-    <string name="peace_of_mind_body">المكالمات الهاتفية والرسائل النصية القصيرة تعمل بشكل طبيعي.. من يتصل بك الآن هو شخص يحتاجك فعلاً وليس لمجرد تضييع الوقت. استرخِ واستمتع بصفاء ذهنك وتركيزك!</string>
+    <!-- Peace of Mind & Reassurance -->
+    <string name="reassurance_prefix">المكالمات الهاتفية والرسائل النصية القصيرة SMS تعمل بشكل طبيعي.. </string>
+    <string name="reassurance_highlight">من يتصل بك الآن هو شخص يحتاجك فعلاً وليس لمجرد تضييع الوقت.</string>
+    <string name="reassurance_suffix"> استرخِ واستمتع بصفاء ذهنك!</string>
+    <string name="battery_tip_body">لتوفير البطارية: نقترح إيقاف الواي فاي وبيانات الهاتف يدوياً؛ فالدرع يحجب الإنترنت بالكامل وإيقافهما يمنع استنزاف البطارية في البحث المستمر عن شبكات.</string>
+    <string name="peace_of_mind_title">هدوء الزمن الجميل وتوفير البطارية</string>
+    <string name="peace_of_mind_body">المكالمات الهاتفية والرسائل النصية القصيرة SMS تعمل بشكل طبيعي.. من يتصل بك الآن هو شخص يحتاجك فعلاً وليس لمجرد تضييع الوقت. استرخِ واستمتع بصفاء ذهنك!\n\nلتوفير البطارية: نقترح إيقاف الواي فاي وبيانات الهاتف يدوياً؛ فالدرع يحجب الإنترنت بالكامل وإيقافهما يمنع استنزاف البطارية في البحث المستمر عن شبكات.</string>
     <string name="halfway_notification_title">⚡ قطعت نصف المسافة بنجاح!</string>
     <string name="halfway_notification_body">أنت في منتصف التحدي، واصل الصمود! (للطوارئ يمكنك مراسلتي عبر رسالة نصية قصيرة SMS أو عبر الموقع لطلب رمز الدعم).</string>
 </resources>

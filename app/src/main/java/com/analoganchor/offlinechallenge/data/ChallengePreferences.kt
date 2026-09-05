@@ -23,6 +23,7 @@ class ChallengePreferences(context: Context) {
         private const val KEY_ALWAYS_ON_ACTIVATED = "always_on_vpn_activated"
         private const val KEY_DEVICE_ADMIN_ACTIVE = "device_admin_active"
         private const val KEY_HALFWAY_NOTIFIED = "challenge_halfway_notified"
+        private const val KEY_BATTERY_REMINDER_SENT = "battery_reminder_sent"
     }
 
     private val directContext: Context = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -156,6 +157,10 @@ class ChallengePreferences(context: Context) {
         get() = prefs.getBoolean(KEY_HALFWAY_NOTIFIED, false)
         set(value) = prefs.edit().putBoolean(KEY_HALFWAY_NOTIFIED, value).apply()
 
+    var isBatteryReminderSent: Boolean
+        get() = prefs.getBoolean(KEY_BATTERY_REMINDER_SENT, false)
+        set(value) = prefs.edit().putBoolean(KEY_BATTERY_REMINDER_SENT, value).apply()
+
     fun setCommitmentPin(pin: String) {
         val hash = hashPin(pin)
         prefs.edit().putString(KEY_COMMITMENT_PIN_HASH, hash).apply()
@@ -193,6 +198,7 @@ class ChallengePreferences(context: Context) {
             .putInt("challenge_discount_amount", amount)
             .putBoolean("completed_pending_show", false)
             .putBoolean(KEY_HALFWAY_NOTIFIED, false)
+            .putBoolean(KEY_BATTERY_REMINDER_SENT, false)
         if (!pin.isNullOrEmpty()) {
             editor.putString(KEY_COMMITMENT_PIN_HASH, hashPin(pin))
         }
@@ -206,6 +212,7 @@ class ChallengePreferences(context: Context) {
             .remove(KEY_COMMITMENT_PIN_HASH)
             .putBoolean(KEY_ALWAYS_ON_ACTIVATED, false)
             .putBoolean(KEY_HALFWAY_NOTIFIED, false)
+            .putBoolean(KEY_BATTERY_REMINDER_SENT, false)
             .apply()
     }
 

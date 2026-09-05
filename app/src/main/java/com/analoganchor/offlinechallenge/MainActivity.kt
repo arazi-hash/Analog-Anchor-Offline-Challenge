@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
             config.setLocale(locale)
             config.setLayoutDirection(locale)
             newBase.createConfigurationContext(config)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             newBase
         }
         super.attachBaseContext(contextToAttach)
@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
             installSplashScreen()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Ignore splashscreen initialization errors on custom ROMs
         }
         super.onCreate(savedInstanceState)

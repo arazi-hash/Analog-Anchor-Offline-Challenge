@@ -30,18 +30,40 @@
     <string name="request_step">Emergency code %d of 3</string>
     <string name="shield_active">Offline Shield is Active</string>
     <string name="website_info">For more information, visit get-analog-anchor.com</string>
-    <string name="whatsapp_support">WhatsApp only: +973 33371163</string>
-    <string name="support_note">Support available via WhatsApp messages only</string>
-    <string name="tip_offline_apps_title">🗺️ Recommended Pre-Challenge Downloads</string>
-    <string name="tip_offline_apps_body">We recommend setting up Google’s offline ecosystem (Google Maps offline areas, Google Translate, and Google AI Edge Gallery—a powerful local offline AI tool that runs smoothly even on 6GB RAM devices) leaving you with no excuse to access the internet!</string>
-    <string name="tip_nfc_title">💳 NFC &amp; Bank Card Payments</string>
-    <string name="tip_nfc_body">Rest assured, your phone\'s NFC bank card payments (Google Wallet / POS) work completely fine offline at supermarkets and stores!</string>
+    <string name="whatsapp_support">WhatsApp &amp; SMS: +973 33371163</string>
+    <string name="support_note">Support available via WhatsApp and SMS</string>
+    <string name="tip_no_excuse_title">So You Have No Excuse — We Recommend:</string>
+    <string name="tip_no_excuse_body">Download Google offline ecosystem: Prepare Google Maps offline areas, Google Translate offline packages, and Google AI Edge Gallery (local on-device AI) run smoothly even on 6GB RAM devices.\n\nRest assured, your phone\'s NFC bank card payments (Google Wallet / POS) work completely fine offline at supermarkets and stores!</string>
+    <string name="ecosystem_header">Download Google offline ecosystem:</string>
+    <string name="eco_prefix">Download Google offline ecosystem: Prepare </string>
+    <string name="eco_maps">Google Maps offline areas</string>
+    <string name="eco_mid1">, </string>
+    <string name="eco_translate">Google Translate offline packages</string>
+    <string name="eco_mid2">, and </string>
+    <string name="eco_ai">Google AI Edge Gallery</string>
+    <string name="eco_suffix"> (local on-device AI) run smoothly even on 6GB RAM devices.</string>
+    <string name="maps_offline_title">Google Maps (Offline Areas)</string>
+    <string name="translate_offline_title">Google Translate (Offline Packages)</string>
+    <string name="ai_gallery_title">Google AI Edge Gallery (Local AI 6GB+)</string>
+    <string name="action_tutorial">▶️ Quick Tutorial</string>
+    <string name="action_playstore">📲 Play Store</string>
+    <string name="tip_nfc_assurance">Rest assured, your phone\'s NFC bank card payments (Google Wallet / POS) work completely fine offline at supermarkets and stores!</string>
     <string name="tip_battery_title">🔋 Battery Saving Tip</string>
     <string name="tip_battery_body">We suggest manually turning off Wi-Fi and Mobile Data to conserve battery power during the challenge.</string>
+    <string name="share_commitment_button">📢 Share Commitment Status</string>
+    <string name="share_commitment_message">📵 I am officially going offline! I just locked my phone with a random commitment PIN that I don\'t know, so I cannot browse the web or use social apps.\n\n📞 If you need to reach me urgently, please CALL me or send an SMS—phone calls and text messages work normally!\n\n🛡️ Locked with Offline أوفلاين challenge:\nhttps://play.google.com/store/apps/details?id=com.analoganchor.offlinechallenge&amp;pcampaignid=web_share</string>
+    <string name="battery_reminder_notification_title">🔋 Battery Saving Reminder</string>
+    <string name="battery_reminder_notification_body">Wi-Fi or Mobile Data is still on. Turning them off manually will conserve your battery during the challenge.</string>
+    <string name="battery_reminder_inapp_warning">⚠️ Wi-Fi or Mobile Data is still on — turn off to conserve battery</string>
+    <string name="battery_reminder_inapp_ok">✅ Wi-Fi &amp; Data off — Maximum battery conservation active</string>
+    <string name="open_network_settings">Network Settings</string>
     
     <!-- Brand Philosophy & Promo Strings -->
     <string name="philosophy_quote">"Willpower is a myth against trillion-dollar algorithms. Take back your attention by deciding once before the screen gets a vote."</string>
     <string name="think_about_it_title">🧠 Decide Once for Your Attention</string>
+    <string name="think_about_it_prefix">This offline challenge is your first step to understand what constant connectivity costs your daily presence. After completing this challenge, </string>
+    <string name="think_about_it_highlight">the main Analog Anchor app</string>
+    <string name="think_about_it_suffix"> helps you build conscious control over your connection—keeping you intentional before the screen takes over.</string>
     <string name="think_about_it_body">This offline challenge is your first step to understand what constant connectivity costs your daily presence. After completing this challenge, the main Analog Anchor app helps you build conscious control over your connection—keeping you intentional before the screen takes over.</string>
     <string name="header_sovereignty_promo">💡 Ready for digital sovereignty? Our main Analog Anchor app gives you physical pre-commitment—putting you in intentional, conscious control of when and how you connect.</string>
     <string name="reclaimed_attention_title">🧘 Your Attention Has Been Reclaimed</string>
@@ -49,16 +71,20 @@
     <string name="explore_analog_anchor">🌐 Explore Analog Anchor →</string>
     
     <!-- Tip 4 Autostart -->
-    <string name="tip_autostart_title">⚡ Background Shield Defense (Recommended)</string>
-    <string name="tip_autostart_body">To ensure automatic protection persists across reboots and battery saver mode, enable background autostart.</string>
+    <string name="tip_autostart_title">Background Shield Defense</string>
+    <string name="tip_autostart_body">To ensure automatic protection persists across reboots and battery saver mode, background defense is required to start the challenge.</string>
     <string name="tip_autostart_button">Enable Background Defense</string>
     <string name="tip_autostart_active">✅ Background Defense Active</string>
     <string name="tip_autostart_already_active_toast">✅ Background Defense is already enabled and active!</string>
+    <string name="tip_autostart_required_badge">⚠️ Mandatory step to start challenge</string>
+    <string name="tip_autostart_required_btn">Enable Background Defense First</string>
     
     <!-- Device Admin & Commitment PIN -->
     <string name="disclosure_title">🛡️ Advanced Shield Protection</string>
     <string name="disclosure_body">This app requests Device Admin permission solely to prevent uninstallation during your challenge. You can always exit via the emergency support code.</string>
-    <string name="pin_setup_title">🎲 Set Your Commitment PIN</string>
+    <string name="share_and_pin_title">Share Commitment Status \u0026 Set Your PIN</string>
+    <string name="share_pill_label">Share Status</string>
+    <string name="pin_setup_title">Set Your Commitment PIN</string>
     <string name="pin_setup_hint">Press 4 random digits without looking</string>
     <string name="pin_lock_start">🔒 Lock \u0026 Start Challenge</string>
     <string name="pin_activate_title">🔐 Activate Permanent Protection</string>
@@ -70,9 +96,13 @@
     <string name="always_on_banner">⚠️ Always-On VPN not enabled — Tap to activate</string>
     <string name="device_admin_description">Prevents app uninstallation during your offline challenge. You can easily uninstall it once the challenge ends.</string>
     
-    <!-- Old-School Peace of Mind & Milestone -->
-    <string name="peace_of_mind_title">📻 Old-School Peace of Mind</string>
-    <string name="peace_of_mind_body">Phone calls and SMS messages work normally. Anyone reaching out right now is someone who genuinely needs you. Relax and embrace your uninterrupted focus!</string>
+    <!-- Peace of Mind & Reassurance -->
+    <string name="reassurance_prefix">Phone calls and SMS messages work normally. </string>
+    <string name="reassurance_highlight">Anyone reaching out right now is someone who genuinely needs you.</string>
+    <string name="reassurance_suffix"> Relax and embrace your uninterrupted focus!</string>
+    <string name="battery_tip_body">Battery Saving Tip: We suggest manually turning off Wi-Fi and Mobile Data to conserve battery power, as the shield blocks internet access anyway.</string>
+    <string name="peace_of_mind_title">Old-School Peace of Mind &amp; Battery Saving</string>
+    <string name="peace_of_mind_body">Phone calls and SMS messages work normally. Anyone reaching out right now is someone who genuinely needs you. Relax and embrace your uninterrupted focus!\n\nBattery Saving Tip: We suggest manually turning off Wi-Fi and Mobile Data to conserve battery power, as the shield blocks internet access anyway.</string>
     <string name="halfway_notification_title">⚡ Halfway There!</string>
     <string name="halfway_notification_body">You\'ve conquered 50% of your challenge! Stay strong. (For emergencies, you can SMS me or reach out via web support for the unlock code).</string>
 </resources>

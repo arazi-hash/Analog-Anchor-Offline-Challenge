@@ -156,6 +156,16 @@ class MyVpnService : VpnService() {
                 }
                 val progress = prefs.getProgress()
                 val remaining = prefs.getRemainingMillis()
+                val elapsed = System.currentTimeMillis() - prefs.startTimeMillis
+
+                // Half-minute (30s) check: remind user to turn off Wi-Fi/Data only if they haven't turned them off
+                if (elapsed >= 30 * 1000L && !prefs.isBatteryReminderSent) {
+                    if (com.analoganchor.offlinechallenge.util.NetworkHelper.isWifiOrDataActive(this@MyVpnService)) {
+                        prefs.isBatteryReminderSent = true
+                        showBatteryReminderNotification()
+                    }
+                }
+
                 if (progress >= 0.5f && !prefs.isHalfwayNotified) {
                     prefs.isHalfwayNotified = true
                     showHalfwayNotification()
@@ -340,6 +350,61 @@ class MyVpnService : VpnService() {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to vibrate for halfway milestone: ${e.message}")
+        }
+    }
+
+    private fun showBatteryReminderNotification() {
+        val locContext = getLocalizedContext()
+        val manager = getSystemService(NotificationManager::class.java)
+
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val title = locContext.getString(R.string.battery_reminder_notification_title)
+        val body = locContext.getString(R.string.battery_reminder_notification_body)
+
+        val notification = Notification.Builder(this, COMPLETION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(Notification.BigTextStyle().bigText(body))
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        manager.notify(4, notification)
+        triggerBatteryReminderVibration()
+    }
+
+    private fun triggerBatteryReminderVibration() {
+        try {
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vibratorManager?.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            }
+            if (vibrator == null || !vibrator.hasVibrator()) return
+
+            val pattern = longArrayOf(0, 300, 150, 300)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createWaveform(
+                    pattern,
+                    intArrayOf(0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE),
+                    -1
+                ))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(pattern, -1)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to vibrate for battery reminder: ${e.message}")
         }
     }
 
