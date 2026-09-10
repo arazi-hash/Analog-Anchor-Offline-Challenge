@@ -125,6 +125,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         challengePrefs = ChallengePreferences(this)
+        handleIncomingIntent(intent)
 
         // Check Notification Permission for Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -411,6 +412,7 @@ class MainActivity : ComponentActivity() {
                     challengePrefs = challengePrefs,
                     onOpenVpnSettings = { openVpnSettings(this@MainActivity) },
                     onEmergencyUnlock = {
+                        challengePrefs.broadcastPartnerCompletionToAnalogAnchor(this@MainActivity, isSuccess = false)
                         stopVpnService()
                         removeDeviceAdmin()
                         challengePrefs.endChallenge()
@@ -419,6 +421,7 @@ class MainActivity : ComponentActivity() {
                         }
                     },
                     onChallengeComplete = {
+                        challengePrefs.broadcastPartnerCompletionToAnalogAnchor(this@MainActivity, isSuccess = true)
                         stopVpnService()
                         removeDeviceAdmin()
                         challengePrefs.endChallenge()
@@ -564,6 +567,45 @@ class MainActivity : ComponentActivity() {
         window.decorView.postDelayed({
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         }, 4400)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncomingIntent(intent)
+    }
+
+    private fun handleIncomingIntent(intent: Intent?) {
+        if (intent == null) return
+        val challengeType = intent.getStringExtra("EXTRA_CHALLENGE_TYPE")
+        if (challengeType == "PARTNER_OUTDOOR" || intent.action == "com.analoganchor.action.START_PARTNER_CHALLENGE") {
+            val partnerName = intent.getStringExtra("EXTRA_PARTNER_NAME") ?: "Anchor Partner"
+            val sessionId = intent.getStringExtra("EXTRA_SESSION_ID") ?: System.currentTimeMillis().toString()
+            val durationMinutes = intent.getIntExtra("EXTRA_DURATION_MINUTES", 60)
+            val durationMs = durationMinutes * 60 * 1000L
+
+            if (!challengePrefs.isActive) {
+                pendingDurationMs = durationMs
+                requestVpnPermission {
+                    challengePrefs.startPartnerChallenge(durationMs, partnerName, sessionId)
+                    challengePrefs.isAlwaysOnVpnActivated = true
+                    startVpnService()
+                    val isAr = challengePrefs.language == "ar"
+                    Toast.makeText(
+                        this,
+                        if (isAr) "🤝 تم تفعيل درع الروتين الخارجي المشترك مع $partnerName!"
+                        else "🤝 Partner Outdoor Routine Shield Activated with $partnerName!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else {
+                if (!challengePrefs.isPartnerSession) {
+                    challengePrefs.isPartnerSession = true
+                    challengePrefs.partnerName = partnerName
+                    challengePrefs.partnerSessionId = sessionId
+                }
+            }
+        }
     }
 }
 

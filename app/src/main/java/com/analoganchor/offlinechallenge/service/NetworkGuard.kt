@@ -97,6 +97,7 @@ object NetworkGuard {
 
         if (prefs.isExpired()) {
             Log.d(TAG, "NetworkGuard: Challenge expired, cleaning up")
+            prefs.broadcastPartnerCompletionToAnalogAnchor(context, isSuccess = true)
             prefs.endChallenge()
             prefs.isCompletedPendingShow = true
             unregister(context)

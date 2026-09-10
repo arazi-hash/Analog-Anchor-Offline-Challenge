@@ -63,6 +63,7 @@ class VpnGuardWorker(
         // Challenge expired while phone was off or app was killed
         if (prefs.isExpired()) {
             Log.d(TAG, "Guard: Challenge expired, cleaning up")
+            prefs.broadcastPartnerCompletionToAnalogAnchor(applicationContext, isSuccess = true)
             prefs.endChallenge()
             prefs.isCompletedPendingShow = true
             cancel(applicationContext)

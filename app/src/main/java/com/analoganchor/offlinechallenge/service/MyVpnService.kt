@@ -135,6 +135,7 @@ class MyVpnService : VpnService() {
                 delay(1_000)
                 if (prefs.isExpired()) {
                     // Challenge timer expired — auto-stop
+                    prefs.broadcastPartnerCompletionToAnalogAnchor(this@MyVpnService, isSuccess = true)
                     prefs.endChallenge()
                     prefs.isCompletedPendingShow = true
                     try {

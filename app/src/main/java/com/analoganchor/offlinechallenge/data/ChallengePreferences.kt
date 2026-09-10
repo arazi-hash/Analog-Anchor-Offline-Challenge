@@ -24,6 +24,9 @@ class ChallengePreferences(context: Context) {
         private const val KEY_DEVICE_ADMIN_ACTIVE = "device_admin_active"
         private const val KEY_HALFWAY_NOTIFIED = "challenge_halfway_notified"
         private const val KEY_BATTERY_REMINDER_SENT = "battery_reminder_sent"
+        private const val KEY_IS_PARTNER_SESSION = "is_partner_session"
+        private const val KEY_PARTNER_NAME = "partner_name"
+        private const val KEY_PARTNER_SESSION_ID = "partner_session_id"
     }
 
     private val directContext: Context = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -184,6 +187,18 @@ class ChallengePreferences(context: Context) {
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
+    var isPartnerSession: Boolean
+        get() = prefs.getBoolean(KEY_IS_PARTNER_SESSION, false)
+        set(value) = prefs.edit().putBoolean(KEY_IS_PARTNER_SESSION, value).apply()
+
+    var partnerName: String
+        get() = prefs.getString(KEY_PARTNER_NAME, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_PARTNER_NAME, value).apply()
+
+    var partnerSessionId: String
+        get() = prefs.getString(KEY_PARTNER_SESSION_ID, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_PARTNER_SESSION_ID, value).apply()
+
     /** Start a new challenge. Does NOT reset emergency request state as it is a global limit. */
     fun startChallenge(durationMs: Long, pin: String? = null) {
         val now = System.currentTimeMillis()
@@ -205,6 +220,43 @@ class ChallengePreferences(context: Context) {
         editor.apply()
     }
 
+    /** Start a partner challenge initiated from Analog Anchor. */
+    fun startPartnerChallenge(durationMs: Long, partner: String, sessionId: String) {
+        startChallenge(durationMs)
+        prefs.edit()
+            .putBoolean(KEY_IS_PARTNER_SESSION, true)
+            .putString(KEY_PARTNER_NAME, partner)
+            .putString(KEY_PARTNER_SESSION_ID, sessionId)
+            .apply()
+    }
+
+    /** Extend an active challenge by additional milliseconds (e.g. +1h, +3h, +5h) */
+    fun extendChallenge(additionalMs: Long) {
+        if (!isActive) return
+        val currentEnd = endTimeMillis
+        val newEnd = currentEnd + additionalMs
+        val currentDuration = durationMillis
+        prefs.edit()
+            .putLong(KEY_END_TIME, newEnd)
+            .putLong(KEY_DURATION_MS, currentDuration + additionalMs)
+            .apply()
+    }
+
+    /** Send completion broadcast to Analog Anchor */
+    fun broadcastPartnerCompletionToAnalogAnchor(context: Context, isSuccess: Boolean = true) {
+        if (!isPartnerSession) return
+        val elapsedMs = System.currentTimeMillis() - startTimeMillis
+        val elapsedMinutes = (elapsedMs / (60 * 1000L)).toInt().coerceAtLeast(1)
+        val intent = android.content.Intent("com.analoganchor.app.ACTION_PARTNER_CHALLENGE_COMPLETED").apply {
+            setPackage("com.analoganchor.app")
+            putExtra("EXTRA_SESSION_ID", partnerSessionId)
+            putExtra("EXTRA_DURATION_MINUTES", elapsedMinutes)
+            putExtra("EXTRA_PARTNER_NAME", partnerName)
+            putExtra("EXTRA_SUCCESS", isSuccess)
+        }
+        context.sendBroadcast(intent)
+    }
+
     /** End the challenge and clear PIN/protection states. */
     fun endChallenge() {
         prefs.edit()
@@ -213,6 +265,9 @@ class ChallengePreferences(context: Context) {
             .putBoolean(KEY_ALWAYS_ON_ACTIVATED, false)
             .putBoolean(KEY_HALFWAY_NOTIFIED, false)
             .putBoolean(KEY_BATTERY_REMINDER_SENT, false)
+            .putBoolean(KEY_IS_PARTNER_SESSION, false)
+            .remove(KEY_PARTNER_NAME)
+            .remove(KEY_PARTNER_SESSION_ID)
             .apply()
     }
 

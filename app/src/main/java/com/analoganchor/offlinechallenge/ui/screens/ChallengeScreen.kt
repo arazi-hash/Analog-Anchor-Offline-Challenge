@@ -48,6 +48,10 @@ fun ChallengeScreen(
     var isWifiOrDataOn by remember { mutableStateOf(false) }
     var hasPassedHalfMinute by remember { mutableStateOf(false) }
 
+    var showPartnerPromptDialog by remember { mutableStateOf(false) }
+    var hasPromptedPartnerHour by remember { mutableStateOf(false) }
+    var partnerElapsedMinutes by remember { mutableIntStateOf(0) }
+
     LaunchedEffect(Unit) {
         while (true) {
             val active = challengePrefs.isActive
@@ -78,6 +82,15 @@ fun ChallengeScreen(
                 isWifiOrDataOn = com.analoganchor.offlinechallenge.util.NetworkHelper.isWifiOrDataActive(context)
             }
 
+            if (challengePrefs.isPartnerSession) {
+                val elapsedMins = (elapsed / 60000L).toInt()
+                partnerElapsedMinutes = elapsedMins
+                if (!hasPromptedPartnerHour && (elapsedMins >= 60 || challengePrefs.isExpired())) {
+                    hasPromptedPartnerHour = true
+                    showPartnerPromptDialog = true
+                }
+            }
+
             if (challengePrefs.isExpired()) {
                 onChallengeComplete()
                 break
@@ -104,6 +117,175 @@ fun ChallengeScreen(
             fontWeight = FontWeight.Bold,
             color = CyanGlow
         )
+
+        // Partner Hangout Card (When launched from Analog Anchor JOIN)
+        if (challengePrefs.isPartnerSession) {
+            val canConclude = partnerElapsedMinutes >= 60 || challengePrefs.isExpired()
+            val minutesLeft = (60 - partnerElapsedMinutes).coerceAtLeast(0)
+
+            Spacer(modifier = Modifier.height(14.dp))
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = DeepSurface),
+                border = BorderStroke(1.5.dp, CyanGlow),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(text = "🤝", fontSize = 20.sp)
+                        Text(
+                            text = if (isAr) "مشوار السكينة المشترك" else "Partner Sanctuary Outing",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = CyanGlow
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = if (isAr) "مع: ${challengePrefs.partnerName}" else "With: ${challengePrefs.partnerName}",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = TextPrimary
+                    )
+                    Text(
+                        text = if (isAr) "حضور حقيقي بدون شاشات يضاعف تركيزك ويستوفي حصتك الأسبوعية"
+                        else "Real physical presence without screens halves weekly quota",
+                        fontSize = 11.sp,
+                        color = TextSecondary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                    )
+
+                    if (!canConclude) {
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = AmberWarning.copy(alpha = 0.12f),
+                            border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.5f)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(12.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = if (isAr) "⏳ باقي $minutesLeft دقيقة لتوثيق الجلسة وكسب +50 نقطة"
+                                    else "⏳ $minutesLeft min remaining to earn +50 PTS",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = AmberWarning,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = if (isAr) "درع الحظر نشط لمنع استخدام الهاتف أثناء اللقاء"
+                                    else "Shield is actively maintaining digital presence",
+                                    fontSize = 10.sp,
+                                    color = TextSecondary,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    } else {
+                        Button(
+                            onClick = { showPartnerPromptDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
+                        ) {
+                            Text(
+                                text = if (isAr) "🎯 خيارات إنهاء أو تمديد الجلسة (+50 نقطة)" else "🎯 Conclude or Extend (+50 PTS)",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Obsidian
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // 1-Hour Partner Milestone Prompt Modal (Loophole Protected)
+        if (showPartnerPromptDialog && challengePrefs.isPartnerSession) {
+            AlertDialog(
+                onDismissRequest = { showPartnerPromptDialog = false },
+                title = {
+                    Text(
+                        text = if (isAr) "🎯 اكتمال ساعة مشوار السكينة!" else "🎯 1-Hour Milestone Completed!",
+                        fontWeight = FontWeight.Bold,
+                        color = CyanGlow
+                    )
+                },
+                text = {
+                    Text(
+                        text = if (isAr) "أحسنتما! قضيتما ساعة كاملة بحضور حقيقي بدون تشتيت الهواتف. يمكنكما تمديد الجلسة أو إنهاؤها وحصد 50 نقطة لرصيد Analog Anchor."
+                        else "Great job! You spent an hour completely present. You can extend your session or conclude and claim +50 PTS for Analog Anchor.",
+                        color = TextPrimary
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showPartnerPromptDialog = false
+                            challengePrefs.broadcastPartnerCompletionToAnalogAnchor(context, isSuccess = true)
+                            android.widget.Toast.makeText(
+                                context,
+                                if (isAr) "🎉 تم توثيق مشوار السكينة وإرسال +50 نقطة لـ Analog Anchor!"
+                                else "🎉 Outing completed! +50 PTS credited to Analog Anchor!",
+                                android.widget.Toast.LENGTH_LONG
+                            ).show()
+                            onChallengeComplete()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
+                    ) {
+                        Text(
+                            text = if (isAr) "إنهاء وحصد 50 نقطة 🎯" else "Conclude & Claim +50 PTS 🎯",
+                            color = Obsidian,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                dismissButton = {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(
+                            onClick = {
+                                challengePrefs.extendChallenge(1 * 3600 * 1000L)
+                                showPartnerPromptDialog = false
+                                android.widget.Toast.makeText(
+                                    context,
+                                    if (isAr) "تم تمديد الجلسة +1 ساعة!" else "Extended session by +1 hour!",
+                                    android.widget.Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            border = BorderStroke(1.dp, CyanGlow)
+                        ) {
+                            Text("+1h", color = CyanGlow, fontWeight = FontWeight.Bold)
+                        }
+                        OutlinedButton(
+                            onClick = {
+                                challengePrefs.extendChallenge(2 * 3600 * 1000L)
+                                showPartnerPromptDialog = false
+                                android.widget.Toast.makeText(
+                                    context,
+                                    if (isAr) "تم تمديد الجلسة +2 ساعة!" else "Extended session by +2 hours!",
+                                    android.widget.Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            border = BorderStroke(1.dp, CyanGlow)
+                        ) {
+                            Text("+2h", color = CyanGlow, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                },
+                containerColor = DeepSurface,
+                shape = RoundedCornerShape(16.dp)
+            )
+        }
 
         // Always-On VPN reminder banner
         if (!challengePrefs.isAlwaysOnVpnActivated) {
