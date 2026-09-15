@@ -12,13 +12,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import android.app.Activity
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -39,6 +46,7 @@ fun ChallengeScreen(
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     val isAr = challengePrefs.language == "ar"
     var progress by remember { mutableFloatStateOf(challengePrefs.getProgress()) }
     var remainingText by remember { mutableStateOf("") }
@@ -463,7 +471,17 @@ fun ChallengeScreen(
                         fontSize = 13.sp,
                         textAlign = TextAlign.Start
                     ),
-                    maxLines = 3
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        autoCorrectEnabled = false
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            focusManager.clearFocus()
+                        }
+                    )
                 )
                 
                 Text(
@@ -475,7 +493,16 @@ fun ChallengeScreen(
 
                 Button(
                     onClick = {
+                        // Immediately auto-hide keyboard and release focus so it disappears completely
                         keyboardController?.hide()
+                        focusManager.clearFocus()
+                        try {
+                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                            (context as? Activity)?.currentFocus?.let { v ->
+                                imm?.hideSoftInputFromWindow(v.windowToken, 0)
+                            }
+                        } catch (_: Exception) {}
+
                         val decoded = TokenDecoder.decode(tokenInput.trim())
                         if (decoded == null) {
                             tokenResult = context.getString(R.string.token_rejected)
