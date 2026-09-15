@@ -105,4 +105,9 @@
     <string name="peace_of_mind_body">المكالمات الهاتفية والرسائل النصية القصيرة SMS تعمل بشكل طبيعي.. من يتصل بك الآن هو شخص يحتاجك فعلاً وليس لمجرد تضييع الوقت. استرخِ واستمتع بصفاء ذهنك!\n\nلتوفير البطارية: نقترح إيقاف الواي فاي وبيانات الهاتف يدوياً؛ فالدرع يحجب الإنترنت بالكامل وإيقافهما يمنع استنزاف البطارية في البحث المستمر عن شبكات.</string>
     <string name="halfway_notification_title">⚡ قطعت نصف المسافة بنجاح!</string>
     <string name="halfway_notification_body">أنت في منتصف التحدي، واصل الصمود! (للطوارئ يمكنك مراسلتي عبر رسالة نصية قصيرة SMS أو عبر الموقع لطلب رمز الدعم).</string>
+
+    <!-- Always-On Deactivation on Completion -->
+    <string name="turn_off_always_on_title">⚠️ استعادة شبكة الـ VPN وتطبيقات حظر الإعلانات</string>
+    <string name="turn_off_always_on_body">إذا قمت بتفعيل «التغطية الدائمة (Always-On VPN)» أثناء التحدي، يُرجى إيقافها الآن من إعدادات الهاتف حتى يتمكن تطبيق حظر الإعلانات (مثل BlockAds) أو أي VPN آخر من العمل بشكل طبيعي.</string>
+    <string name="open_vpn_settings_btn">⚙️ فتح إعدادات الـ VPN في الهاتف</string>
 </resources>

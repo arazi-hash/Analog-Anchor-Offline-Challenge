@@ -2,6 +2,7 @@ package com.analoganchor.offlinechallenge
 
 import android.Manifest
 import android.app.Activity
+import android.app.NotificationManager
 import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
@@ -57,6 +58,11 @@ class MainActivity : ComponentActivity() {
     private lateinit var challengePrefs: ChallengePreferences
     private var pendingDurationMs: Long = 0L
     private var pendingPin: String = ""
+    private var pendingPartnerName: String = "Anchor Partner"
+    private var pendingSanctuaryName: String = ""
+    private var pendingSessionId: String = ""
+    private var isIncomingPartnerChallenge = false
+    private val pendingNavigationRoute = kotlinx.coroutines.flow.MutableStateFlow<String?>(null)
     private var pendingVpnCallback: (() -> Unit)? = null
 
     private val adminPermissionLauncher = registerForActivityResult(
@@ -132,6 +138,11 @@ class MainActivity : ComponentActivity() {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 showNotificationRationale.value = true
             }
+        }
+
+        // If no challenge is active and not pending completion, ensure any stray VPN or notifications are stopped
+        if (!challengePrefs.isActive && !challengePrefs.isCompletedPendingShow) {
+            stopVpnService()
         }
 
         setContent {
@@ -286,7 +297,12 @@ class MainActivity : ComponentActivity() {
                                         showGuidanceToast(guidanceMsg)
 
                                         showAlwaysOnModalState.value = false
-                                        challengePrefs.startChallenge(pendingDurationMs, pendingPin)
+                                        if (isIncomingPartnerChallenge) {
+                                            challengePrefs.startPartnerChallenge(pendingDurationMs, pendingPartnerName, pendingSessionId)
+                                            challengePrefs.setCommitmentPin(pendingPin)
+                                        } else {
+                                            challengePrefs.startChallenge(pendingDurationMs, pendingPin)
+                                        }
                                         challengePrefs.isAlwaysOnVpnActivated = true
                                         startVpnService()
                                         openVpnSettings(this@MainActivity)
@@ -323,12 +339,35 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun AppNavHost() {
         val navController = rememberNavController()
+        val pendingRoute by pendingNavigationRoute.collectAsState()
+
+        LaunchedEffect(pendingRoute) {
+            pendingRoute?.let { route ->
+                navController.navigate(route) {
+                    popUpTo(0) { inclusive = true }
+                }
+                pendingNavigationRoute.value = null
+            }
+        }
 
         val startRoute = if (challengePrefs.isCompletedPendingShow) {
+            stopVpnService()
             "completion"
         } else if (challengePrefs.isActive) {
-            "challenge"
+            if (challengePrefs.isExpired()) {
+                challengePrefs.broadcastPartnerCompletionToAnalogAnchor(this@MainActivity, isSuccess = true)
+                stopVpnService()
+                removeDeviceAdmin()
+                challengePrefs.endChallenge()
+                challengePrefs.isCompletedPendingShow = true
+                "completion"
+            } else {
+                "challenge"
+            }
+        } else if (isIncomingPartnerChallenge || pendingDurationMs > 0) {
+            "shield_permission"
         } else {
+            stopVpnService()
             "setup"
         }
 
@@ -349,7 +388,7 @@ class MainActivity : ComponentActivity() {
                         challengePrefs.setCommitmentPin(pin)
                         onChallengeReadyNavigate = {
                             navController.navigate("challenge") {
-                                popUpTo("setup") { inclusive = true }
+                                popUpTo(0) { inclusive = true }
                             }
                         }
                         requestAdminAndVpn()
@@ -436,8 +475,10 @@ class MainActivity : ComponentActivity() {
             composable("completion") {
                 CompletionScreen(
                     challengePrefs = challengePrefs,
+                    onOpenVpnSettings = { openVpnSettings(this@MainActivity) },
                     onHome = {
                         challengePrefs.isCompletedPendingShow = false
+                        stopVpnService()
                         navController.navigate("setup") {
                             popUpTo(0) { inclusive = true }
                         }
@@ -492,10 +533,20 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(this, MyVpnService::class.java).apply {
             action = MyVpnService.ACTION_STOP
         }
-        startService(intent)
+        try {
+            startService(intent)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Failed to startService ACTION_STOP: ${e.message}")
+        }
         // Disarm Layer 2 & 3 guards — challenge is ending
         VpnGuardWorker.cancel(this)
         NetworkGuard.unregister(this)
+        try {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+            notificationManager?.cancel(1)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Failed to cancel notification 1: ${e.message}")
+        }
         com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this)
     }
 
@@ -578,26 +629,23 @@ class MainActivity : ComponentActivity() {
     private fun handleIncomingIntent(intent: Intent?) {
         if (intent == null) return
         val challengeType = intent.getStringExtra("EXTRA_CHALLENGE_TYPE")
-        if (challengeType == "PARTNER_OUTDOOR" || intent.action == "com.analoganchor.action.START_PARTNER_CHALLENGE") {
+        val targetRoute = intent.getStringExtra("EXTRA_TARGET_ROUTE")
+        if (challengeType == "PARTNER_OUTDOOR" || intent.action == "com.analoganchor.action.START_PARTNER_CHALLENGE" || targetRoute == "shield_permission") {
             val partnerName = intent.getStringExtra("EXTRA_PARTNER_NAME") ?: "Anchor Partner"
+            val sanctuaryName = intent.getStringExtra("EXTRA_SANCTUARY_NAME") ?: ""
             val sessionId = intent.getStringExtra("EXTRA_SESSION_ID") ?: System.currentTimeMillis().toString()
             val durationMinutes = intent.getIntExtra("EXTRA_DURATION_MINUTES", 60)
             val durationMs = durationMinutes * 60 * 1000L
 
+            pendingDurationMs = durationMs
+            pendingPartnerName = partnerName
+            pendingSanctuaryName = sanctuaryName
+            pendingSessionId = sessionId
+            isIncomingPartnerChallenge = true
+
             if (!challengePrefs.isActive) {
-                pendingDurationMs = durationMs
-                requestVpnPermission {
-                    challengePrefs.startPartnerChallenge(durationMs, partnerName, sessionId)
-                    challengePrefs.isAlwaysOnVpnActivated = true
-                    startVpnService()
-                    val isAr = challengePrefs.language == "ar"
-                    Toast.makeText(
-                        this,
-                        if (isAr) "🤝 تم تفعيل درع الروتين الخارجي المشترك مع $partnerName!"
-                        else "🤝 Partner Outdoor Routine Shield Activated with $partnerName!",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                // Route directly to ShieldPermissionScreen (Screenshot 2: "حماية الدرع المتقدمة")
+                pendingNavigationRoute.value = "shield_permission"
             } else {
                 if (!challengePrefs.isPartnerSession) {
                     challengePrefs.isPartnerSession = true

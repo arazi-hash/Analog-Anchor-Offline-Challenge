@@ -57,8 +57,45 @@ class MyVpnService : VpnService() {
             }
         }
 
-        // Start as foreground service immediately
-        val notification = buildNotification(0f, 0L)
+        val prefs = ChallengePreferences(this)
+
+        // CRITICAL GUARD: If no challenge is active or if challenge has expired,
+        // do NOT start VPN tunnel, do NOT blackhole traffic, and exit cleanly immediately.
+        if (!prefs.isActive || prefs.isExpired()) {
+            Log.d(TAG, "onStartCommand called with inactive/expired challenge (Always-On or stray launch). Aborting VPN.")
+            if (prefs.isActive && prefs.isExpired()) {
+                prefs.broadcastPartnerCompletionToAnalogAnchor(this, isSuccess = true)
+                prefs.endChallenge()
+                prefs.isCompletedPendingShow = true
+                showCompletionNotification()
+            }
+            VpnGuardWorker.cancel(this)
+            NetworkGuard.unregister(this)
+
+            // Temporary notification to fulfill startForegroundService contract if invoked by system, then immediately remove
+            val tempNotification = Notification.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(getLocalizedContext().getString(R.string.app_name))
+                .build()
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    startForeground(NOTIFICATION_ID, tempNotification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    startForeground(NOTIFICATION_ID, tempNotification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE)
+                } else {
+                    startForeground(NOTIFICATION_ID, tempNotification)
+                }
+            } catch (e: Exception) {
+                // Ignore foreground start exception during quick abort
+            }
+            stopVpn()
+            return START_NOT_STICKY
+        }
+
+        // Start as foreground service immediately with actual active progress
+        val initialProgress = prefs.getProgress()
+        val initialRemaining = prefs.getRemainingMillis()
+        val notification = buildNotification(initialProgress, initialRemaining)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -130,14 +167,17 @@ class MyVpnService : VpnService() {
 
         // Update notification every 1 second with progress
         notificationUpdater = serviceScope.launch {
-            val prefs = ChallengePreferences(this@MyVpnService)
+            val updaterPrefs = ChallengePreferences(this@MyVpnService)
             while (true) {
                 delay(1_000)
-                if (prefs.isExpired()) {
-                    // Challenge timer expired — auto-stop
-                    prefs.broadcastPartnerCompletionToAnalogAnchor(this@MyVpnService, isSuccess = true)
-                    prefs.endChallenge()
-                    prefs.isCompletedPendingShow = true
+                if (!updaterPrefs.isActive || updaterPrefs.isExpired()) {
+                    Log.d(TAG, "Challenge ended or expired. Stopping VPN and tearing down notifications.")
+                    if (updaterPrefs.isActive && updaterPrefs.isExpired()) {
+                        updaterPrefs.broadcastPartnerCompletionToAnalogAnchor(this@MyVpnService, isSuccess = true)
+                        updaterPrefs.endChallenge()
+                        updaterPrefs.isCompletedPendingShow = true
+                        showCompletionNotification()
+                    }
                     try {
                         val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as? android.app.admin.DevicePolicyManager
                         val adminComponent = DeviceAdminReceiver.getComponentName(this@MyVpnService)
@@ -151,40 +191,41 @@ class MyVpnService : VpnService() {
                     VpnGuardWorker.cancel(this@MyVpnService)
                     NetworkGuard.unregister(this@MyVpnService)
                     stopVpn()
-                    showCompletionNotification()
                     com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
                     break
                 }
-                val progress = prefs.getProgress()
-                val remaining = prefs.getRemainingMillis()
-                val elapsed = System.currentTimeMillis() - prefs.startTimeMillis
+                val progress = updaterPrefs.getProgress()
+                val remaining = updaterPrefs.getRemainingMillis()
+                val elapsed = System.currentTimeMillis() - updaterPrefs.startTimeMillis
 
                 // Half-minute (30s) check: remind user to turn off Wi-Fi/Data only if they haven't turned them off
-                if (elapsed >= 30 * 1000L && !prefs.isBatteryReminderSent) {
+                if (elapsed >= 30 * 1000L && !updaterPrefs.isBatteryReminderSent) {
                     if (com.analoganchor.offlinechallenge.util.NetworkHelper.isWifiOrDataActive(this@MyVpnService)) {
-                        prefs.isBatteryReminderSent = true
+                        updaterPrefs.isBatteryReminderSent = true
                         showBatteryReminderNotification()
                     }
                 }
 
-                if (progress >= 0.5f && !prefs.isHalfwayNotified) {
-                    prefs.isHalfwayNotified = true
+                if (progress >= 0.5f && !updaterPrefs.isHalfwayNotified) {
+                    updaterPrefs.isHalfwayNotified = true
                     showHalfwayNotification()
                 }
                 updateNotification(progress, remaining)
-                // Also update widget every minute only to save battery, but we'll just let it update here.
-                // Actually widget updating every second is too much, but we'll do it since they want real-time visualization.
                 com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
             }
         }
 
         isRunning = true
         Log.d(TAG, "VPN started — all internet traffic blackholed")
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onRevoke() {
-        stopVpn()
+        Log.d(TAG, "VPN revoked by system or another VPN")
+        val prefs = ChallengePreferences(this)
+        if (!prefs.isActive || prefs.isExpired()) {
+            stopVpn()
+        }
         super.onRevoke()
     }
 
@@ -195,13 +236,29 @@ class MyVpnService : VpnService() {
 
     private fun stopVpn() {
         packetLoop?.cancel()
+        packetLoop = null
         notificationUpdater?.cancel()
-        localTunnel?.close()
+        notificationUpdater = null
+        try {
+            localTunnel?.close()
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to close localTunnel: ${e.message}")
+        }
         localTunnel = null
         isRunning = false
-        stopForeground(STOP_FOREGROUND_REMOVE)
+        try {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        } catch (e: Exception) {
+            Log.e(TAG, "stopForeground error: ${e.message}")
+        }
+        try {
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.cancel(NOTIFICATION_ID)
+        } catch (e: Exception) {
+            Log.e(TAG, "NotificationManager cancel error: ${e.message}")
+        }
         stopSelf()
-        Log.d(TAG, "VPN stopped")
+        Log.d(TAG, "VPN stopped and notification dismissed")
     }
 
     // ── Notification ──────────────────────────────────────────────────

@@ -102,6 +102,14 @@ object NetworkGuard {
             prefs.isCompletedPendingShow = true
             unregister(context)
             VpnGuardWorker.cancel(context)
+            try {
+                val stopIntent = Intent(context, MyVpnService::class.java).apply {
+                    action = MyVpnService.ACTION_STOP
+                }
+                context.startService(stopIntent)
+            } catch (e: Exception) {
+                Log.e(TAG, "NetworkGuard: Failed to stop VPN: ${e.message}")
+            }
             com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(context)
             return
         }

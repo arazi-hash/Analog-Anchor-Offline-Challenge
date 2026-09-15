@@ -67,6 +67,14 @@ class VpnGuardWorker(
             prefs.endChallenge()
             prefs.isCompletedPendingShow = true
             cancel(applicationContext)
+            try {
+                val stopIntent = Intent(applicationContext, MyVpnService::class.java).apply {
+                    action = MyVpnService.ACTION_STOP
+                }
+                applicationContext.startService(stopIntent)
+            } catch (e: Exception) {
+                Log.e(TAG, "Guard: Failed to stop VPN: ${e.message}")
+            }
             com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(applicationContext)
             return Result.success()
         }

@@ -105,4 +105,9 @@
     <string name="peace_of_mind_body">Phone calls and SMS messages work normally. Anyone reaching out right now is someone who genuinely needs you. Relax and embrace your uninterrupted focus!\n\nBattery Saving Tip: We suggest manually turning off Wi-Fi and Mobile Data to conserve battery power, as the shield blocks internet access anyway.</string>
     <string name="halfway_notification_title">⚡ Halfway There!</string>
     <string name="halfway_notification_body">You\'ve conquered 50% of your challenge! Stay strong. (For emergencies, you can SMS me or reach out via web support for the unlock code).</string>
+
+    <!-- Always-On Deactivation on Completion -->
+    <string name="turn_off_always_on_title">⚠️ Restore Other VPNs &amp; Ad Blockers</string>
+    <string name="turn_off_always_on_body">If you enabled Always-On VPN during the challenge, please turn it off now in your phone\'s VPN settings so ad blockers (like BlockAds) or other VPN services can reconnect normally.</string>
+    <string name="open_vpn_settings_btn">⚙️ Open Phone VPN Settings</string>
 </resources>
