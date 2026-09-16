@@ -93,15 +93,15 @@ fun ChallengeScreen(
             if (challengePrefs.isPartnerSession) {
                 val elapsedMins = (elapsed / 60000L).toInt()
                 partnerElapsedMinutes = elapsedMins
-                if (!hasPromptedPartnerHour && (elapsedMins >= 60 || challengePrefs.isExpired())) {
+                if (!hasPromptedPartnerHour && (elapsedMins >= 60 || challengePrefs.isExpired() || challengePrefs.isHoldingOffline)) {
                     hasPromptedPartnerHour = true
                     showPartnerPromptDialog = true
                 }
-            }
-
-            if (challengePrefs.isExpired()) {
-                onChallengeComplete()
-                break
+            } else {
+                if (challengePrefs.isExpired()) {
+                    onChallengeComplete()
+                    break
+                }
             }
             delay(1000)
         }
@@ -126,10 +126,12 @@ fun ChallengeScreen(
             color = CyanGlow
         )
 
-        // Partner Hangout Card (When launched from Analog Anchor JOIN)
+        // Partner / Group Sanctuary Card
         if (challengePrefs.isPartnerSession) {
-            val canConclude = partnerElapsedMinutes >= 60 || challengePrefs.isExpired()
+            val canConclude = partnerElapsedMinutes >= 60 || challengePrefs.isExpired() || challengePrefs.isHoldingOffline
             val minutesLeft = (60 - partnerElapsedMinutes).coerceAtLeast(0)
+            val isGroup = challengePrefs.isGroupSession
+            val targetPoints = challengePrefs.sessionPoints
 
             Spacer(modifier = Modifier.height(14.dp))
             Card(
@@ -146,9 +148,9 @@ fun ChallengeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(text = "🤝", fontSize = 20.sp)
+                        Text(text = if (isGroup) "👨‍👩‍👧‍👦" else "🤝", fontSize = 20.sp)
                         Text(
-                            text = if (isAr) "مشوار السكينة المشترك" else "Partner Sanctuary Outing",
+                            text = if (isGroup) stringResource(R.string.group_circle_header) else stringResource(R.string.partner_outing_header),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = CyanGlow
@@ -162,8 +164,7 @@ fun ChallengeScreen(
                         color = TextPrimary
                     )
                     Text(
-                        text = if (isAr) "حضور حقيقي بدون شاشات يضاعف تركيزك ويستوفي حصتك الأسبوعية"
-                        else "Real physical presence without screens halves weekly quota",
+                        text = if (isGroup) stringResource(R.string.group_bonus_desc) else stringResource(R.string.duo_desc),
                         fontSize = 11.sp,
                         color = TextSecondary,
                         textAlign = TextAlign.Center,
@@ -182,8 +183,7 @@ fun ChallengeScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = if (isAr) "⏳ باقي $minutesLeft دقيقة لتوثيق الجلسة وكسب +50 نقطة"
-                                    else "⏳ $minutesLeft min remaining to earn +50 PTS",
+                                    text = stringResource(R.string.time_left_to_claim, minutesLeft, targetPoints),
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = AmberWarning,
@@ -207,7 +207,7 @@ fun ChallengeScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
                         ) {
                             Text(
-                                text = if (isAr) "🎯 خيارات إنهاء أو تمديد الجلسة (+50 نقطة)" else "🎯 Conclude or Extend (+50 PTS)",
+                                text = if (isAr) "🎯 خيارات إنهاء أو تمديد الجلسة (+$targetPoints نقطة)" else "🎯 Conclude or Extend (+$targetPoints PTS)",
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Obsidian
@@ -218,21 +218,22 @@ fun ChallengeScreen(
             }
         }
 
-        // 1-Hour Partner Milestone Prompt Modal (Loophole Protected)
-        if (showPartnerPromptDialog && challengePrefs.isPartnerSession) {
+        // 1-Hour Partner Milestone Prompt Modal (Shield Holds Offline until explicit choice)
+        if ((showPartnerPromptDialog || challengePrefs.isHoldingOffline) && challengePrefs.isPartnerSession) {
+            val isGroup = challengePrefs.isGroupSession
+            val targetPoints = challengePrefs.sessionPoints
             AlertDialog(
-                onDismissRequest = { showPartnerPromptDialog = false },
+                onDismissRequest = { /* Non-dismissable: user must decide to extend or conclude */ },
                 title = {
                     Text(
-                        text = if (isAr) "🎯 اكتمال ساعة مشوار السكينة!" else "🎯 1-Hour Milestone Completed!",
+                        text = stringResource(R.string.milestone_completed_title),
                         fontWeight = FontWeight.Bold,
                         color = CyanGlow
                     )
                 },
                 text = {
                     Text(
-                        text = if (isAr) "أحسنتما! قضيتما ساعة كاملة بحضور حقيقي بدون تشتيت الهواتف. يمكنكما تمديد الجلسة أو إنهاؤها وحصد 50 نقطة لرصيد Analog Anchor."
-                        else "Great job! You spent an hour completely present. You can extend your session or conclude and claim +50 PTS for Analog Anchor.",
+                        text = if (isGroup) stringResource(R.string.milestone_completed_body_group) else stringResource(R.string.milestone_completed_body_duo),
                         color = TextPrimary
                     )
                 },
@@ -240,53 +241,73 @@ fun ChallengeScreen(
                     Button(
                         onClick = {
                             showPartnerPromptDialog = false
-                            challengePrefs.broadcastPartnerCompletionToAnalogAnchor(context, isSuccess = true)
+                            challengePrefs.isHoldingOffline = false
                             android.widget.Toast.makeText(
                                 context,
-                                if (isAr) "🎉 تم توثيق مشوار السكينة وإرسال +50 نقطة لـ Analog Anchor!"
-                                else "🎉 Outing completed! +50 PTS credited to Analog Anchor!",
+                                context.getString(R.string.session_concluded_toast),
                                 android.widget.Toast.LENGTH_LONG
                             ).show()
                             onChallengeComplete()
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
+                        colors = ButtonDefaults.buttonColors(containerColor = CyanGlow),
+                        shape = RoundedCornerShape(10.dp)
                     ) {
                         Text(
-                            text = if (isAr) "إنهاء وحصد 50 نقطة 🎯" else "Conclude & Claim +50 PTS 🎯",
+                            text = stringResource(R.string.btn_conclude_online),
                             color = Obsidian,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 },
                 dismissButton = {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        OutlinedButton(
+                            onClick = {
+                                challengePrefs.extendChallenge(30 * 60 * 1000L)
+                                showPartnerPromptDialog = false
+                                hasPromptedPartnerHour = false
+                                android.widget.Toast.makeText(
+                                    context,
+                                    context.getString(R.string.session_extended_toast),
+                                    android.widget.Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            border = BorderStroke(1.dp, CyanGlow),
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        ) {
+                            Text(stringResource(R.string.btn_extend_30m), color = CyanGlow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        }
                         OutlinedButton(
                             onClick = {
                                 challengePrefs.extendChallenge(1 * 3600 * 1000L)
                                 showPartnerPromptDialog = false
+                                hasPromptedPartnerHour = false
                                 android.widget.Toast.makeText(
                                     context,
-                                    if (isAr) "تم تمديد الجلسة +1 ساعة!" else "Extended session by +1 hour!",
+                                    context.getString(R.string.session_extended_toast),
                                     android.widget.Toast.LENGTH_SHORT
                                 ).show()
                             },
-                            border = BorderStroke(1.dp, CyanGlow)
+                            border = BorderStroke(1.dp, CyanGlow),
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                         ) {
-                            Text("+1h", color = CyanGlow, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.btn_extend_1h), color = CyanGlow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                         }
                         OutlinedButton(
                             onClick = {
                                 challengePrefs.extendChallenge(2 * 3600 * 1000L)
                                 showPartnerPromptDialog = false
+                                hasPromptedPartnerHour = false
                                 android.widget.Toast.makeText(
                                     context,
-                                    if (isAr) "تم تمديد الجلسة +2 ساعة!" else "Extended session by +2 hours!",
+                                    context.getString(R.string.session_extended_toast),
                                     android.widget.Toast.LENGTH_SHORT
                                 ).show()
                             },
-                            border = BorderStroke(1.dp, CyanGlow)
+                            border = BorderStroke(1.dp, CyanGlow),
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                         ) {
-                            Text("+2h", color = CyanGlow, fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.btn_extend_2h), color = CyanGlow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                         }
                     }
                 },
@@ -493,17 +514,22 @@ fun ChallengeScreen(
 
                 Button(
                     onClick = {
-                        // Immediately auto-hide keyboard and release focus so it disappears completely
+                        focusManager.clearFocus(force = true)
                         keyboardController?.hide()
-                        focusManager.clearFocus()
                         try {
                             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                             (context as? Activity)?.currentFocus?.let { v ->
                                 imm?.hideSoftInputFromWindow(v.windowToken, 0)
                             }
+                            (context as? Activity)?.window?.decorView?.let { dv ->
+                                imm?.hideSoftInputFromWindow(dv.windowToken, 0)
+                            }
                         } catch (_: Exception) {}
 
-                        val decoded = TokenDecoder.decode(tokenInput.trim())
+                        val rawInput = tokenInput.trim()
+                        tokenInput = "" // Clear input field immediately so code does not remain visible
+
+                        val decoded = TokenDecoder.decode(rawInput)
                         if (decoded == null) {
                             tokenResult = context.getString(R.string.token_rejected)
                         } else {

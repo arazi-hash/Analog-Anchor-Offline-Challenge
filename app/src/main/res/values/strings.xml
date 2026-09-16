@@ -106,8 +106,40 @@
     <string name="halfway_notification_title">⚡ قطعت نصف المسافة بنجاح!</string>
     <string name="halfway_notification_body">أنت في منتصف التحدي، واصل الصمود! (للطوارئ يمكنك مراسلتي عبر رسالة نصية قصيرة SMS أو عبر الموقع لطلب رمز الدعم).</string>
 
-    <!-- Always-On Deactivation on Completion -->
+    <!-- Always-On Deactivation on Completion (Kept for compatibility) -->
     <string name="turn_off_always_on_title">⚠️ استعادة شبكة الـ VPN وتطبيقات حظر الإعلانات</string>
     <string name="turn_off_always_on_body">إذا قمت بتفعيل «التغطية الدائمة (Always-On VPN)» أثناء التحدي، يُرجى إيقافها الآن من إعدادات الهاتف حتى يتمكن تطبيق حظر الإعلانات (مثل BlockAds) أو أي VPN آخر من العمل بشكل طبيعي.</string>
     <string name="open_vpn_settings_btn">⚙️ فتح إعدادات الـ VPN في الهاتف</string>
+
+    <!-- Partner & Group Circle Mode Tiers -->
+    <string name="mode_duo">👥 ثنائي (شخصان)</string>
+    <string name="mode_group">👨‍👩‍👧‍👦 جماعي (٣+ أشخاص)</string>
+    <string name="points_duo_badge">+40 نقطة</string>
+    <string name="points_group_badge">+70 نقطة</string>
+    <string name="partner_outing_header">مشوار السكينة المشترك</string>
+    <string name="group_circle_header">حلقة السكينة الجماعية</string>
+    <string name="group_bonus_desc">حضور جماعي بدون شاشات يضاعف الالتزام ويكافئكم بـ +70 نقطة</string>
+    <string name="duo_desc">حضور حقيقي بدون شاشات يضاعف تركيزك ويكافئك بـ +40 نقطة</string>
+    <string name="time_left_to_claim">⏳ باقي %1$d دقيقة لتوثيق الجلسة وكسب +%2$d نقطة</string>
+
+    <!-- 1-Hour Milestone & Shield Holding Offline -->
+    <string name="milestone_completed_title">🎯 اكتمال ساعة مشوار السكينة!</string>
+    <string name="milestone_completed_body_duo">أحسنتما! قضيتما ساعة كاملة بحضور حقيقي بدون تشتيت الهواتف. رصيدكما جاهز (+40 نقطة). درع الأوفلاين ما زال نشطاً لحماية صفاء ذهنكم — يمكنكما تمديد الجلسة أو إنهاؤها والاتصال بالإنترنت الآن.</string>
+    <string name="milestone_completed_body_group">أحسنتم جميعاً! قضيتم ساعة كاملة بحضور جماعي حقيقي. رصيدكم جاهز (+70 نقطة). درع الأوفلاين ما زال نشطاً — يمكنكم تمديد الجلسة أو إنهاؤها والاتصال بالإنترنت الآن.</string>
+    <string name="btn_extend_30m">+30 دقيقة</string>
+    <string name="btn_extend_1h">+1 ساعة</string>
+    <string name="btn_extend_2h">+2 ساعة</string>
+    <string name="btn_conclude_online">إنهاء والاتصال بالإنترنت 🌐</string>
+    <string name="session_extended_toast">تم تمديد درع الأوفلاين بنجاح!</string>
+    <string name="session_concluded_toast">🎉 تم توثيق الجلسة وإرسال النقاط لـ Analog Anchor!</string>
+
+    <!-- Universal Emergency Access -->
+    <string name="btn_universal_emergency">🚨 إدخال رمز طوارئ</string>
+    <string name="emergency_dialog_title">🔓 إدخال رمز الطوارئ</string>
+    <string name="emergency_dialog_body">إذا كنت بحاجة ماسة لفك درع الحظر، أدخل رمز الطوارئ الذي استلمته من الدعم الفني:</string>
+
+    <!-- Main Analog Anchor App Integration -->
+    <string name="main_app_required_title">📱 يتطلب التطبيق الأساسي (Analog Anchor)</string>
+    <string name="main_app_required_body">تحديات السكينة الثنائية (٤٠ نقطة) والجماعية (٧٠ نقطة) تتطلب توفر التطبيق الأساسي &#x200E;(Analog Anchor)&#x200E; لاحتساب النقاط ومزامنة الجلسات مع الشركاء.\n\nهل ترغب في الانتقال إلى متجر &#x200E;Google Play&#x200E; لتثبيت التطبيق؟</string>
+    <string name="btn_install_main_app">الانتقال إلى متجر &#x200E;Google Play&#x200E; ↗</string>
 </resources>

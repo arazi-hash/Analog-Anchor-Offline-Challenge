@@ -106,8 +106,40 @@
     <string name="halfway_notification_title">⚡ Halfway There!</string>
     <string name="halfway_notification_body">You\'ve conquered 50% of your challenge! Stay strong. (For emergencies, you can SMS me or reach out via web support for the unlock code).</string>
 
-    <!-- Always-On Deactivation on Completion -->
+    <!-- Always-On Deactivation on Completion (Kept for compatibility) -->
     <string name="turn_off_always_on_title">⚠️ Restore Other VPNs &amp; Ad Blockers</string>
     <string name="turn_off_always_on_body">If you enabled Always-On VPN during the challenge, please turn it off now in your phone\'s VPN settings so ad blockers (like BlockAds) or other VPN services can reconnect normally.</string>
     <string name="open_vpn_settings_btn">⚙️ Open Phone VPN Settings</string>
+
+    <!-- Partner & Group Circle Mode Tiers -->
+    <string name="mode_duo">👥 Duo (2 People)</string>
+    <string name="mode_group">👨‍👩‍👧‍👦 Group Circle (3+ People)</string>
+    <string name="points_duo_badge">+40 PTS</string>
+    <string name="points_group_badge">+70 PTS</string>
+    <string name="partner_outing_header">Partner Sanctuary Outing</string>
+    <string name="group_circle_header">Sanctuary Circle Outing</string>
+    <string name="group_bonus_desc">Group presence without screens unlocks full accountability and awards +70 PTS</string>
+    <string name="duo_desc">Physical presence without screens doubles focus and awards +40 PTS</string>
+    <string name="time_left_to_claim">⏳ %1$d min remaining to claim +%2$d PTS</string>
+
+    <!-- 1-Hour Milestone & Shield Holding Offline -->
+    <string name="milestone_completed_title">🎯 1-Hour Milestone Completed!</string>
+    <string name="milestone_completed_body_duo">Great job! You spent a full hour completely present without digital distraction. Your +40 PTS reward is ready. The offline shield remains active to protect your peace—extend the session or conclude to reconnect now.</string>
+    <string name="milestone_completed_body_group">Outstanding! You completed a full hour with your group circle. Your +70 PTS reward is ready. The offline shield remains active—extend the session or conclude to reconnect now.</string>
+    <string name="btn_extend_30m">+30 min</string>
+    <string name="btn_extend_1h">+1 hour</string>
+    <string name="btn_extend_2h">+2 hours</string>
+    <string name="btn_conclude_online">Conclude &amp; Go Online 🌐</string>
+    <string name="session_extended_toast">Offline shield extended successfully!</string>
+    <string name="session_concluded_toast">🎉 Outing completed! Points credited to Analog Anchor!</string>
+
+    <!-- Universal Emergency Access -->
+    <string name="btn_universal_emergency">🚨 Enter Emergency Code</string>
+    <string name="emergency_dialog_title">🔓 Enter Emergency Support Code</string>
+    <string name="emergency_dialog_body">If you urgently need to lift the offline shield, enter the emergency unlock code provided by support:</string>
+
+    <!-- Main Analog Anchor App Integration -->
+    <string name="main_app_required_title">📱 Main Analog Anchor App Required</string>
+    <string name="main_app_required_body">Duo (+40 PTS) and Group Circle (+70 PTS) routines require the main Analog Anchor app to sync companion sessions and earn reserve points.\n\nWould you like to install it now from Google Play?</string>
+    <string name="btn_install_main_app">Get on Google Play ↗</string>
 </resources>

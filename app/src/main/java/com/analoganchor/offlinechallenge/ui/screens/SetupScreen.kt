@@ -36,7 +36,10 @@ import com.analoganchor.offlinechallenge.data.ChallengePreferences
 import com.analoganchor.offlinechallenge.ui.theme.*
 
 @Composable
-fun SetupScreen(onDurationSelected: (Long) -> Unit) {
+fun SetupScreen(
+    onDurationSelected: (Long) -> Unit,
+    onOpenEmergencyModal: () -> Unit = {}
+) {
     val context = LocalContext.current
     val prefs = remember { ChallengePreferences(context) }
     val isAr = prefs.language == "ar"
@@ -153,6 +156,181 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
 
             Spacer(modifier = Modifier.height(14.dp))
 
+            // --- Option B: Partner & Group Circle Pill Selector ---
+            var isGroupSelected by remember { mutableStateOf(prefs.isGroupSession) }
+            var showMainAppRequiredDialog by remember { mutableStateOf(false) }
+
+            fun handleCompanionPillClick(isGroup: Boolean) {
+                if (isGroup) {
+                    isGroupSelected = true
+                    prefs.isGroupSession = true
+                    prefs.sessionPoints = 70
+                } else {
+                    isGroupSelected = false
+                    prefs.isGroupSession = false
+                    prefs.sessionPoints = 40
+                }
+
+                val isInstalled = try {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        context.packageManager.getPackageInfo(
+                            "com.analoganchor.app",
+                            android.content.pm.PackageManager.PackageInfoFlags.of(0)
+                        )
+                    } else {
+                        @Suppress("DEPRECATION")
+                        context.packageManager.getPackageInfo("com.analoganchor.app", 0)
+                    }
+                    true
+                } catch (e: Exception) {
+                    false
+                }
+
+                if (isInstalled) {
+                    // No need to confirm: immediately open main Analog Anchor app in outdoor tab
+                    val launchIntent = context.packageManager.getLaunchIntentForPackage("com.analoganchor.app")
+                    if (launchIntent != null) {
+                        launchIntent.apply {
+                            putExtra("target_tab", "OUTDOOR")
+                            putExtra("action", if (isGroup) "join_group" else "join_partner")
+                            putExtra("is_group", isGroup)
+                            putExtra("points", if (isGroup) 70 else 40)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        }
+                        context.startActivity(launchIntent)
+                    }
+                } else {
+                    // Main app not installed: show explanatory dialog linking to Google Play
+                    showMainAppRequiredDialog = true
+                }
+            }
+
+            if (showMainAppRequiredDialog) {
+                AlertDialog(
+                    onDismissRequest = { showMainAppRequiredDialog = false },
+                    title = {
+                        Text(
+                            text = stringResource(R.string.main_app_required_title),
+                            color = CyanGlow,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(R.string.main_app_required_body),
+                            color = TextPrimary,
+                            fontSize = 13.sp,
+                            lineHeight = 20.sp
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                showMainAppRequiredDialog = false
+                                val playUrl = "https://play.google.com/store/apps/details?id=com.analoganchor.app"
+                                try {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(playUrl)).apply {
+                                        setPackage("com.android.vending")
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                    context.startActivity(intent)
+                                } catch (e: Exception) {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(playUrl)).apply {
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = CyanGlow),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.btn_install_main_app),
+                                color = Obsidian,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
+                            )
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showMainAppRequiredDialog = false }
+                        ) {
+                            Text(
+                                text = if (isAr) "إلغاء" else "Cancel",
+                                color = TextSecondary
+                            )
+                        }
+                    },
+                    containerColor = DeepSurface,
+                    shape = RoundedCornerShape(16.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Surface(
+                    onClick = { handleCompanionPillClick(isGroup = false) },
+                    modifier = Modifier.weight(1f).height(46.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (!isGroupSelected) CyanGlow.copy(alpha = 0.12f) else DeepSurface,
+                    border = BorderStroke(1.5.dp, if (!isGroupSelected) CyanGlow else TrackColor)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.mode_duo),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (!isGroupSelected) CyanGlow else TextSecondary
+                        )
+                        Text(
+                            text = stringResource(R.string.points_duo_badge),
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = if (!isGroupSelected) CyanGlow else TextSecondary.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+
+                Surface(
+                    onClick = { handleCompanionPillClick(isGroup = true) },
+                    modifier = Modifier.weight(1f).height(46.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isGroupSelected) CyanGlow.copy(alpha = 0.12f) else DeepSurface,
+                    border = BorderStroke(1.5.dp, if (isGroupSelected) CyanGlow else TrackColor)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.mode_group),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isGroupSelected) CyanGlow else TextSecondary
+                        )
+                        Text(
+                            text = stringResource(R.string.points_group_badge),
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isGroupSelected) AmberWarning else TextSecondary.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
             // --- 3. Section Header: Select Challenge Duration ---
             Text(
                 text = stringResource(R.string.select_duration),
@@ -193,6 +371,19 @@ fun SetupScreen(onDurationSelected: (Long) -> Unit) {
                         color = if (isTestDuration) AmberWarning else CyanGlow
                     )
                 }
+            }
+
+            // Universal Emergency Code Access
+            TextButton(
+                onClick = onOpenEmergencyModal,
+                modifier = Modifier.padding(top = 6.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.btn_universal_emergency),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AmberWarning
+                )
             }
 
             Spacer(modifier = Modifier.height(14.dp))

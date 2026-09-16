@@ -59,16 +59,10 @@ class MyVpnService : VpnService() {
 
         val prefs = ChallengePreferences(this)
 
-        // CRITICAL GUARD: If no challenge is active or if challenge has expired,
+        // CRITICAL GUARD: If no challenge is active,
         // do NOT start VPN tunnel, do NOT blackhole traffic, and exit cleanly immediately.
-        if (!prefs.isActive || prefs.isExpired()) {
-            Log.d(TAG, "onStartCommand called with inactive/expired challenge (Always-On or stray launch). Aborting VPN.")
-            if (prefs.isActive && prefs.isExpired()) {
-                prefs.broadcastPartnerCompletionToAnalogAnchor(this, isSuccess = true)
-                prefs.endChallenge()
-                prefs.isCompletedPendingShow = true
-                showCompletionNotification()
-            }
+        if (!prefs.isActive) {
+            Log.d(TAG, "onStartCommand called with inactive challenge. Aborting VPN.")
             VpnGuardWorker.cancel(this)
             NetworkGuard.unregister(this)
 
@@ -170,14 +164,8 @@ class MyVpnService : VpnService() {
             val updaterPrefs = ChallengePreferences(this@MyVpnService)
             while (true) {
                 delay(1_000)
-                if (!updaterPrefs.isActive || updaterPrefs.isExpired()) {
-                    Log.d(TAG, "Challenge ended or expired. Stopping VPN and tearing down notifications.")
-                    if (updaterPrefs.isActive && updaterPrefs.isExpired()) {
-                        updaterPrefs.broadcastPartnerCompletionToAnalogAnchor(this@MyVpnService, isSuccess = true)
-                        updaterPrefs.endChallenge()
-                        updaterPrefs.isCompletedPendingShow = true
-                        showCompletionNotification()
-                    }
+                if (!updaterPrefs.isActive) {
+                    Log.d(TAG, "Challenge ended. Stopping VPN and tearing down notifications.")
                     try {
                         val dpm = getSystemService(Context.DEVICE_POLICY_SERVICE) as? android.app.admin.DevicePolicyManager
                         val adminComponent = DeviceAdminReceiver.getComponentName(this@MyVpnService)
@@ -193,6 +181,17 @@ class MyVpnService : VpnService() {
                     stopVpn()
                     com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
                     break
+                }
+
+                if (updaterPrefs.isExpired()) {
+                    if (!updaterPrefs.isHoldingOffline) {
+                        updaterPrefs.isHoldingOffline = true
+                        showCompletionNotification()
+                    }
+                    // Keep VPN active and blackholing packets. Update ongoing notification to indicate holding offline.
+                    updateHoldingNotification()
+                    com.analoganchor.offlinechallenge.widget.ChallengeWidgetReceiver.updateWidget(this@MyVpnService)
+                    continue
                 }
                 val progress = updaterPrefs.getProgress()
                 val remaining = updaterPrefs.getRemainingMillis()
@@ -292,13 +291,20 @@ class MyVpnService : VpnService() {
             NotificationManager.IMPORTANCE_HIGH // High = makes sound, vibrates, pops up on screen
         ).apply {
             enableVibration(true)
-            vibrationPattern = longArrayOf(0, 1500, 400, 1500, 400, 1500)
+            vibrationPattern = longArrayOf(0, 1000, 400, 1000, 400, 1500, 500, 1500, 500, 2000)
+            val soundUri = android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_NOTIFICATION)
+                ?: android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_ALARM)
+            val audioAttr = android.media.AudioAttributes.Builder()
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                .build()
+            setSound(soundUri, audioAttr)
             setShowBadge(true)
         }
         manager.createNotificationChannel(completionChannel)
     }
 
-    private fun triggerCompletionVibration() {
+    private fun triggerCompletionAlert() {
         try {
             val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
@@ -307,53 +313,106 @@ class MyVpnService : VpnService() {
                 @Suppress("DEPRECATION")
                 getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
             }
-            if (vibrator == null || !vibrator.hasVibrator()) return
-            
-            val pattern = longArrayOf(0, 1500, 400, 1500, 400, 1500)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createWaveform(
-                    pattern,
-                    intArrayOf(0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE),
-                    -1
-                ))
-            } else {
-                @Suppress("DEPRECATION")
-                vibrator.vibrate(pattern, -1)
+            if (vibrator != null && vibrator.hasVibrator()) {
+                val pattern = longArrayOf(0, 1000, 400, 1000, 400, 1500, 500, 1500, 500, 2000)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createWaveform(
+                        pattern,
+                        intArrayOf(0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE, 0, VibrationEffect.DEFAULT_AMPLITUDE),
+                        -1
+                    ))
+                } else {
+                    @Suppress("DEPRECATION")
+                    vibrator.vibrate(pattern, -1)
+                }
             }
+
+            // Audible chime / alert feedback for pocket and social gatherings
+            val soundUri = android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_NOTIFICATION)
+                ?: android.media.RingtoneManager.getDefaultUri(android.media.RingtoneManager.TYPE_ALARM)
+            val ringtone = android.media.RingtoneManager.getRingtone(applicationContext, soundUri)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ringtone.audioAttributes = android.media.AudioAttributes.Builder()
+                    .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            }
+            ringtone?.play()
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to vibrate: ${e.message}")
+            Log.e(TAG, "Failed to trigger completion alert: ${e.message}")
         }
     }
 
     private fun showCompletionNotification() {
-        val locContext = getLocalizedContext()
         val manager = getSystemService(NotificationManager::class.java)
+        val isAr = ChallengePreferences(this).language == "ar"
         
         val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("EXTRA_TARGET_ROUTE", "challenge")
         }
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val title = locContext.getString(R.string.notification_title)
-        val body = if (ChallengePreferences(this).language == "ar") {
-            "تهانينا! لقد أكملت التحدي بنجاح. اضغط هنا للحصول على رمز الخصم الخاص بك."
+        val title = if (isAr) "🎯 اكتملت ساعة مشوار السكينة!" else "🎯 1-Hour Milestone Completed!"
+        val body = if (isAr) {
+            "أحسنت! الدرع لا يزال نشطاً لحماية صفاء ذهنك. اضغط هنا لتمديد الجلسة أو إنهائها."
         } else {
-            "Congratulations! You completed the challenge. Tap here to claim your discount code."
+            "Great job! The offline shield remains active. Tap here to extend or conclude and reconnect."
         }
 
-        val notification = Notification.Builder(this, COMPLETION_CHANNEL_ID)
+        val builder = Notification.Builder(this, COMPLETION_CHANNEL_ID)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(Notification.BigTextStyle().bigText(body))
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .setAutoCancel(false)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
+        }
+
+        manager.notify(2, builder.build())
+        triggerCompletionAlert()
+    }
+
+    private fun updateHoldingNotification() {
+        val manager = getSystemService(NotificationManager::class.java)
+        val isAr = ChallengePreferences(this).language == "ar"
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0,
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra("EXTRA_TARGET_ROUTE", "challenge")
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val title = if (isAr) "🎯 درع الأوفلاين نشط — انتهت الساعة" else "🎯 Offline Shield Active — 1 Hour Complete"
+        val body = if (isAr) "اضغط هنا لتمديد الجلسة أو إنهائها والاتصال بالإنترنت" else "Tap here to extend or conclude and reconnect"
+
+        val builder = Notification.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(body)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            .build()
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .setProgress(100, 100, false)
+            .setCategory(Notification.CATEGORY_SERVICE)
 
-        manager.notify(2, notification)
-        triggerCompletionVibration()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            builder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE)
+        }
+
+        val notification = builder.build()
+        @Suppress("DEPRECATION")
+        notification.flags = notification.flags or Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+        manager.notify(NOTIFICATION_ID, notification)
     }
 
     private fun showHalfwayNotification() {

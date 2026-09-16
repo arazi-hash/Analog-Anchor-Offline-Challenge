@@ -61,9 +61,12 @@ class MainActivity : ComponentActivity() {
     private var pendingPartnerName: String = "Anchor Partner"
     private var pendingSanctuaryName: String = ""
     private var pendingSessionId: String = ""
+    private var pendingIsGroup: Boolean = false
+    private var pendingPoints: Int = 40
     private var isIncomingPartnerChallenge = false
     private val pendingNavigationRoute = kotlinx.coroutines.flow.MutableStateFlow<String?>(null)
     private var pendingVpnCallback: (() -> Unit)? = null
+    private val showUniversalEmergencyModalState = mutableStateOf(false)
 
     private val adminPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -298,7 +301,13 @@ class MainActivity : ComponentActivity() {
 
                                         showAlwaysOnModalState.value = false
                                         if (isIncomingPartnerChallenge) {
-                                            challengePrefs.startPartnerChallenge(pendingDurationMs, pendingPartnerName, pendingSessionId)
+                                            challengePrefs.startPartnerChallenge(
+                                                pendingDurationMs,
+                                                pendingPartnerName,
+                                                pendingSessionId,
+                                                pendingIsGroup,
+                                                pendingPoints
+                                            )
                                             challengePrefs.setCommitmentPin(pendingPin)
                                         } else {
                                             challengePrefs.startChallenge(pendingDurationMs, pendingPin)
@@ -316,6 +325,8 @@ class MainActivity : ComponentActivity() {
                                                     putExtra("EXTRA_SESSION_ID", sId)
                                                     putExtra("EXTRA_DURATION_MINUTES", durationMins)
                                                     putExtra("EXTRA_PARTNER_NAME", pName)
+                                                    putExtra("EXTRA_IS_GROUP", pendingIsGroup)
+                                                    putExtra("EXTRA_POINTS", pendingPoints)
                                                     putExtra("EXTRA_START_TIME_MS", System.currentTimeMillis())
                                                 }
                                                 sendBroadcast(startIntent)
@@ -348,6 +359,124 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
+                // 🚨 Universal Emergency Unlock Modal
+                if (showUniversalEmergencyModalState.value) {
+                    var universalTokenInput by remember { mutableStateOf("") }
+                    var universalTokenResult by remember { mutableStateOf("") }
+                    val emergencyKeyboardController = androidx.compose.ui.platform.LocalSoftwareKeyboardController.current
+                    val emergencyFocusManager = androidx.compose.ui.platform.LocalFocusManager.current
+                    val currentView = androidx.compose.ui.platform.LocalView.current
+
+                    AlertDialog(
+                        onDismissRequest = {
+                            showUniversalEmergencyModalState.value = false
+                            universalTokenInput = ""
+                            universalTokenResult = ""
+                        },
+                        title = {
+                            Text(
+                                text = stringResource(R.string.emergency_dialog_title),
+                                fontWeight = FontWeight.Bold,
+                                color = AmberWarning
+                            )
+                        },
+                        text = {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Text(
+                                    text = stringResource(R.string.emergency_dialog_body),
+                                    fontSize = 13.sp,
+                                    color = TextPrimary
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                OutlinedTextField(
+                                    value = universalTokenInput,
+                                    onValueChange = {
+                                        universalTokenInput = it
+                                        universalTokenResult = ""
+                                    },
+                                    placeholder = { Text(stringResource(R.string.token_hint), color = TextSecondary) },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = AmberWarning,
+                                        unfocusedBorderColor = AmberWarning.copy(alpha = 0.5f),
+                                        focusedTextColor = TextPrimary,
+                                        unfocusedTextColor = TextPrimary
+                                    ),
+                                    shape = RoundedCornerShape(10.dp),
+                                    singleLine = true,
+                                    textStyle = LocalTextStyle.current.copy(
+                                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                                        fontSize = 13.sp
+                                    )
+                                )
+                                if (universalTokenResult.isNotEmpty()) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = universalTokenResult,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (universalTokenResult.contains("قبول") || universalTokenResult == getString(R.string.token_accepted)) CyanGlow else Color(0xFFFF5252)
+                                    )
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    emergencyFocusManager.clearFocus(force = true)
+                                    emergencyKeyboardController?.hide()
+                                    try {
+                                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? android.view.inputmethod.InputMethodManager
+                                        imm?.hideSoftInputFromWindow(currentView.windowToken, 0)
+                                    } catch (_: Exception) {}
+
+                                    val decoded = com.analoganchor.offlinechallenge.util.TokenDecoder.decode(universalTokenInput.trim())
+                                    universalTokenInput = ""
+                                    if (decoded == null) {
+                                        universalTokenResult = getString(R.string.token_rejected)
+                                    } else {
+                                        if (decoded.requestNumber != challengePrefs.currentRequestStep) {
+                                            universalTokenResult = getString(R.string.token_rejected)
+                                        } else if (!com.analoganchor.offlinechallenge.util.PinVault.verify(decoded.decodedPin, decoded.requestNumber)) {
+                                            universalTokenResult = getString(R.string.token_rejected)
+                                        } else {
+                                            challengePrefs.consumeRequest(decoded.requestNumber)
+                                            if (decoded.requestNumber < 3) {
+                                                challengePrefs.currentRequestStep = decoded.requestNumber + 1
+                                            }
+                                            challengePrefs.broadcastPartnerCompletionToAnalogAnchor(this@MainActivity, isSuccess = false)
+                                            stopVpnService()
+                                            removeDeviceAdmin()
+                                            challengePrefs.endChallenge()
+                                            showUniversalEmergencyModalState.value = false
+                                            Toast.makeText(this@MainActivity, getString(R.string.token_accepted), Toast.LENGTH_LONG).show()
+                                            pendingNavigationRoute.value = "setup"
+                                        }
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = AmberWarning)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.verify_token),
+                                    fontWeight = FontWeight.Bold,
+                                    color = Obsidian
+                                )
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = {
+                                showUniversalEmergencyModalState.value = false
+                                universalTokenInput = ""
+                                universalTokenResult = ""
+                            }) {
+                                Text(if (challengePrefs.language == "ar") "إلغاء" else "Cancel", color = TextSecondary)
+                            }
+                        },
+                        containerColor = DeepSurface,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                }
+
                 AppNavHost()
             }
         }
@@ -371,16 +500,7 @@ class MainActivity : ComponentActivity() {
             stopVpnService()
             "completion"
         } else if (challengePrefs.isActive) {
-            if (challengePrefs.isExpired()) {
-                challengePrefs.broadcastPartnerCompletionToAnalogAnchor(this@MainActivity, isSuccess = true)
-                stopVpnService()
-                removeDeviceAdmin()
-                challengePrefs.endChallenge()
-                challengePrefs.isCompletedPendingShow = true
-                "completion"
-            } else {
-                "challenge"
-            }
+            "challenge"
         } else if (isIncomingPartnerChallenge || pendingDurationMs > 0) {
             "shield_permission"
         } else {
@@ -394,6 +514,9 @@ class MainActivity : ComponentActivity() {
                     onDurationSelected = { durationMs ->
                         pendingDurationMs = durationMs
                         navController.navigate("shield_permission")
+                    },
+                    onOpenEmergencyModal = {
+                        showUniversalEmergencyModalState.value = true
                     }
                 )
             }
@@ -493,6 +616,9 @@ class MainActivity : ComponentActivity() {
                 CompletionScreen(
                     challengePrefs = challengePrefs,
                     onOpenVpnSettings = { openVpnSettings(this@MainActivity) },
+                    onOpenEmergencyModal = {
+                        showUniversalEmergencyModalState.value = true
+                    },
                     onHome = {
                         challengePrefs.isCompletedPendingShow = false
                         stopVpnService()
@@ -647,17 +773,24 @@ class MainActivity : ComponentActivity() {
         if (intent == null) return
         val challengeType = intent.getStringExtra("EXTRA_CHALLENGE_TYPE")
         val targetRoute = intent.getStringExtra("EXTRA_TARGET_ROUTE")
+        if (targetRoute == "challenge") {
+            pendingNavigationRoute.value = "challenge"
+        }
         if (challengeType == "PARTNER_OUTDOOR" || intent.action == "com.analoganchor.action.START_PARTNER_CHALLENGE" || targetRoute == "shield_permission") {
             val partnerName = intent.getStringExtra("EXTRA_PARTNER_NAME") ?: "Anchor Partner"
             val sanctuaryName = intent.getStringExtra("EXTRA_SANCTUARY_NAME") ?: ""
             val sessionId = intent.getStringExtra("EXTRA_SESSION_ID") ?: System.currentTimeMillis().toString()
             val durationMinutes = intent.getIntExtra("EXTRA_DURATION_MINUTES", 60)
+            val isGroup = intent.getBooleanExtra("EXTRA_IS_GROUP", false)
+            val points = intent.getIntExtra("EXTRA_POINTS", if (isGroup) 70 else 40)
             val durationMs = durationMinutes * 60 * 1000L
 
             pendingDurationMs = durationMs
             pendingPartnerName = partnerName
             pendingSanctuaryName = sanctuaryName
             pendingSessionId = sessionId
+            pendingIsGroup = isGroup
+            pendingPoints = points
             isIncomingPartnerChallenge = true
 
             if (!challengePrefs.isActive) {
@@ -668,6 +801,8 @@ class MainActivity : ComponentActivity() {
                     challengePrefs.isPartnerSession = true
                     challengePrefs.partnerName = partnerName
                     challengePrefs.partnerSessionId = sessionId
+                    challengePrefs.isGroupSession = isGroup
+                    challengePrefs.sessionPoints = points
                 }
             }
         }

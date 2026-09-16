@@ -33,6 +33,7 @@ import com.analoganchor.offlinechallenge.ui.theme.*
 fun CompletionScreen(
     challengePrefs: ChallengePreferences,
     onOpenVpnSettings: () -> Unit = {},
+    onOpenEmergencyModal: () -> Unit = {},
     onHome: () -> Unit
 ) {
     val context = LocalContext.current
@@ -122,57 +123,6 @@ fun CompletionScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.explore_analog_anchor),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Obsidian
-                    )
-                }
-            }
-        }
-
-        // --- Restore Always-On VPN / Third-party VPN (BlockAds) Card ---
-        Card(
-            shape = RoundedCornerShape(14.dp),
-            colors = CardDefaults.cardColors(containerColor = DeepSurface),
-            border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.5f)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.turn_off_always_on_title),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AmberWarning,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text(
-                    text = stringResource(R.string.turn_off_always_on_body),
-                    fontSize = 11.sp,
-                    color = TextPrimary,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 16.sp
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Button(
-                    onClick = onOpenVpnSettings,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(38.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = AmberWarning)
-                ) {
-                    Text(
-                        text = stringResource(R.string.open_vpn_settings_btn),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = Obsidian
@@ -457,6 +407,19 @@ fun CompletionScreen(
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = CyanGlow
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        TextButton(
+            onClick = onOpenEmergencyModal,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(R.string.btn_universal_emergency),
+                fontSize = 12.sp,
+                color = TextSecondary
             )
         }
     }
