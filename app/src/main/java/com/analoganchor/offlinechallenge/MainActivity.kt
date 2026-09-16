@@ -305,6 +305,23 @@ class MainActivity : ComponentActivity() {
                                         }
                                         challengePrefs.isAlwaysOnVpnActivated = true
                                         startVpnService()
+
+                                        if (isIncomingPartnerChallenge || challengePrefs.isPartnerSession) {
+                                            val pName = if (pendingPartnerName.isNotBlank()) pendingPartnerName else challengePrefs.partnerName
+                                            val sId = if (pendingSessionId.isNotBlank()) pendingSessionId else challengePrefs.partnerSessionId
+                                            val durationMins = if (pendingDurationMs > 0) (pendingDurationMs / (60 * 1000L)).toInt() else 60
+                                            try {
+                                                val startIntent = Intent("com.analoganchor.app.ACTION_PARTNER_CHALLENGE_STARTED").apply {
+                                                    setPackage("com.analoganchor.app")
+                                                    putExtra("EXTRA_SESSION_ID", sId)
+                                                    putExtra("EXTRA_DURATION_MINUTES", durationMins)
+                                                    putExtra("EXTRA_PARTNER_NAME", pName)
+                                                    putExtra("EXTRA_START_TIME_MS", System.currentTimeMillis())
+                                                }
+                                                sendBroadcast(startIntent)
+                                            } catch (_: Exception) {}
+                                        }
+
                                         openVpnSettings(this@MainActivity)
                                         onChallengeReadyNavigate?.invoke()
                                     }
