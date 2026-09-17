@@ -412,31 +412,14 @@ fun ChallengeScreen(
                             border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.5f)),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
-                                Text(
-                                    text = stringResource(R.string.battery_reminder_inapp_warning),
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = AmberWarning,
-                                    lineHeight = 17.sp
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                OutlinedButton(
-                                    onClick = { com.analoganchor.offlinechallenge.util.NetworkHelper.openNetworkSettings(context) },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(8.dp),
-                                    border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.6f)),
-                                    colors = ButtonDefaults.outlinedButtonColors(contentColor = AmberWarning),
-                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.open_network_settings),
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = AmberWarning
-                                    )
-                                }
-                            }
+                            Text(
+                                text = stringResource(R.string.battery_reminder_inapp_warning),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = AmberWarning,
+                                lineHeight = 17.sp,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
+                            )
                         }
                     } else {
                         Surface(
