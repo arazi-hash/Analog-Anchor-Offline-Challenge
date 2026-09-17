@@ -57,6 +57,7 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var challengePrefs: ChallengePreferences
     private var pendingDurationMs: Long = 0L
+    private var pendingStartTimeMs: Long = 0L
     private var pendingPin: String = ""
     private var pendingPartnerName: String = "Anchor Partner"
     private var pendingSanctuaryName: String = ""
@@ -300,9 +301,17 @@ class MainActivity : ComponentActivity() {
                                         showGuidanceToast(guidanceMsg)
 
                                         showAlwaysOnModalState.value = false
+                                        var effectiveDurationMs = pendingDurationMs
+                                        if (isIncomingPartnerChallenge && pendingStartTimeMs > 0L) {
+                                            val elapsed = System.currentTimeMillis() - pendingStartTimeMs
+                                            if (elapsed in 10_000L..(5 * 60 * 1000L)) {
+                                                effectiveDurationMs = (pendingDurationMs - elapsed).coerceAtLeast(60_000L)
+                                            }
+                                        }
+
                                         if (isIncomingPartnerChallenge) {
                                             challengePrefs.startPartnerChallenge(
-                                                pendingDurationMs,
+                                                effectiveDurationMs,
                                                 pendingPartnerName,
                                                 pendingSessionId,
                                                 pendingIsGroup,
@@ -318,7 +327,7 @@ class MainActivity : ComponentActivity() {
                                         if (isIncomingPartnerChallenge || challengePrefs.isPartnerSession) {
                                             val pName = if (pendingPartnerName.isNotBlank()) pendingPartnerName else challengePrefs.partnerName
                                             val sId = if (pendingSessionId.isNotBlank()) pendingSessionId else challengePrefs.partnerSessionId
-                                            val durationMins = if (pendingDurationMs > 0) (pendingDurationMs / (60 * 1000L)).toInt() else 60
+                                            val durationMins = if (effectiveDurationMs > 0) (effectiveDurationMs / (60 * 1000L)).toInt().coerceAtLeast(1) else 60
                                             try {
                                                 val startIntent = Intent("com.analoganchor.app.ACTION_PARTNER_CHALLENGE_STARTED").apply {
                                                     setPackage("com.analoganchor.app")
@@ -781,11 +790,13 @@ class MainActivity : ComponentActivity() {
             val sanctuaryName = intent.getStringExtra("EXTRA_SANCTUARY_NAME") ?: ""
             val sessionId = intent.getStringExtra("EXTRA_SESSION_ID") ?: System.currentTimeMillis().toString()
             val durationMinutes = intent.getIntExtra("EXTRA_DURATION_MINUTES", 60)
+            val startTimeMs = intent.getLongExtra("EXTRA_START_TIME", System.currentTimeMillis())
             val isGroup = intent.getBooleanExtra("EXTRA_IS_GROUP", false)
             val points = intent.getIntExtra("EXTRA_POINTS", if (isGroup) 70 else 40)
             val durationMs = durationMinutes * 60 * 1000L
 
             pendingDurationMs = durationMs
+            pendingStartTimeMs = startTimeMs
             pendingPartnerName = partnerName
             pendingSanctuaryName = sanctuaryName
             pendingSessionId = sessionId
