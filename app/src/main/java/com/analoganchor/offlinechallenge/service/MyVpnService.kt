@@ -350,6 +350,7 @@ class MyVpnService : VpnService() {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("EXTRA_TARGET_ROUTE", "challenge")
+            putExtra("EXTRA_SHOW_MILESTONE_PROMPT", true)
         }
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
@@ -369,6 +370,8 @@ class MyVpnService : VpnService() {
             .setStyle(Notification.BigTextStyle().bigText(body))
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
+            .setFullScreenIntent(pendingIntent, true)
+            .setCategory(Notification.CATEGORY_ALARM)
             .setOngoing(true)
             .setAutoCancel(false)
 
@@ -378,6 +381,13 @@ class MyVpnService : VpnService() {
 
         manager.notify(2, builder.build())
         triggerCompletionAlert()
+
+        // Directly bring MainActivity to foreground so user doesn't need to open shade
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            Log.w(TAG, "Direct activity launch from service skipped: ${e.message}")
+        }
     }
 
     private fun updateHoldingNotification() {

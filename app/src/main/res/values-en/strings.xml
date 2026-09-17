@@ -126,9 +126,10 @@
     <string name="milestone_completed_title">🎯 1-Hour Milestone Completed!</string>
     <string name="milestone_completed_body_duo">Great job! You spent a full hour completely present without digital distraction. Your +40 PTS reward is ready. The offline shield remains active to protect your peace—extend the session or conclude to reconnect now.</string>
     <string name="milestone_completed_body_group">Outstanding! You completed a full hour with your group circle. Your +70 PTS reward is ready. The offline shield remains active—extend the session or conclude to reconnect now.</string>
-    <string name="btn_extend_30m">+30 min</string>
-    <string name="btn_extend_1h">+1 hour</string>
-    <string name="btn_extend_2h">+2 hours</string>
+    <string name="btn_extend_30m">+30m</string>
+    <string name="btn_extend_60m">+60m</string>
+    <string name="btn_extend_90m">+90m</string>
+    <string name="btn_extend_120m">+120m</string>
     <string name="btn_conclude_online">Conclude &amp; Go Online 🌐</string>
     <string name="session_extended_toast">Offline shield extended successfully!</string>
     <string name="session_concluded_toast">🎉 Outing completed! Points credited to Analog Anchor!</string>

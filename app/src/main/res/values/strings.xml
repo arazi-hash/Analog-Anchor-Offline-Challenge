@@ -127,8 +127,9 @@
     <string name="milestone_completed_body_duo">أحسنتما! قضيتما ساعة كاملة بحضور حقيقي بدون تشتيت الهواتف. رصيدكما جاهز (+40 نقطة). درع الأوفلاين ما زال نشطاً لحماية صفاء ذهنكم — يمكنكما تمديد الجلسة أو إنهاؤها والاتصال بالإنترنت الآن.</string>
     <string name="milestone_completed_body_group">أحسنتم جميعاً! قضيتم ساعة كاملة بحضور جماعي حقيقي. رصيدكم جاهز (+70 نقطة). درع الأوفلاين ما زال نشطاً — يمكنكم تمديد الجلسة أو إنهاؤها والاتصال بالإنترنت الآن.</string>
     <string name="btn_extend_30m">+30 دقيقة</string>
-    <string name="btn_extend_1h">+1 ساعة</string>
-    <string name="btn_extend_2h">+2 ساعة</string>
+    <string name="btn_extend_60m">+60 دقيقة</string>
+    <string name="btn_extend_90m">+90 دقيقة</string>
+    <string name="btn_extend_120m">+120 دقيقة</string>
     <string name="btn_conclude_online">إنهاء والاتصال بالإنترنت 🌐</string>
     <string name="session_extended_toast">تم تمديد درع الأوفلاين بنجاح!</string>
     <string name="session_concluded_toast">🎉 تم توثيق الجلسة وإرسال النقاط لـ Analog Anchor!</string>

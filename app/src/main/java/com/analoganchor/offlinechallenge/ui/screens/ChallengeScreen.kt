@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.analoganchor.offlinechallenge.R
 import com.analoganchor.offlinechallenge.data.ChallengePreferences
 import com.analoganchor.offlinechallenge.ui.theme.*
@@ -218,102 +220,242 @@ fun ChallengeScreen(
             }
         }
 
-        // 1-Hour Partner Milestone Prompt Modal (Shield Holds Offline until explicit choice)
+        // 1-Hour Partner Milestone Pop-up Overlay (Shield Holds Offline until explicit choice)
         if ((showPartnerPromptDialog || challengePrefs.isHoldingOffline) && challengePrefs.isPartnerSession) {
             val isGroup = challengePrefs.isGroupSession
             val targetPoints = challengePrefs.sessionPoints
-            AlertDialog(
-                onDismissRequest = { /* Non-dismissable: user must decide to extend or conclude */ },
-                title = {
-                    Text(
-                        text = stringResource(R.string.milestone_completed_title),
-                        fontWeight = FontWeight.Bold,
-                        color = CyanGlow
-                    )
-                },
-                text = {
-                    Text(
-                        text = if (isGroup) stringResource(R.string.milestone_completed_body_group) else stringResource(R.string.milestone_completed_body_duo),
-                        color = TextPrimary
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            showPartnerPromptDialog = false
-                            challengePrefs.isHoldingOffline = false
-                            android.widget.Toast.makeText(
-                                context,
-                                context.getString(R.string.session_concluded_toast),
-                                android.widget.Toast.LENGTH_LONG
-                            ).show()
-                            onChallengeComplete()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = CyanGlow),
-                        shape = RoundedCornerShape(10.dp)
+            Dialog(
+                onDismissRequest = { /* Non-dismissable: user must explicitly extend or conclude */ },
+                properties = DialogProperties(
+                    usePlatformDefaultWidth = false,
+                    dismissOnBackPress = false,
+                    dismissOnClickOutside = false
+                )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Obsidian.copy(alpha = 0.88f))
+                        .padding(horizontal = 20.dp, vertical = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(containerColor = DeepSurface),
+                        border = BorderStroke(1.5.dp, CyanGlow.copy(alpha = 0.7f))
                     ) {
-                        Text(
-                            text = stringResource(R.string.btn_conclude_online),
-                            color = Obsidian,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            // Target Icon Badge
+                            Box(
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .background(CyanGlow.copy(alpha = 0.12f), RoundedCornerShape(30.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = "🎯", fontSize = 30.sp)
+                            }
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            Text(
+                                text = stringResource(R.string.milestone_completed_title),
+                                fontSize = 19.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = CyanGlow,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Surface(
+                                shape = RoundedCornerShape(10.dp),
+                                color = AmberWarning.copy(alpha = 0.15f),
+                                border = BorderStroke(1.dp, AmberWarning.copy(alpha = 0.4f))
+                            ) {
+                                Text(
+                                    text = if (isAr) "+$targetPoints نقطة جاهزة للإضافة" else "+$targetPoints PTS Ready to Claim",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = AmberWarning,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 5.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            Text(
+                                text = if (isGroup) stringResource(R.string.milestone_completed_body_group) else stringResource(R.string.milestone_completed_body_duo),
+                                fontSize = 13.sp,
+                                color = TextPrimary.copy(alpha = 0.9f),
+                                textAlign = TextAlign.Center,
+                                lineHeight = 19.sp
+                            )
+
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            Text(
+                                text = if (isAr) "تمديد درع الأوفلاين:" else "Extend Offline Shield:",
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = TextSecondary,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Start
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // 2x2 Grid for extensions (+30m, +60m, +90m, +120m)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedButton(
+                                    onClick = {
+                                        challengePrefs.extendChallenge(30 * 60 * 1000L)
+                                        showPartnerPromptDialog = false
+                                        hasPromptedPartnerHour = false
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            context.getString(R.string.session_extended_toast),
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp),
+                                    border = BorderStroke(1.dp, CyanGlow),
+                                    colors = ButtonDefaults.outlinedButtonColors(containerColor = CyanGlow.copy(alpha = 0.08f))
+                                ) {
+                                    Text(
+                                        stringResource(R.string.btn_extend_30m),
+                                        color = CyanGlow,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp,
+                                        maxLines = 1
+                                    )
+                                }
+
+                                OutlinedButton(
+                                    onClick = {
+                                        challengePrefs.extendChallenge(60 * 60 * 1000L)
+                                        showPartnerPromptDialog = false
+                                        hasPromptedPartnerHour = false
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            context.getString(R.string.session_extended_toast),
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp),
+                                    border = BorderStroke(1.dp, CyanGlow),
+                                    colors = ButtonDefaults.outlinedButtonColors(containerColor = CyanGlow.copy(alpha = 0.08f))
+                                ) {
+                                    Text(
+                                        stringResource(R.string.btn_extend_60m),
+                                        color = CyanGlow,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedButton(
+                                    onClick = {
+                                        challengePrefs.extendChallenge(90 * 60 * 1000L)
+                                        showPartnerPromptDialog = false
+                                        hasPromptedPartnerHour = false
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            context.getString(R.string.session_extended_toast),
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp),
+                                    border = BorderStroke(1.dp, CyanGlow),
+                                    colors = ButtonDefaults.outlinedButtonColors(containerColor = CyanGlow.copy(alpha = 0.08f))
+                                ) {
+                                    Text(
+                                        stringResource(R.string.btn_extend_90m),
+                                        color = CyanGlow,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp,
+                                        maxLines = 1
+                                    )
+                                }
+
+                                OutlinedButton(
+                                    onClick = {
+                                        challengePrefs.extendChallenge(120 * 60 * 1000L)
+                                        showPartnerPromptDialog = false
+                                        hasPromptedPartnerHour = false
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            context.getString(R.string.session_extended_toast),
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp),
+                                    border = BorderStroke(1.dp, CyanGlow),
+                                    colors = ButtonDefaults.outlinedButtonColors(containerColor = CyanGlow.copy(alpha = 0.08f))
+                                ) {
+                                    Text(
+                                        stringResource(R.string.btn_extend_120m),
+                                        color = CyanGlow,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(18.dp))
+
+                            // Conclude and go online
+                            Button(
+                                onClick = {
+                                    showPartnerPromptDialog = false
+                                    challengePrefs.isHoldingOffline = false
+                                    android.widget.Toast.makeText(
+                                        context,
+                                        context.getString(R.string.session_concluded_toast),
+                                        android.widget.Toast.LENGTH_LONG
+                                    ).show()
+                                    onChallengeComplete()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = CyanGlow)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.btn_conclude_online),
+                                    color = Obsidian,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp
+                                )
+                            }
+                        }
                     }
-                },
-                dismissButton = {
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        OutlinedButton(
-                            onClick = {
-                                challengePrefs.extendChallenge(30 * 60 * 1000L)
-                                showPartnerPromptDialog = false
-                                hasPromptedPartnerHour = false
-                                android.widget.Toast.makeText(
-                                    context,
-                                    context.getString(R.string.session_extended_toast),
-                                    android.widget.Toast.LENGTH_SHORT
-                                ).show()
-                            },
-                            border = BorderStroke(1.dp, CyanGlow),
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                        ) {
-                            Text(stringResource(R.string.btn_extend_30m), color = CyanGlow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                        }
-                        OutlinedButton(
-                            onClick = {
-                                challengePrefs.extendChallenge(1 * 3600 * 1000L)
-                                showPartnerPromptDialog = false
-                                hasPromptedPartnerHour = false
-                                android.widget.Toast.makeText(
-                                    context,
-                                    context.getString(R.string.session_extended_toast),
-                                    android.widget.Toast.LENGTH_SHORT
-                                ).show()
-                            },
-                            border = BorderStroke(1.dp, CyanGlow),
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                        ) {
-                            Text(stringResource(R.string.btn_extend_1h), color = CyanGlow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                        }
-                        OutlinedButton(
-                            onClick = {
-                                challengePrefs.extendChallenge(2 * 3600 * 1000L)
-                                showPartnerPromptDialog = false
-                                hasPromptedPartnerHour = false
-                                android.widget.Toast.makeText(
-                                    context,
-                                    context.getString(R.string.session_extended_toast),
-                                    android.widget.Toast.LENGTH_SHORT
-                                ).show()
-                            },
-                            border = BorderStroke(1.dp, CyanGlow),
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-                        ) {
-                            Text(stringResource(R.string.btn_extend_2h), color = CyanGlow, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                        }
-                    }
-                },
-                containerColor = DeepSurface,
-                shape = RoundedCornerShape(16.dp)
-            )
+                }
+            }
         }
 
         // Always-On VPN reminder banner
